@@ -5,7 +5,7 @@ Version: 0.99.0
 Authors@R: c(
   person(
     given = "Stian",
-    family = "Laagstad",
+    family = "Lågstad",
     email = "stianlagstad@gmail.com",
     role = c("aut", "cre")),
   person(
@@ -25,7 +25,7 @@ Authors@R: c(
     role = "ctb"),
   person(
     given = "Ole Christian",
-    family = "Lingjaerde",
+    family = "Lingjærde",
     email = "ole@ifi.uio.no",
     role = "ctb"),
   person(
