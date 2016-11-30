@@ -111,3 +111,324 @@ setMethod("show",
                         sep = ""))
           }
 )
+
+#' Get the upstream fusion partner gene
+#'
+#' This getter retrieves the upstream PartnerGene object.
+#'
+#' @param x The Fusion object you wish to retrieve the upstream PartnerGene object for.
+#'
+#' @return The upstream PartnerGene object.
+#'
+#' @rdname upstreamPartnerGene
+#'
+#' @examples
+#' # Load data
+#' defuseData <- system.file(
+#'   "extdata",
+#'   "defuse_833ke_results.filtered.tsv",
+#'   package="chimeraviz")
+#' fusions <- importDefuse(defuseData, "hg19", 1)
+#' fusion <- fusions[[1]]
+#' # Get the upstream fusion partner gene
+#' upstreamPartnerGene(fusion)
+#'
+#' @export
+setGeneric(
+  "upstreamPartnerGene",
+  function(x)
+    standardGeneric("upstreamPartnerGene")
+)
+#' @rdname upstreamPartnerGene
+setMethod(
+  "upstreamPartnerGene",
+  "Fusion",
+  function(x)
+    return(x@geneA)
+)
+
+#' Get the downstream fusion partner gene
+#'
+#' This getter retrieves the downstream PartnerGene object.
+#'
+#' @param x The Fusion object you wish to retrieve the downstream PartnerGene object for.
+#'
+#' @return The downstream PartnerGene object.
+#'
+#' @rdname downstreamPartnerGene
+#'
+#' @examples
+#' # Load data
+#' defuseData <- system.file(
+#'   "extdata",
+#'   "defuse_833ke_results.filtered.tsv",
+#'   package="chimeraviz")
+#' fusions <- importDefuse(defuseData, "hg19", 1)
+#' fusion <- fusions[[1]]
+#' # Get the downstream fusion partner gene
+#' downstreamPartnerGene(fusion)
+#'
+#' @export
+setGeneric(
+  "downstreamPartnerGene",
+  function(x)
+    standardGeneric("downstreamPartnerGene")
+)
+#' @rdname downstreamPartnerGene
+setMethod(
+  "downstreamPartnerGene",
+  "Fusion",
+  function(x)
+    return(x@geneB)
+)
+
+#' Set the upstream PartnerGene object of a Fusion object
+#'
+#' This sets the upstream PartnerGene object of a Fusion object
+#'
+#' @param object The Fusion object you wish to set a new upstream PartnerGene object for.
+#' @param value The new PartnerGene object.
+#'
+#' @rdname upstreamPartnerGene
+#'
+#' @examples
+#' # Load data
+#' defuseData <- system.file(
+#'   "extdata",
+#'   "defuse_833ke_results.filtered.tsv",
+#'   package="chimeraviz")
+#' fusions <- importDefuse(defuseData, "hg19", 1)
+#' fusion <- fusions[[1]]
+#' # Set the upstream PartnerGene object to be the same as the downstream PartnerGene object
+#' upstreamPartnerGene(fusion) <- downstreamPartnerGene(fusion)
+#'
+#' @export
+setGeneric(
+  "upstreamPartnerGene<-",
+  function(object,value) {
+    standardGeneric("upstreamPartnerGene<-")
+  }
+)
+#' @rdname upstreamPartnerGene
+setReplaceMethod(
+  f = "upstreamPartnerGene",
+  signature = "Fusion",
+  definition = function(object, value) {
+    object@geneA <-value
+    return (object)
+  }
+)
+
+#' Set the downstream PartnerGene object of a Fusion object
+#'
+#' This sets the downstream PartnerGene object of a Fusion object
+#'
+#' @param object The Fusion object you wish to set a new downstream PartnerGene object for.
+#' @param value The new PartnerGene object.
+#'
+#' @rdname downstreamPartnerGene
+#'
+#' @examples
+#' # Load data
+#' defuseData <- system.file(
+#'   "extdata",
+#'   "defuse_833ke_results.filtered.tsv",
+#'   package="chimeraviz")
+#' fusions <- importDefuse(defuseData, "hg19", 1)
+#' fusion <- fusions[[1]]
+#' # Set the downstream PartnerGene object to be the same as the upstream PartnerGene object
+#' downstreamPartnerGene(fusion) <- upstreamPartnerGene(fusion)
+#'
+#' @export
+setGeneric(
+  "downstreamPartnerGene<-",
+  function(object,value) {
+    standardGeneric("downstreamPartnerGene<-")
+  }
+)
+#' @rdname downstreamPartnerGene
+setReplaceMethod(
+  f = "downstreamPartnerGene",
+  signature = "Fusion",
+  definition = function(object, value) {
+    object@geneB <-value
+    return (object)
+  }
+)
+
+#' Get the Ensembl ID from a PartnerGene object
+#'
+#' This getter retrieves the Ensembl ID from a PartnerGene object
+#'
+#' @param x The PartnerGene object you wish to retrieve the Ensembl ID for.
+#'
+#' @return The upstream fusion partner gene Ensembl ID.
+#'
+#' @rdname partnerGeneEnsemblId
+#'
+#' @examples
+#' # Load data
+#' defuseData <- system.file(
+#'   "extdata",
+#'   "defuse_833ke_results.filtered.tsv",
+#'   package="chimeraviz")
+#' fusions <- importDefuse(defuseData, "hg19", 1)
+#' fusion <- fusions[[1]]
+#' # Get the Ensembl ID from the upstream fusion partner gene
+#' partnerGeneEnsemblId(upstreamPartnerGene(fusion))
+#'
+#' @export
+setGeneric(
+  "partnerGeneEnsemblId",
+  function(x)
+    standardGeneric("partnerGeneEnsemblId")
+)
+#' @rdname partnerGeneEnsemblId
+setMethod(
+  "partnerGeneEnsemblId",
+  "PartnerGene",
+  function(x)
+    return(x@ensemblId)
+)
+
+#' Set the Ensembl ID of a PartnerGene object
+#'
+#' This sets the Ensembl ID of a PartnerGene object.
+#'
+#' @param object The PartnerGene object you wish to set a new Ensembl ID for.
+#' @param value The new Ensembl ID.
+#'
+#' @rdname partnerGeneEnsemblId
+#'
+#' @examples
+#' # Load data
+#' defuseData <- system.file(
+#'   "extdata",
+#'   "defuse_833ke_results.filtered.tsv",
+#'   package="chimeraviz")
+#' fusions <- importDefuse(defuseData, "hg19", 1)
+#' fusion <- fusions[[1]]
+#' # Set the downstream PartnerGene object to be the same as the upstream PartnerGene object
+#' partnerGeneEnsemblId(upstreamPartnerGene(fusion)) <- "test"
+#'
+#' @export
+setGeneric(
+  "partnerGeneEnsemblId<-",
+  function(object,value) {
+    standardGeneric("partnerGeneEnsemblId<-")
+  }
+)
+#' @rdname partnerGeneEnsemblId
+setReplaceMethod(
+  f = "partnerGeneEnsemblId",
+  signature = "PartnerGene",
+  definition = function(object, value) {
+    object@ensemblId <-value
+    return (object)
+  }
+)
+
+#' Get the junction sequence from a PartnerGene object
+#'
+#' This getter retrieves the junction sequence from a PartnerGene object
+#'
+#' @param x The PartnerGene object you wish to retrieve the junction sequence for.
+#'
+#' @return The upstream fusion partner gene junction sequence.
+#'
+#' @rdname partnerGeneJunctionSequence
+#'
+#' @examples
+#' # Load data
+#' defuseData <- system.file(
+#'   "extdata",
+#'   "defuse_833ke_results.filtered.tsv",
+#'   package="chimeraviz")
+#' fusions <- importDefuse(defuseData, "hg19", 1)
+#' fusion <- fusions[[1]]
+#' # Get the junction sequence from the upstream fusion partner gene
+#' partnerGeneJunctionSequence(upstreamPartnerGene(fusion))
+#'
+#' @export
+setGeneric(
+  "partnerGeneJunctionSequence",
+  function(x)
+    standardGeneric("partnerGeneJunctionSequence")
+)
+#' @rdname partnerGeneJunctionSequence
+setMethod(
+  "partnerGeneJunctionSequence",
+  "PartnerGene",
+  function(x)
+    return(x@junctionSequence)
+)
+
+#' Get the split reads count from a Fusion object
+#'
+#' This getter retrieves the split reads count from a Fusion object
+#'
+#' @param x The Fusion object you wish to retrieve the split reads count for.
+#'
+#' @return The Fusion split reads count.
+#'
+#' @rdname fusionSplitReadsCount
+#'
+#' @examples
+#' # Load data
+#' defuseData <- system.file(
+#'   "extdata",
+#'   "defuse_833ke_results.filtered.tsv",
+#'   package="chimeraviz")
+#' fusions <- importDefuse(defuseData, "hg19", 1)
+#' fusion <- fusions[[1]]
+#' # Get the split reads count
+#' fusionSplitReadsCount(fusion)
+#'
+#' @export
+setGeneric(
+  "fusionSplitReadsCount",
+  function(x)
+    standardGeneric("fusionSplitReadsCount")
+)
+#' @rdname fusionSplitReadsCount
+setMethod(
+  "fusionSplitReadsCount",
+  "Fusion",
+  function(x)
+    return(x@splitReadsCount)
+)
+
+#' Get the spanning reads count from a Fusion object
+#'
+#' This getter retrieves the spanning reads count from a Fusion object
+#'
+#' @param x The Fusion object you wish to retrieve the spanning reads count for.
+#'
+#' @return The Fusion spanning reads count.
+#'
+#' @rdname fusionSpanningReadsCount
+#'
+#' @examples
+#' # Load data
+#' defuseData <- system.file(
+#'   "extdata",
+#'   "defuse_833ke_results.filtered.tsv",
+#'   package="chimeraviz")
+#' fusions <- importDefuse(defuseData, "hg19", 1)
+#' fusion <- fusions[[1]]
+#' # Get the spanning reads count
+#' fusionSpanningReadsCount(fusion)
+#'
+#' @export
+setGeneric(
+  "fusionSpanningReadsCount",
+  function(x)
+    standardGeneric("fusionSpanningReadsCount")
+)
+#' @rdname fusionSpanningReadsCount
+setMethod(
+  "fusionSpanningReadsCount",
+  "Fusion",
+  function(x)
+    return(x@spanningReadsCount)
+)

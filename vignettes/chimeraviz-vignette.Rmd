@@ -49,10 +49,10 @@ fusion <- getFusionById(fusions, 5267)
 fusion
 
 # Show information about the upstream fusion partner
-fusion@geneA
+upstreamPartnerGene(fusion)
 
 # Show information about the downstream fusion partner
-fusion@geneB
+downstreamPartnerGene(fusion)
 ```
 
 # Plotting

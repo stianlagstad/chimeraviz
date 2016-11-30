@@ -44,8 +44,9 @@
 #'   tmpdir = tempdir())
 #' # Calculate image size based on supporting reads and lenght of junction
 #' # sequence.
-#' imageWidth <- (nchar(fusion@geneA@junctionSequence) + nchar(fusion@geneB@junctionSequence)) * 15
-#' imageHeight <- (fusion@splitReadsCount+fusion@spanningReadsCount) * 20
+#' imageWidth <- (nchar(partnerGeneJunctionSequence(upstreamPartnerGene(fusion))) +
+#'   nchar(partnerGeneJunctionSequence(downstreamPartnerGene(fusion)))) * 15
+#' imageHeight <- (fusionSplitReadsCount(fusion)+fusionSpanningReadsCount(fusion)) * 20
 #' # Open device
 #' png(pngFilename, width = imageWidth, height = imageHeight)
 #' # Now we can plot

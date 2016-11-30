@@ -39,8 +39,8 @@ allTranscripts <- ensembldb::exonsBy(
   filter = list(
     ensembldb::GeneidFilter(
       list(
-        fusion@geneA@ensemblId,
-        fusion@geneB@ensemblId))),
+        partnerGeneEnsemblId(upstreamPartnerGene(fusion)),
+        partnerGeneEnsemblId(downstreamPartnerGene(fusion))))),
   columns = c(
     "gene_id",
     "gene_name",

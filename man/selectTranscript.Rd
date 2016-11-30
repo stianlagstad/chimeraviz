@@ -47,7 +47,7 @@ edb <- ensembldb::EnsDb(edbSqliteFile)
 # Get transcripts
 fusion <- getTranscriptsEnsembldb(fusion, edb)
 # Select transcript
-transcriptsA <- selectTranscript(fusion@geneA)
+transcriptsA <- selectTranscript(upstreamPartnerGene(fusion))
 
 }
 

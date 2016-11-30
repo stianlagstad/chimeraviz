@@ -71,5 +71,5 @@ SystemRequirements: bowtie, samtools, and egrep are required for some
     functionalities
 RoxygenNote: 5.0.1
 VignetteBuilder: knitr
-biocViews: Infrastructure
+biocViews: Infrastructure, Alignment
 Encoding: UTF-8

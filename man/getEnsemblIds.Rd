@@ -26,19 +26,19 @@ fusions <- importDefuse(defuse833keFiltered, "hg19", 1)
 # Get a specific fusion
 fusion <- getFusionById(fusions, 5267)
 # See the ensembl ids:
-fusion@geneA@ensemblId
+partnerGeneEnsemblId(upstreamPartnerGene(fusion))
 # [1] "ENSG00000180198"
-fusion@geneB@ensemblId
+partnerGeneEnsemblId(downstreamPartnerGene(fusion))
 # [1] "ENSG00000162639"
 # Reset the fusion objects ensembl ids
-fusion@geneA@ensemblId <- ""
-fusion@geneB@ensemblId <- ""
+partnerGeneEnsemblId(upstreamPartnerGene(fusion)) <- ""
+partnerGeneEnsemblId(downstreamPartnerGene(fusion))  <- ""
 # Get the ensembl ids
 fusion <- getEnsemblIds(fusion)
 # See that we now have the same ensembl ids again:
-fusion@geneA@ensemblId
+partnerGeneEnsemblId(upstreamPartnerGene(fusion))
 # [1] "ENSG00000180198"
-fusion@geneB@ensemblId
+partnerGeneEnsemblId(downstreamPartnerGene(fusion))
 # [1] "ENSG00000162639"
 
 }

@@ -168,19 +168,19 @@ writeFusionReference <- function(fusion, filename) {
 #' # Get a specific fusion
 #' fusion <- getFusionById(fusions, 5267)
 #' # See the ensembl ids:
-#' fusion@geneA@ensemblId
+#' partnerGeneEnsemblId(upstreamPartnerGene(fusion))
 #' # [1] "ENSG00000180198"
-#' fusion@geneB@ensemblId
+#' partnerGeneEnsemblId(downstreamPartnerGene(fusion))
 #' # [1] "ENSG00000162639"
 #' # Reset the fusion objects ensembl ids
-#' fusion@geneA@ensemblId <- ""
-#' fusion@geneB@ensemblId <- ""
+#' partnerGeneEnsemblId(upstreamPartnerGene(fusion)) <- ""
+#' partnerGeneEnsemblId(downstreamPartnerGene(fusion))  <- ""
 #' # Get the ensembl ids
 #' fusion <- getEnsemblIds(fusion)
 #' # See that we now have the same ensembl ids again:
-#' fusion@geneA@ensemblId
+#' partnerGeneEnsemblId(upstreamPartnerGene(fusion))
 #' # [1] "ENSG00000180198"
-#' fusion@geneB@ensemblId
+#' partnerGeneEnsemblId(downstreamPartnerGene(fusion))
 #' # [1] "ENSG00000162639"
 #'
 #' @export
@@ -254,8 +254,8 @@ getEnsemblIds <- function(fusion) {
 #'   filter = list(
 #'     ensembldb::GeneidFilter(
 #'       list(
-#'         fusion@geneA@ensemblId,
-#'         fusion@geneB@ensemblId))),
+#'         partnerGeneEnsemblId(upstreamPartnerGene(fusion)),
+#'         partnerGeneEnsemblId(downstreamPartnerGene(fusion))))),
 #'   columns = c(
 #'     "gene_id",
 #'     "gene_name",
@@ -391,8 +391,8 @@ splitOnUtrAndAddFeature <- function(gr) {
 #'   filter = list(
 #'     ensembldb::GeneidFilter(
 #'       list(
-#'         fusion@geneA@ensemblId,
-#'         fusion@geneB@ensemblId))),
+#'         partnerGeneEnsemblId(upstreamPartnerGene(fusion)),
+#'         partnerGeneEnsemblId(downstreamPartnerGene(fusion))))),
 #'   columns = c(
 #'     "gene_id",
 #'     "gene_name",
@@ -873,7 +873,7 @@ fusionToDataFrame <- function(fusion) {
 #' # Get transcripts
 #' fusion <- getTranscriptsEnsembldb(fusion, edb)
 #' # Select transcript
-#' transcriptsA <- selectTranscript(fusion@geneA)
+#' transcriptsA <- selectTranscript(upstreamPartnerGene(fusion))
 #'
 #' @export
 selectTranscript <- function(
