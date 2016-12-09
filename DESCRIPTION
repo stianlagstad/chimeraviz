@@ -66,8 +66,7 @@ Suggests:
     testthat,
     roxygen2,
     devtools,
-    knitr,
-    webshot
+    knitr
 SystemRequirements: bowtie, samtools, and egrep are required for some
     functionalities
 RoxygenNote: 5.0.1
