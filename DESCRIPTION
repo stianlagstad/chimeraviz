@@ -1,0 +1,32 @@
+Package: chimeraviz
+Type: Package
+Title: Visualization tools for gene fusions
+Version: 0.99.4
+Authors@R: c( person( given = "Stian", family = "Lågstad", email =
+        "stianlagstad@gmail.com", role = c("aut", "cre")), person(
+        given = "Sen", family = "Zhao", email =
+        "Sen.Zhao@rr-research.no", role = "ctb"), person( given =
+        "Andreas M.", family = "Hoff", email =
+        "andreas.m.hoff@rr-research.no", role = "ctb"), person( given =
+        "Bjarne", family = "Johannessen", email =
+        "Bjarne.Johannessen@rr-research.no", role = "ctb"), person(
+        given = "Ole Christian", family = "Lingjærde", email =
+        "ole@ifi.uio.no", role = "ctb"), person( given = "Rolf", family
+        = "Skotheim", email = "Rolf.I.Skotheim@rr-research.no", role =
+        "ctb"))
+Description: chimeraviz manages data from fusion gene finders and
+        provides useful visualization tools.
+License: Artistic-2.0
+LazyData: TRUE
+Imports: methods, readr, grid, Rsamtools, GenomeInfoDb,
+        GenomicAlignments, RColorBrewer, graphics, AnnotationDbi,
+        RCircos, org.Hs.eg.db, rmarkdown, graph, Rgraphviz, DT, plyr,
+        BiocStyle
+Depends: Biostrings, GenomicRanges, IRanges, Gviz, S4Vectors, ensembldb
+Suggests: testthat, roxygen2, devtools, knitr
+SystemRequirements: bowtie, samtools, and egrep are required for some
+        functionalities
+RoxygenNote: 5.0.1
+VignetteBuilder: knitr
+biocViews: Infrastructure, Alignment
+Encoding: UTF-8
