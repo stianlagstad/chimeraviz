@@ -602,6 +602,13 @@ plotFusionSeparate <- function(
     # fusion. If there are between 1 and 50 reads supporting the fusion, then the
     # curve width will be scaled accordingly.
     supportingReads <- fusion@spanningReadsCount+fusion@splitReadsCount
+    supportingReadsText <- paste0(
+      supportingReads,
+      " (",
+      fusion@splitReadsCount,
+      ",",
+      fusion@spanningReadsCount,
+      ")")
     curveWidth <- .scaleListToInterval(
       c(supportingReads,
         1,
@@ -636,14 +643,14 @@ plotFusionSeparate <- function(
     numberPositionY <- yPos - bezierControlPointOffset - numberOffset
 
     grid::grid.text(
-      supportingReads,
+      supportingReadsText,
       x = numberPositionX/grDevices::dev.size(units="px")[1],
       y = 1 - numberPositionY/grDevices::dev.size(units="px")[2],
       vp = grid::viewport(
         xscale = c(0, grDevices::dev.size(units="px")[1]),
         yscale = c(grDevices::dev.size(units="px")[2], 0)),
       gp = grid::gpar(
-        fontsize = 20))
+        fontsize = 15))
 
   }
 }
@@ -1056,6 +1063,13 @@ plotFusionTogether <- function(
     # fusion. If there are between 1 and 50 reads supporting the fusion, then the
     # curve width will be scaled accordingly.
     supportingReads <- fusion@spanningReadsCount+fusion@splitReadsCount
+    supportingReadsText <- paste0(
+      supportingReads,
+      " (",
+      fusion@splitReadsCount,
+      ",",
+      fusion@spanningReadsCount,
+      ")")
     curveWidth <- .scaleListToInterval(
       c(supportingReads,
         1,
@@ -1090,14 +1104,14 @@ plotFusionTogether <- function(
     numberPositionY <- yPos - bezierControlPointOffset - numberOffset
 
     grid::grid.text(
-      supportingReads,
+      supportingReadsText,
       x = numberPositionX/grDevices::dev.size(units="px")[1],
       y = 1 - numberPositionY/grDevices::dev.size(units="px")[2],
       vp = grid::viewport(
         xscale = c(0, grDevices::dev.size(units="px")[1]),
         yscale = c(grDevices::dev.size(units="px")[2], 0)),
       gp = grid::gpar(
-        fontsize = 20))
+        fontsize = 15))
 
   }
 }
