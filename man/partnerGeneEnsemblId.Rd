@@ -53,4 +53,3 @@ fusion <- fusions[[1]]
 partnerGeneEnsemblId(upstreamPartnerGene(fusion)) <- "test"
 
 }
-

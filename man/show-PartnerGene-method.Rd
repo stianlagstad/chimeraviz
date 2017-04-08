@@ -16,4 +16,3 @@ Shows information about a PartnerGene object.
 \description{
 Show method for the PartnerGene class.
 }
-

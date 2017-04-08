@@ -68,4 +68,3 @@ dev.off()
 \seealso{
 addFusionReadsAlignment
 }
-

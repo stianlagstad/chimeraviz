@@ -38,7 +38,7 @@ edb <- ensembldb::EnsDb(edbSqliteFile)
 allTranscripts <- ensembldb::exonsBy(
   edb,
   filter = list(
-    ensembldb::GeneidFilter(
+    AnnotationFilter::GeneIdFilter(
       list(
         partnerGeneEnsemblId(upstreamPartnerGene(fusion)),
         partnerGeneEnsemblId(downstreamPartnerGene(fusion))))),
@@ -60,4 +60,3 @@ decideTranscriptCategory(gr, fusion)
 # "withinIntron"
 
 }
-

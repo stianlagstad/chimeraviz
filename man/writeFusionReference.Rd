@@ -33,4 +33,3 @@ fastaFileOut <- tempfile(pattern = "fusionSequence", tmpdir = tempdir())
 writeFusionReference(fusion, fastaFileOut)
 
 }
-

@@ -18,4 +18,3 @@ A GRanges object with coverage data for the selection.
 This alternative import function for use with Gviz::AlignmentsTrack imports
 a bamfile with non-UCSC chromosome names.
 }
-

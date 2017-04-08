@@ -43,4 +43,3 @@ fusion <- getTranscriptsEnsembldb(fusion, edb)
 # fusion@geneB@transcripts .
 
 }
-

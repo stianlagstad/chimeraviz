@@ -32,4 +32,3 @@ dfFusion <- fusionToDataFrame(fusion)
 \seealso{
 createFusionReport
 }
-

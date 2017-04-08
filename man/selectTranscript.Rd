@@ -50,4 +50,3 @@ fusion <- getTranscriptsEnsembldb(fusion, edb)
 transcriptsA <- selectTranscript(upstreamPartnerGene(fusion))
 
 }
-

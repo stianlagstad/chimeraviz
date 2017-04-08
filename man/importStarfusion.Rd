@@ -31,4 +31,3 @@ fusions <- importStarfusion(starfusionData, "hg19", 3)
 # This should import a list of 3 fusions described in Fusion objects.
 
 }
-
