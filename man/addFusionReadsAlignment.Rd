@@ -39,4 +39,3 @@ bamfile5267 <- system.file(
 fusion <- addFusionReadsAlignment(fusion, bamfile5267)
 
 }
-

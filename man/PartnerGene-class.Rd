@@ -2,8 +2,8 @@
 % Please edit documentation in R/AllClasses.R
 \docType{class}
 \name{PartnerGene-class}
-\alias{PartnerGene}
 \alias{PartnerGene-class}
+\alias{PartnerGene}
 \title{An S4 class to represent a gene partner in a fusion}
 \description{
 The PartnerGene class represents one of the genes in a fusion event.

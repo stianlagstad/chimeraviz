@@ -28,4 +28,3 @@ length(getFusionByChromosome(fusions, "chr1"))
 # [1] 1
 
 }
-

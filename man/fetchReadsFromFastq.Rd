@@ -49,4 +49,3 @@ fetchReadsFromFastq(reads, fastq1, fastq2,
 }
 
 }
-

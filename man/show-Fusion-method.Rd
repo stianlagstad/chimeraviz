@@ -16,4 +16,3 @@ Shows information about a Fusion object.
 \description{
 Show method for the Fusion class.
 }
-

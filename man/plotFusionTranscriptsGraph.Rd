@@ -57,4 +57,3 @@ plotFusionTranscriptsGraph(
 dev.off()
 
 }
-

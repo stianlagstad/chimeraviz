@@ -31,4 +31,3 @@ fusion <- fusions[[1]]
 partnerGeneJunctionSequence(upstreamPartnerGene(fusion))
 
 }
-

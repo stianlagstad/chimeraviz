@@ -32,4 +32,3 @@ length(getFusionByGeneName(fusions, "RCC1"))
 # [1] 1
 
 }
-

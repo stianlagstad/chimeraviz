@@ -61,7 +61,8 @@ Depends:
     IRanges,
     Gviz,
     S4Vectors,
-    ensembldb
+    ensembldb,
+    AnnotationFilter
 Suggests:
     testthat,
     roxygen2,
@@ -69,7 +70,7 @@ Suggests:
     knitr
 SystemRequirements: bowtie, samtools, and egrep are required for some
     functionalities
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 VignetteBuilder: knitr
 biocViews: Infrastructure, Alignment
 Encoding: UTF-8

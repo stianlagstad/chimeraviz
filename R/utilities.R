@@ -252,7 +252,7 @@ getEnsemblIds <- function(fusion) {
 #' allTranscripts <- ensembldb::exonsBy(
 #'   edb,
 #'   filter = list(
-#'     ensembldb::GeneidFilter(
+#'     AnnotationFilter::GeneIdFilter(
 #'       list(
 #'         partnerGeneEnsemblId(upstreamPartnerGene(fusion)),
 #'         partnerGeneEnsemblId(downstreamPartnerGene(fusion))))),
@@ -389,7 +389,7 @@ splitOnUtrAndAddFeature <- function(gr) {
 #' allTranscripts <- ensembldb::exonsBy(
 #'   edb,
 #'   filter = list(
-#'     ensembldb::GeneidFilter(
+#'     AnnotationFilter::GeneIdFilter(
 #'       list(
 #'         partnerGeneEnsemblId(upstreamPartnerGene(fusion)),
 #'         partnerGeneEnsemblId(downstreamPartnerGene(fusion))))),
@@ -531,7 +531,8 @@ decideTranscriptCategory <- function(gr, fusion) {
 #' # fusion@geneB@transcripts .
 #'
 #' @importFrom S4Vectors mcols
-#' @importFrom ensembldb exonsBy GeneidFilter
+#' @importFrom ensembldb exonsBy
+#' @importFrom AnnotationFilter GeneIdFilter
 #'
 #' @export
 getTranscriptsEnsembldb <- function(fusion, edb) {
@@ -555,7 +556,7 @@ getTranscriptsEnsembldb <- function(fusion, edb) {
   allTranscripts <- ensembldb::exonsBy(
     edb,
     filter = list(
-      ensembldb::GeneidFilter(
+      AnnotationFilter::GeneIdFilter(
         list(
           fusion@geneA@ensemblId,
           fusion@geneB@ensemblId))),

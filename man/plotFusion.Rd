@@ -2,7 +2,9 @@
 % Please edit documentation in R/plotFusion.R
 \name{plotFusion}
 \alias{plotFusion}
+\alias{plotFusion}
 \alias{plotFusionSeparate}
+\alias{plotFusion}
 \alias{plotFusionTogether}
 \title{Plot a fusion event with transcripts, coverage and ideograms.}
 \usage{
@@ -89,4 +91,3 @@ plotFusion(
 dev.off()
 
 }
-
