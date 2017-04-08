@@ -69,4 +69,3 @@ plotFusionTranscript(
 dev.off()
 
 }
-

@@ -41,4 +41,3 @@ plotCircle(fusions)
 dev.off()
 
 }
-

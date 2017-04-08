@@ -42,4 +42,3 @@ partnerGeneEnsemblId(downstreamPartnerGene(fusion))
 # [1] "ENSG00000162639"
 
 }
-

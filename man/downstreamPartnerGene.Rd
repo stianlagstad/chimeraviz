@@ -53,4 +53,3 @@ fusion <- fusions[[1]]
 downstreamPartnerGene(fusion) <- upstreamPartnerGene(fusion)
 
 }
-

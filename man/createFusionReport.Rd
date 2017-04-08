@@ -37,4 +37,3 @@ outputFilename <- tempfile(
 createFusionReport(fusions, outputFilename)
 
 }
-

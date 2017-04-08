@@ -9,4 +9,3 @@
 chimeraviz manages data from fusion gene finders and provides useful
 visualization tools.
 }
-

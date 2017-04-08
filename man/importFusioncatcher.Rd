@@ -30,4 +30,3 @@ fusions <- importFusioncatcher(fusioncatcher833ke, "hg38", 3)
 # This should import a list of 3 fusions described in Fusion objects.
 
 }
-

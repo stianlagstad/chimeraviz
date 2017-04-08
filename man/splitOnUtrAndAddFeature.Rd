@@ -37,7 +37,7 @@ edb <- ensembldb::EnsDb(edbSqliteFile)
 allTranscripts <- ensembldb::exonsBy(
   edb,
   filter = list(
-    ensembldb::GeneidFilter(
+    AnnotationFilter::GeneIdFilter(
       list(
         partnerGeneEnsemblId(upstreamPartnerGene(fusion)),
         partnerGeneEnsemblId(downstreamPartnerGene(fusion))))),
@@ -62,4 +62,3 @@ length(gr)
 # range containing the cds_stop position has been split into separate ranges
 
 }
-

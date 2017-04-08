@@ -33,7 +33,7 @@ edb <- ensembldb::EnsDb(edbSqliteFile)
 allTranscripts <- ensembldb::exonsBy(
   edb,
   filter = list(
-    ensembldb::GeneidFilter(
+    AnnotationFilter::GeneIdFilter(
       list(
         fusion@geneA@ensemblId,
         fusion@geneB@ensemblId))),

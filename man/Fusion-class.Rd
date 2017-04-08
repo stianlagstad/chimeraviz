@@ -2,8 +2,8 @@
 % Please edit documentation in R/AllClasses.R
 \docType{class}
 \name{Fusion-class}
-\alias{Fusion}
 \alias{Fusion-class}
+\alias{Fusion}
 \title{An S4 class to represent a fusion event.}
 \description{
 The Fusion class represents a fusion event, holding data imported from a
