@@ -22,13 +22,52 @@
 #' @return Creates a fusion transcript plot with annotations of protein domains.
 #'
 #' @examples
-#'
+#' # Load data and example fusion event
+#' defuse833ke <- system.file(
+#'   "extdata",
+#'   "defuse_833ke_results.filtered.tsv",
+#'   package="chimeraviz")
+#' fusions <- importDefuse(defuse833ke, "hg19", 1)
+#' fusion <- getFusionById(fusions, 5267)
+#' # Select transcripts
+#' geneAtranscript <- "ENST00000434290"
+#' geneBtranscript <- "ENST00000370031"
+#' # Load edb
+#' edbSqliteFile <- system.file(
+#'   "extdata",
+#'   "Homo_sapiens.GRCh37.74.sqlite",
+#'   package="chimeraviz")
+#' edb <- ensembldb::EnsDb(edbSqliteFile)
+#' # bamfile with reads in the regions of this fusion event
+#' bamfile5267 <- system.file(
+#'   "extdata",
+#'   "fusion5267and11759reads.bam",
+#'   package="chimeraviz")
+#' # bedfile with protein domains for the transcripts in this example
+#' bedfile <- system.file(
+#'   "extdata",
+#'   "protein_domains_5267.bed",
+#'   package="chimeraviz")
+#' # Temporary file to store the plot
+#' pngFilename <- tempfile(
+#'   pattern = "fusionPlot",
+#'   fileext = ".png",
+#'   tmpdir = tempdir())
+#' # Open device
+#' png(pngFilename, width = 500, height = 500)
+#' # Plot!
+#' plotFusionTranscriptWithProteinDomain(
+#'   fusion = fusion,
+#'   edb = edb,
+#'   bamfile = bamfile5267,
+#'   bedfile = bedfile,
+#'   geneAtranscript = geneAtranscript,
+#'   geneBtranscript = geneBtranscript,
+#'   plotDownstreamProteinDomainsIfFusionIsOutOfFrame = TRUE)
+#' # Close device
+#' dev.off()
 #'
 #' @export
-#'
-#' todo: include the file Sen sent (protein domain file) with chimeraviz? if so then add it to inst/extdata/ and to the documentation at R/extdata.R. only with a bed file included with the package can you create tests and examples
-#' todo: test
-#' todo: example
 #'
 plotFusionTranscriptWithProteinDomain <- function(
   fusion,
@@ -66,10 +105,10 @@ plotFusionTranscriptWithProteinDomain <- function(
     bamfile)
   # Validate that the transcript ids are found in the edb
   if (length(fusion@geneA@transcripts[names(fusion@geneA@transcripts) == geneAtranscript]) == 0) {
-    stop(past0(geneAtranscript, " was not found in among the transcripts for the upstream gene partner."))
+    stop(paste0(geneAtranscript, " was not found in among the transcripts for the upstream gene partner."))
   }
   if (length(fusion@geneB@transcripts[names(fusion@geneB@transcripts) == geneBtranscript]) == 0) {
-    stop(past0(geneBtranscript, " was not found in among the transcripts for the downstream gene partner."))
+    stop(paste0(geneBtranscript, " was not found in among the transcripts for the downstream gene partner."))
   }
   # Extract the transcripts
   transcriptA <- unlist(fusion@geneA@transcripts[names(fusion@geneA@transcripts) == geneAtranscript])
@@ -258,7 +297,7 @@ plotFusionTranscriptWithProteinDomain <- function(
       proteinDataGeneA[i,]$protein_domain_location <- "outside"
     }
   }
-  if (nrow(dplyr::filter(proteinDataGeneA, protein_domain_location == "inside")) == 0) {
+  if (nrow(dplyr::filter(proteinDataGeneA, "protein_domain_location" == "inside")) == 0) {
     message("No protein domains are retained in the upstream gene.")
   }
   # b)
@@ -293,7 +332,7 @@ plotFusionTranscriptWithProteinDomain <- function(
         proteinDataGeneB[i,]$protein_domain_location <- "outside"
       }
     }
-    if (nrow(dplyr::filter(proteinDataGeneB, protein_domain_location == "inside")) == 0) {
+    if (nrow(dplyr::filter(proteinDataGeneB, "protein_domain_location" == "inside")) == 0) {
       message("No protein domains are retained in the downstream gene.")
     }
   } else {
@@ -430,9 +469,9 @@ plotFusionTranscriptWithProteinDomain <- function(
   )
 
   # What are the start and end positions of the protein domain annotations?
-  protein_domain_annotations_start <- c(dplyr::filter(proteinDataGeneA, protein_domain_location == "inside")$plot_start, dplyr::filter(proteinDataGeneB, protein_domain_location == "inside")$plot_start)
-  protein_domain_annotations_end <- c(dplyr::filter(proteinDataGeneA, protein_domain_location == "inside")$plot_start, dplyr::filter(proteinDataGeneB, protein_domain_location == "inside")$plot_end)
-  protein_domain_annotations_names <- c(dplyr::filter(proteinDataGeneA, protein_domain_location == "inside")$plot_start, dplyr::filter(proteinDataGeneB, protein_domain_location == "inside")$Domain_name_abbreviation)
+  protein_domain_annotations_start <- c(dplyr::filter(proteinDataGeneA, "protein_domain_location" == "inside")$plot_start, dplyr::filter(proteinDataGeneB, "protein_domain_location" == "inside")$plot_start)
+  protein_domain_annotations_end <- c(dplyr::filter(proteinDataGeneA, "protein_domain_location" == "inside")$plot_start, dplyr::filter(proteinDataGeneB, "protein_domain_location" == "inside")$plot_end)
+  protein_domain_annotations_names <- c(dplyr::filter(proteinDataGeneA, "protein_domain_location" == "inside")$plot_start, dplyr::filter(proteinDataGeneB, "protein_domain_location" == "inside")$Domain_name_abbreviation)
   # Create protein domain track
   annotationTrack <- Gviz::AnnotationTrack(
     start = protein_domain_annotations_start,

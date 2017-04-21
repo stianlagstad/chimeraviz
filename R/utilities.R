@@ -954,12 +954,8 @@ selectTranscript <- function(
 # Check that the transcripts have a breakpoint exon
 .checkThatTranscriptsHaveBreakpointExons <- function(
   fusion,
-  transcriptsA,
-  transcriptsB) {
-
-  # Extract the transcripts
-  transcriptA <- unlist(fusion@geneA@transcripts[names(fusion@geneA@transcripts) == geneAtranscript])
-  transcriptB <- unlist(fusion@geneB@transcripts[names(fusion@geneB@transcripts) == geneBtranscript])
+  transcriptA,
+  transcriptB) {
 
   if (fusion@geneA@strand == "+") {
     if (length(transcriptA[end(ranges(transcriptA)) == fusion@geneA@breakpoint]) == 0) {
@@ -1011,7 +1007,7 @@ selectTranscript <- function(
 downShift <- function(transcript) {
 
   # Check if we got a GRanges object
-  if (class(transcript) != "GRanges") {
+  if (!class(transcript) %in% c("GRanges", "IRanges")) {
     stop("transcript argument must be an object of type GRanges")
   }
 
