@@ -25,6 +25,8 @@
 #' "chr1" and "chrX".
 #' @param reduceTranscripts Boolean indicating whether or not to reduce all
 #' transcripts into a single transcript for each partner gene.
+#' @param bedgraphfile A bedGraph file to use instead of the bamfile to plot
+#' coverage.
 #'
 #' @return Creates a fusion plot.
 #'
@@ -71,9 +73,12 @@ plotFusion <- function(
   whichTranscripts = "exonBoundary",
   ylim = c(0, 1000),
   nonUCSC = TRUE,
-  reduceTranscripts = FALSE) {
+  reduceTranscripts = FALSE,
+  bedgraphfile = "") {
 
-  fusion <- .validateFusionPlotParams(fusion, edb, bamfile, whichTranscripts)
+  # fusion <- .validateFusionPlotParams(fusion, edb, bamfile, whichTranscripts)
+  fusion <- getTranscriptsEnsembldb(fusion, edb)
+  # todo: validate either bamfile or bedgraphfile?
 
   # Decide whether or not to plot the fusion on the same x-axis
   if (fusion@geneA@chromosome == fusion@geneB@chromosome) {
@@ -87,7 +92,8 @@ plotFusion <- function(
         whichTranscripts = whichTranscripts,
         ylim = ylim,
         nonUCSC = nonUCSC,
-        reduceTranscripts = reduceTranscripts)
+        reduceTranscripts = reduceTranscripts,
+        bedgraphfile = bedgraphfile)
     } else if (abs(fusion@geneA@breakpoint - fusion@geneB@breakpoint) > 50000) {
       message("..but too far apart. Plot separate!")
       plotFusionSeparate(
@@ -97,7 +103,8 @@ plotFusion <- function(
         whichTranscripts = whichTranscripts,
         ylim = ylim,
         nonUCSC = nonUCSC,
-        reduceTranscripts = reduceTranscripts)
+        reduceTranscripts = reduceTranscripts,
+        bedgraphfile = bedgraphfile)
     } else {
       message("..and close together..")
       # If both genes are on the minus strand, and the location of geneA is to
@@ -116,7 +123,8 @@ plotFusion <- function(
           whichTranscripts = whichTranscripts,
           ylim = ylim,
           nonUCSC = nonUCSC,
-          reduceTranscripts = reduceTranscripts)
+          reduceTranscripts = reduceTranscripts,
+          bedgraphfile = bedgraphfile)
       } else {
         message("Plot together!")
         plotFusionTogether(
@@ -126,7 +134,8 @@ plotFusion <- function(
           whichTranscripts = whichTranscripts,
           ylim = ylim,
           nonUCSC = nonUCSC,
-          reduceTranscripts = reduceTranscripts)
+          reduceTranscripts = reduceTranscripts,
+          bedgraphfile = bedgraphfile)
       }
     }
   } else {
@@ -138,7 +147,8 @@ plotFusion <- function(
       whichTranscripts = whichTranscripts,
       ylim = ylim,
       nonUCSC = nonUCSC,
-      reduceTranscripts = reduceTranscripts)
+      reduceTranscripts = reduceTranscripts,
+      bedgraphfile = bedgraphfile)
   }
 }
 
@@ -152,9 +162,11 @@ plotFusionSeparate <- function(
   whichTranscripts = "exonBoundary",
   ylim = c(0, 1000),
   nonUCSC = TRUE,
-  reduceTranscripts = FALSE) {
+  reduceTranscripts = FALSE,
+  bedgraphfile = "") {
 
-  fusion <- .validateFusionPlotParams(fusion, edb, bamfile, whichTranscripts)
+  # fusion <- .validateFusionPlotParams(fusion, edb, bamfile, whichTranscripts)
+  fusion <- getTranscriptsEnsembldb(fusion, edb)
 
   # Create tracks
 
@@ -263,41 +275,71 @@ plotFusionSeparate <- function(
   Gviz::displayPars(idTrackB) <- ideogramDisplayParams
 
   # Create alignment track
-  if (nonUCSC) {
-    # If the bam file has non-ucsc chromosome names, i.e. "1" instead of "chr1",
-    # then we need to use a custom import function that adds "chr" to the
-    # chromosome names, to keep Gviz happy. Gviz strongly prefers having the
-    # "chr" prefix.
-    alTrack <- Gviz::AlignmentsTrack(
-      bamfile,
-      isPaired = TRUE,
-      genome = fusion@genomeVersion,
-      name = "RNA coverage",
-      ylim = ylim,
-      importFunction = importFunctionNonUCSC)
+  if (FALSE) { # todo: if bamfile is set and bedgraphfile isn't
+    if (nonUCSC) {
+      # If the bam file has non-ucsc chromosome names, i.e. "1" instead of "chr1",
+      # then we need to use a custom import function that adds "chr" to the
+      # chromosome names, to keep Gviz happy. Gviz strongly prefers having the
+      # "chr" prefix.
+      alTrack <- Gviz::AlignmentsTrack(
+        bamfile,
+        isPaired = TRUE,
+        genome = fusion@genomeVersion,
+        name = "RNA coverage",
+        ylim = ylim,
+        importFunction = importFunctionNonUCSC)
+    } else {
+      alTrack <- Gviz::AlignmentsTrack(
+        bamfile,
+        isPaired = TRUE,
+        genome = fusion@genomeVersion,
+        name = "RNA coverage",
+        ylim = ylim)
+    }
+    # Set display paramters
+    Gviz::displayPars(alTrack) <- list(
+      showTitle = FALSE, # hide name of track
+      background.panel = "transparent", # background color of the content panel
+      background.title = "transparent", # background color for the title panels
+      col.axis = "black",
+      col.coverage = "black",
+      col.title = "black",
+      fill.coverage = "orange",
+      fontsize = 15,
+      lwd.coverage = 0.4,
+      type = "coverage",
+      cex.title = .8,
+      cex.axis = .6
+    )
   } else {
-    alTrack <- Gviz::AlignmentsTrack(
-      bamfile,
-      isPaired = TRUE,
-      genome = fusion@genomeVersion,
-      name = "RNA coverage",
-      ylim = ylim)
+    # bedgraphfile will be used instead
+    alTrack <- DataTrack(
+      range = bedGraphfile,
+      ylim = ylim,
+      genome = "hg19",
+      chromosome = "1",
+      name = "Coverage",
+      type = "h",
+      col = 'orange',
+      fill = 'orange')
+    # Set display parameters
+    Gviz::displayPars(alTrack) <- list(
+      showTitle = FALSE, # hide name of track
+      background.panel = "transparent", # background color of the content panel
+      background.title = "transparent", # background color for the title panels
+      cex.axis = .6,
+      cex.title = .6,
+      col.axis = "black",
+      col.coverage = "black",
+      col.title = "black",
+      coverageHeight = 0.08,
+      fill.coverage = "orange",
+      fontsize = 15,
+      lty = 1,
+      lty.coverage = 1,
+      lwd = 0.5
+    )
   }
-  # Set display paramters
-  Gviz::displayPars(alTrack) <- list(
-    showTitle = FALSE, # hide name of track
-    background.panel = "transparent", # background color of the content panel
-    background.title = "transparent", # background color for the title panels
-    col.axis = "black",
-    col.coverage = "black",
-    col.title = "black",
-    fill.coverage = "orange",
-    fontsize = 15,
-    lwd.coverage = 0.4,
-    type = "coverage",
-    cex.title = .8,
-    cex.axis = .6
-  )
 
   # Display parameters for highlight tracks
   displayParsHighlightTracks <- list(
@@ -665,9 +707,11 @@ plotFusionTogether <- function(
   whichTranscripts = "exonBoundary",
   ylim = c(0, 1000),
   nonUCSC = TRUE,
-  reduceTranscripts = FALSE) {
+  reduceTranscripts = FALSE,
+  bedgraphfile = "") {
 
-  fusion <- .validateFusionPlotParams(fusion, edb, bamfile, whichTranscripts)
+  # fusion <- .validateFusionPlotParams(fusion, edb, bamfile, whichTranscripts)
+  fusion <- getTranscriptsEnsembldb(fusion, edb)
 
   # Create tracks
 
