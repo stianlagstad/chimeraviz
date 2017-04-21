@@ -1,0 +1,5 @@
+Transcript_id	Pfam_id	Start	End	Domain_name_abbreviation	Domain_name_full
+ENST00000434290	PF00415	529	678	RCC1	Regulator of chromosome condensation (RCC1) repeat
+ENST00000434290	PF00415	379	522	RCC1	Regulator of chromosome condensation (RCC1) repeat
+ENST00000434290	PF00415	928	1056	RCC1	Regulator of chromosome condensation (RCC1) repeat
+ENST00000370031	PF13489	289	753	Methyltransf_23	Methyltransferase domain
