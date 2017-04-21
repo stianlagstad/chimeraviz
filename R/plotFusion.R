@@ -1,3 +1,33 @@
+# Use this command to create the bedgraphfile:
+# `bedtools genomecov -ibam chimeraviz-github/inst/extdata/fusion5267and11759reads.bam -bg > test.bed`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #' Plot a fusion event with transcripts, coverage and ideograms.
 #'
 #' This function creates a plot with information about transcripts, coverage,
