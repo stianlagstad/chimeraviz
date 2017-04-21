@@ -182,7 +182,7 @@ This will create a fasta file with the sequence.
 
 The goal in this step is to align the reads you have against the fusion junction sequence. There are many ways to do this. `cimeraviz` offers wrapper functions for both Bowtie and Rsubread:
 
-* Bowtie is an ultrafast and memory-efficient tool for aligning sequencing reads to reference sequences (read more [here](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml))
+* Bowtie is an ultrafast and memory-efficient tool for aligning sequencing reads to reference sequences (read more [here](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)). Note that both Bowtie 1 and 2 can be used.
 * Rsubread is an R package that performs (among other things) read alignment (read more [here](https://bioconductor.org/packages/release/bioc/html/Rsubread.html)).
 
 We have to first create an index for our reference sequence, the fusion junction sequence. Then we will align the reads against the reference. The steps are similar for both Bowtie and Rsubread:
@@ -219,7 +219,7 @@ Note that you can use the parameter `p` with `bowtieAlign` to tell bowtie how ma
 # First load the rsubread functions
 source(system.file(
   "scripts",
-  "bowtie.R",
+  "rsubread.R",
   package="chimeraviz"))
 # Then create index
 rsubreadIndex(referenceFasta = referenceFilename)
