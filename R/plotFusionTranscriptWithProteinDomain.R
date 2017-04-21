@@ -305,9 +305,11 @@ plotFusionTranscriptWithProteinDomain <- function(
     # We only consider downstream protein domains if the reading frame is kept
     # in the fusion, or if the user specifically asks for it.
     if (!fusion@inframe && plotDownstreamProteinDomainsIfFusionIsOutOfFrame) {
-      message(paste0("The fusion is out of frame, but since ",
+      message(paste0("No protein domains are retained in the downstream gene, ",
+                     "because the fusion is not in frame. But since ",
                      "plotDownstreamProteinDomainsIfFusionIsOutOfFrame = TRUE,",
-                     " we'll consider them anyway.."))
+                     " we'll plot the protein domains in the downstream gene ",
+                     "anyway.."))
     }
     for (i in 1:nrow(proteinDataGeneB)) {
       if (proteinDataGeneB[i,]$Start >= min(start(exons_part_of_fusion_downshifted_b)) & proteinDataGeneB[i,]$End <= max(end(exons_part_of_fusion_downshifted_b))) {
