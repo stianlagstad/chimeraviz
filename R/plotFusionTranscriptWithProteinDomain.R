@@ -484,11 +484,12 @@ plotFusionTranscriptWithProteinDomain <- function(
     background.panel = "transparent", # background color of the content panel
     background.title = "transparent", # background color for the title panels
     col.title = "black",
-    showTitle = TRUE, # hide left panel
+    showTitle = FALSE, # show title
     showId = FALSE, # show ids
-    col = "lightgray", # border ??
+    col = "lightgray", # border color
     showTitle = FALSE, # hide left title
-    featureAnnotation = "id"
+    featureAnnotation = "id",
+    fontcolor.feature = "black"
   )
 
   # If we've got a bamfile, plot with coverage
