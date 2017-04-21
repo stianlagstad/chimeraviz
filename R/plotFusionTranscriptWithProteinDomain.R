@@ -297,7 +297,7 @@ plotFusionTranscriptWithProteinDomain <- function(
       proteinDataGeneA[i,]$protein_domain_location <- "outside"
     }
   }
-  if (nrow(dplyr::filter(proteinDataGeneA, "protein_domain_location" == "inside")) == 0) {
+  if (nrow(dplyr::filter(proteinDataGeneA, protein_domain_location == "inside")) == 0) {
     message("No protein domains are retained in the upstream gene.")
   }
   # b)
@@ -332,7 +332,7 @@ plotFusionTranscriptWithProteinDomain <- function(
         proteinDataGeneB[i,]$protein_domain_location <- "outside"
       }
     }
-    if (nrow(dplyr::filter(proteinDataGeneB, "protein_domain_location" == "inside")) == 0) {
+    if (nrow(dplyr::filter(proteinDataGeneB, protein_domain_location == "inside")) == 0) {
       message("No protein domains are retained in the downstream gene.")
     }
   } else {
@@ -469,9 +469,9 @@ plotFusionTranscriptWithProteinDomain <- function(
   )
 
   # What are the start and end positions of the protein domain annotations?
-  protein_domain_annotations_start <- c(dplyr::filter(proteinDataGeneA, "protein_domain_location" == "inside")$plot_start, dplyr::filter(proteinDataGeneB, "protein_domain_location" == "inside")$plot_start)
-  protein_domain_annotations_end <- c(dplyr::filter(proteinDataGeneA, "protein_domain_location" == "inside")$plot_start, dplyr::filter(proteinDataGeneB, "protein_domain_location" == "inside")$plot_end)
-  protein_domain_annotations_names <- c(dplyr::filter(proteinDataGeneA, "protein_domain_location" == "inside")$plot_start, dplyr::filter(proteinDataGeneB, "protein_domain_location" == "inside")$Domain_name_abbreviation)
+  protein_domain_annotations_start <- c(dplyr::filter(proteinDataGeneA, protein_domain_location == "inside")$plot_start, dplyr::filter(proteinDataGeneB, protein_domain_location == "inside")$plot_start)
+  protein_domain_annotations_end <- c(dplyr::filter(proteinDataGeneA, protein_domain_location == "inside")$plot_start, dplyr::filter(proteinDataGeneB, protein_domain_location == "inside")$plot_end)
+  protein_domain_annotations_names <- c(dplyr::filter(proteinDataGeneA, protein_domain_location == "inside")$plot_start, dplyr::filter(proteinDataGeneB, protein_domain_location == "inside")$Domain_name_abbreviation)
   # Create protein domain track
   annotationTrack <- Gviz::AnnotationTrack(
     start = protein_domain_annotations_start,
