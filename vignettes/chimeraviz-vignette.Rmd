@@ -193,7 +193,7 @@ We have to first create an index for our reference sequence, the fusion junction
 # First load the bowtie functions
 source(system.file(
   "scripts",
-  "bowtie",
+  "bowtie.R",
   package="chimeraviz"))
 # Then create index
 bowtieIndex(
@@ -219,7 +219,7 @@ Note that you can use the parameter `p` with `bowtieAlign` to tell bowtie how ma
 # First load the rsubread functions
 source(system.file(
   "scripts",
-  "bowtie",
+  "bowtie.R",
   package="chimeraviz"))
 # Then create index
 rsubreadIndex(referenceFasta = referenceFilename)
