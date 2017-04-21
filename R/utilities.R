@@ -939,14 +939,90 @@ selectTranscript <- function(
   transcriptsB) {
   if (!any(start(transcriptsA) < fusion@geneA@breakpoint) &&
       any(fusion@geneA@breakpoint < end(transcriptsA))) {
-    stop(paste(
+    stop(paste0(
       "None of the transcripts given for gene A has the fusion breakpoint ",
       "within them. This plot cannot be created with the given transcripts."))
   }
   if (!any(start(transcriptsB) < fusion@geneB@breakpoint) &&
       any(fusion@geneB@breakpoint < end(transcriptsB))) {
-    stop(paste(
+    stop(paste0(
       "None of the transcripts given for gene B has the fusion breakpoint ",
       "within them. This plot cannot be created with the given transcripts."))
   }
+}
+
+# Check that the transcripts have a breakpoint exon
+.checkThatTranscriptsHaveBreakpointExons <- function(
+  fusion,
+  transcriptsA,
+  transcriptsB) {
+
+  # Extract the transcripts
+  transcriptA <- unlist(fusion@geneA@transcripts[names(fusion@geneA@transcripts) == geneAtranscript])
+  transcriptB <- unlist(fusion@geneB@transcripts[names(fusion@geneB@transcripts) == geneBtranscript])
+
+  if (fusion@geneA@strand == "+") {
+    if (length(transcriptA[end(ranges(transcriptA)) == fusion@geneA@breakpoint]) == 0) {
+      stop(paste(
+        "The transcript for gene A doesn't have an exon boundary matching the",
+        "fusion breakpoint. The plot cannot be created."))
+    }
+  } else {
+    if (length(transcriptA[start(ranges(transcriptA)) == fusion@geneA@breakpoint]) == 0) {
+      stop(paste(
+        "The transcript for gene A doesn't have an exon boundary matching the",
+        "fusion breakpoint. The plot cannot be created."))
+    }
+  }
+  if (fusion@geneB@strand == "+") {
+    if (length(transcriptB[start(ranges(transcriptB)) == fusion@geneB@breakpoint]) == 0) {
+      stop(paste(
+        "The transcript for gene B doesn't have an exon boundary matching the",
+        "fusion breakpoint. The plot cannot be created."))
+    }
+  } else {
+    if (length(transcriptB[end(ranges(transcriptB)) == fusion@geneB@breakpoint]) == 0) {
+      stop(paste(
+        "The transcript for gene B doesn't have an exon boundary matching the",
+        "fusion breakpoint. The plot cannot be created."))
+    }
+  }
+}
+
+#' Remove introns and shift exons leftward
+#'
+#' This function takes a GRanges object and moves each IRanges object within
+#' next to each other starting at 1. This effectively removes the introns from
+#' the GRanges object.
+#'
+#' @param transcript The GRanges object to remove introns from.
+#'
+#' @return A GRanges object with introns removed.
+#'
+#' @examples
+#' # Create a simple GRanges object:
+#' gr <- IRanges::IRanges(
+#'   start = c(13, 40, 100),
+#'   end = c(20, 53, 110))
+#' # Downshift it and see the introns are removed:
+#' downShift(gr)
+#'
+#' @export
+downShift <- function(transcript) {
+
+  # Check if we got a GRanges object
+  if (class(transcript) != "GRanges") {
+    stop("transcript argument must be an object of type GRanges")
+  }
+
+  for (i in 1:length(transcript)) {
+    if (i == 1) {
+      transcript[i] <- IRanges::shift(transcript[i], shift = 1-start(transcript[i]))
+    } else {
+      shiftDownBy <- -(start(transcript[i])-end(transcript[i-1]))+1
+      transcript[i] <- IRanges::shift(transcript[i], shift = shiftDownBy)
+    }
+  }
+
+  transcript
 }
