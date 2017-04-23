@@ -5,7 +5,7 @@
 \title{Plot possible fusion transcripts based on annotation.}
 \usage{
 plotFusionTranscript(fusion, edb = NULL, bamfile = NULL,
-  whichTranscripts = "exonBoundary")
+  whichTranscripts = "exonBoundary", bedgraphfile = NULL)
 }
 \arguments{
 \item{fusion}{The Fusion object to plot.}
@@ -18,6 +18,9 @@ plotFusionTranscript(fusion, edb = NULL, bamfile = NULL,
 to be plotted. Can be "exonBoundary", "withinExon", "withinIntron",
 "intergenic", or a character vector with specific transcript ids. Default
 value is "exonBoundary".}
+
+\item{bedgraphfile}{A bedGraph file to use instead of the bamfile to plot
+coverage.}
 }
 \value{
 Creates a fusion transcript plot.
@@ -52,6 +55,40 @@ edb <- ensembldb::EnsDb(edbSqliteFile)
 bamfile5267 <- system.file(
   "extdata",
   "fusion5267and11759reads.bam",
+  package="chimeraviz")
+# Temporary file to store the plot
+pngFilename <- tempfile(
+  pattern = "fusionPlot",
+  fileext = ".png",
+  tmpdir = tempdir())
+# Open device
+png(pngFilename, width = 500, height = 500)
+# Plot!
+plotFusionTranscript(
+  fusion = fusion,
+  bamfile = bamfile5267,
+  edb = edb)
+# Close device
+dev.off()
+
+# Example using a .bedGraph file instead of a .bam file:
+# Load data and example fusion event
+defuse833ke <- system.file(
+  "extdata",
+  "defuse_833ke_results.filtered.tsv",
+  package="chimeraviz")
+fusions <- importDefuse(defuse833ke, "hg19", 1)
+fusion <- getFusionById(fusions, 5267)
+# Load edb
+edbSqliteFile <- system.file(
+  "extdata",
+  "Homo_sapiens.GRCh37.74.sqlite",
+  package="chimeraviz")
+edb <- ensembldb::EnsDb(edbSqliteFile)
+# bedgraphfile with coverage data from the regions of this fusion event
+bedgraphfile <- system.file(
+  "extdata",
+  "fusion5267and11759reads.bedGraph",
   package="chimeraviz")
 # Temporary file to store the plot
 pngFilename <- tempfile(

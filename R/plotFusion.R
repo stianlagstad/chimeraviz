@@ -327,8 +327,7 @@ plotFusionSeparate <- function(
   Gviz::displayPars(idTrackB) <- ideogramDisplayParams
 
   # Create alignment track
-  bamfileGiven <- !is.null(bamfile)
-  if (bamfileGiven) {
+  if (!is.null(bamfile)) {
     # We're getting coverage data from a bam file
     if (nonUCSC) {
       # If the bam file has non-ucsc chromosome names, i.e. "1" instead of "chr1",
@@ -371,7 +370,6 @@ plotFusionSeparate <- function(
       range = bedgraphfile,
       ylim = ylim,
       genome = "hg19",
-      chromosome = "1",
       name = "Coverage",
       type = "h",
       col = 'orange',
@@ -871,8 +869,7 @@ plotFusionTogether <- function(
   Gviz::displayPars(idTrack) <- ideogramDisplayParams
 
   # Create alignment track
-  bamfileGiven <- !is.null(bamfile)
-  if (bamfileGiven) {
+  if (!is.null(bamfile)) {
     # We're getting coverage data from a bam file
     if (nonUCSC) {
       # If the bam file has non-ucsc chromosome names, i.e. "1" instead of "chr1",
