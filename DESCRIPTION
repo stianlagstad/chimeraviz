@@ -54,7 +54,8 @@ Imports:
     Rgraphviz,
     DT,
     plyr,
-    BiocStyle
+    BiocStyle,
+    ArgumentCheck
 Depends:
     Biostrings,
     GenomicRanges,
