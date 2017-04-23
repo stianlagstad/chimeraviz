@@ -8,14 +8,17 @@
 \alias{plotFusionTogether}
 \title{Plot a fusion event with transcripts, coverage and ideograms.}
 \usage{
-plotFusion(fusion, edb = NULL, bamfile, whichTranscripts = "exonBoundary",
-  ylim = c(0, 1000), nonUCSC = TRUE, reduceTranscripts = FALSE)
+plotFusion(fusion, edb = NULL, bamfile = NULL,
+  whichTranscripts = "exonBoundary", ylim = c(0, 1000), nonUCSC = TRUE,
+  reduceTranscripts = FALSE, bedgraphfile = NULL)
 
-plotFusionSeparate(fusion, edb, bamfile, whichTranscripts = "exonBoundary",
-  ylim = c(0, 1000), nonUCSC = TRUE, reduceTranscripts = FALSE)
+plotFusionSeparate(fusion, edb, bamfile = NULL,
+  whichTranscripts = "exonBoundary", ylim = c(0, 1000), nonUCSC = TRUE,
+  reduceTranscripts = FALSE, bedgraphfile = NULL)
 
-plotFusionTogether(fusion, edb, bamfile, whichTranscripts = "exonBoundary",
-  ylim = c(0, 1000), nonUCSC = TRUE, reduceTranscripts = FALSE)
+plotFusionTogether(fusion, edb, bamfile = NULL,
+  whichTranscripts = "exonBoundary", ylim = c(0, 1000), nonUCSC = TRUE,
+  reduceTranscripts = FALSE, bedgraphfile = NULL)
 }
 \arguments{
 \item{fusion}{The Fusion object to plot.}
@@ -38,6 +41,9 @@ lets you use a bamfile with chromosome names like "1" and "X", instead of
 
 \item{reduceTranscripts}{Boolean indicating whether or not to reduce all
 transcripts into a single transcript for each partner gene.}
+
+\item{bedgraphfile}{A bedGraph file to use instead of the bamfile to plot
+coverage.}
 }
 \value{
 Creates a fusion plot.
@@ -85,6 +91,41 @@ png(pngFilename, width = 1000, height = 750)
 plotFusion(
   fusion = fusion,
   bamfile = bamfile5267,
+  edb = edb,
+  nonUCSC = TRUE)
+# Close device
+dev.off()
+
+# Example using a .bedGraph file instead of a .bam file:
+# Load data and example fusion event
+defuse833ke <- system.file(
+  "extdata",
+  "defuse_833ke_results.filtered.tsv",
+  package="chimeraviz")
+fusions <- importDefuse(defuse833ke, "hg19", 1)
+fusion <- getFusionById(fusions, 5267)
+# Load edb
+edbSqliteFile <- system.file(
+  "extdata",
+  "Homo_sapiens.GRCh37.74.sqlite",
+  package="chimeraviz")
+edb <- ensembldb::EnsDb(edbSqliteFile)
+# bedgraphfile with coverage data from the regions of this fusion event
+bedgraphfile <- system.file(
+  "extdata",
+  "fusion5267and11759reads.bedGraph",
+  package="chimeraviz")
+# Temporary file to store the plot
+pngFilename <- tempfile(
+  pattern = "fusionPlot",
+  fileext = ".png",
+  tmpdir = tempdir())
+# Open device
+png(pngFilename, width = 1000, height = 750)
+# Plot!
+plotFusion(
+  fusion = fusion,
+  bedgraphfile = bedgraphfile,
   edb = edb,
   nonUCSC = TRUE)
 # Close device

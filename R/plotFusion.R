@@ -80,7 +80,7 @@
 #'   package="chimeraviz")
 #' edb <- ensembldb::EnsDb(edbSqliteFile)
 #' # bedgraphfile with coverage data from the regions of this fusion event
-#' bedGraphfile <- system.file(
+#' bedgraphfile <- system.file(
 #'   "extdata",
 #'   "fusion5267and11759reads.bedGraph",
 #'   package="chimeraviz")
@@ -94,7 +94,7 @@
 #' # Plot!
 #' plotFusion(
 #'   fusion = fusion,
-#'   bedgraphfile = bedGraphfile,
+#'   bedgraphfile = bedgraphfile,
 #'   edb = edb,
 #'   nonUCSC = TRUE)
 #' # Close device
@@ -368,7 +368,7 @@ plotFusionSeparate <- function(
   } else {
     # We're getting coverage data from a bedGraph file
     alTrack <- DataTrack(
-      range = bedGraphfile,
+      range = bedgraphfile,
       ylim = ylim,
       genome = "hg19",
       chromosome = "1",
@@ -912,7 +912,7 @@ plotFusionTogether <- function(
   } else {
     # We're getting coverage data from a bedGraph file
     alTrack <- DataTrack(
-      range = bedGraphfile,
+      range = bedgraphfile,
       ylim = ylim,
       genome = "hg19",
       chromosome = "1",
