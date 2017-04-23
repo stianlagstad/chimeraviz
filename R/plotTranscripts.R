@@ -451,7 +451,7 @@ plotTranscripts <- function(
 
       Gviz::plotTracks(
         collapse = FALSE, # without this gviz create cluster_X entries in the GeneRegionTrack
-        list(grTrackHighlightB, alTrack),
+        list(grTrackHighlightB, alTrackHighlightB),
         sizes = c(5, 2),
         add = TRUE,
         margin = 3,
