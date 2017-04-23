@@ -55,22 +55,12 @@
 #' dev.off()
 #'
 #' @export
-plotFusionReads <- function(fusion, showAllNucleotides = TRUE, nucleotideAmount = 10) {
+plotFusionReads <- function(
+  fusion,
+  showAllNucleotides = TRUE,
+  nucleotideAmount = 10) {
 
-  # Check if we got a fusion object
-  if (class(fusion) != "Fusion") {
-    stop("fusion argument must be an object of type Fusion")
-  }
-
-  # Check if the Gviz::AlignmentsTrack object in
-  # fusion@fusionReadsAlignment actually holds data, and is not just the empty
-  # object it is after loading the initial fusion data. In other words, make
-  # sure addFusionReadsAlignment() has been run.
-  if (class(fusion@fusionReadsAlignment) != "ReferenceAlignmentsTrack") {
-    stop(paste("fusion@fusionReadsAlignment should hold a",
-               "Gviz::ReferenceAlignmentsTrack object.",
-               "See addFusionReadsAlignment()."))
-  }
+  .validatePlotFusionReadsParams(fusion, showAllNucleotides, nucleotideAmount)
 
   # Create Biostrings::DNAStringSet of fusion sequence
   fusionSequence <- Biostrings::DNAStringSet(
@@ -244,4 +234,38 @@ plotFusionReads <- function(fusion, showAllNucleotides = TRUE, nucleotideAmount 
     grid::popViewport(1)
   }
 
+}
+
+.validatePlotFusionReadsParams <- function(
+  fusion,
+  showAllNucleotides,
+  nucleotideAmount
+) {
+  # Establish a new 'ArgCheck' object
+  argument_checker <- ArgumentCheck::newArgCheck()
+
+  argument_checker <- .is.fusion.valid(argument_checker, fusion)
+
+  # Check if the Gviz::AlignmentsTrack object in
+  # fusion@fusionReadsAlignment actually holds data, and is not just the empty
+  # object it is after loading the initial fusion data. In other words, make
+  # sure addFusionReadsAlignment() has been run.
+  if (class(fusion@fusionReadsAlignment) != "ReferenceAlignmentsTrack") {
+    ArgumentCheck::addError(
+      msg = paste("fusion@fusionReadsAlignment should hold a",
+                  "Gviz::ReferenceAlignmentsTrack object.",
+                  "See addFusionReadsAlignment()."),
+      argcheck = argument_checker
+    )
+  }
+
+  argument_checker <- .is.parameter.boolean(
+    argument_checker,
+    showAllNucleotides,
+    "showAllNucleotides")
+
+  argument_checker <- is.nucleotideAmount.valid(argument_checker, nucleotideAmount, fusion)
+
+  # Return errors and warnings (if any)
+  ArgumentCheck::finishArgCheck(argument_checker)
 }

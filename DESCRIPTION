@@ -1,7 +1,7 @@
 Package: chimeraviz
 Type: Package
 Title: Visualization tools for gene fusions
-Version: 0.99.6
+Version: 0.99.85
 Authors@R: c(
   person(
     given = "Stian",
@@ -55,7 +55,8 @@ Imports:
     DT,
     plyr,
     dplyr,
-    BiocStyle
+    BiocStyle,
+    ArgumentCheck
 Depends:
     Biostrings,
     GenomicRanges,
@@ -75,3 +76,5 @@ RoxygenNote: 6.0.1
 VignetteBuilder: knitr
 biocViews: Infrastructure, Alignment
 Encoding: UTF-8
+URL: https://github.com/stianlagstad/chimeraviz
+BugReports: https://github.com/stianlagstad/chimeraviz/issues

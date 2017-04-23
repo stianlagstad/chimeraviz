@@ -768,74 +768,6 @@ fusionToDataFrame <- function(fusion) {
   df
 }
 
-# Validates the input parameters to plotFusion, plotFusionSeparate, and
-# plotFusionTogether. Will extract transcripts from the given edb if there are
-# no stored transcripts in the fusion object. This is why the function returns
-# a (possibly updated) fusion object.
-.validateFusionPlotParams <- function(
-  fusion,
-  edb = NULL,
-  bamfile,
-  whichTranscripts = "exonBoundary") {
-
-  # If a bamfile is given (i.e. bamfile != ""), check that the file exists
-  if (!is.null(bamfile)) {
-    if (file.exists(bamfile) == FALSE) {
-      stop("Invalid bamfile. File doesn't exist.")
-    }
-  }
-  # Check if we got a fusion object
-  if (class(fusion) != "Fusion") {
-    stop("fusion argument must be an object of type Fusion")
-  }
-  # If we got an edb object, check its validity
-  if (!is.null(edb)) {
-    if (class(edb) != "EnsDb") {
-      stop("edb argument must be an object of type EnsDb")
-    }
-    if (isEmpty(fusion@geneA@transcripts) || isEmpty(fusion@geneB@transcripts)) {
-      message("Fetching transcripts for gene partners..")
-      fusion <- getTranscriptsEnsembldb(fusion, edb)
-      message("..transcripts fetched.")
-    }
-  }
-  # Both gene partners should have transcripts at this point
-  if (isEmpty(fusion@geneA@transcripts)) {
-    stop(paste("There are no transcipts for gene A. Please provide an EnsDb",
-               "object to the edb parameter, or see",
-               "getTranscriptsEnsembldb()."))
-  } else if (isEmpty(fusion@geneB@transcripts)) {
-    stop(paste("There are no transcipts for gene B. Please provide an EnsDb",
-               "object to the edb parameter, or see",
-               "getTranscriptsEnsembldb()."))
-  }
-
-  # Is whichTranscripts valid?
-  transcriptCategories <- c(
-    "exonBoundary",
-    "withinExon",
-    "withinIntron",
-    "intergenic"
-  )
-  # Check if the transcript(s) given actually exist, either in
-  # transcriptCategories, in geneA, or in geneB
-  for (i in 1:length(whichTranscripts)) {
-    if (
-      !whichTranscripts[[i]] %in% transcriptCategories &&
-      !whichTranscripts[[i]] %in% names(fusion@geneA@transcripts) &&
-      !whichTranscripts[[i]] %in% names(fusion@geneB@transcripts)
-    ) {
-      stop(paste(
-        "No transcript with name "),
-        whichTranscripts[[i]],
-        " found.",
-        sep = "")
-    }
-  }
-
-  fusion
-}
-
 #' Select which transcript to use (for plotting) for a GenePartner object
 #'
 #' This function takes a GenePartner object and creates a transcript data.frame
@@ -1021,4 +953,160 @@ downShift <- function(transcript) {
   }
 
   transcript
+}
+
+# -----------------------------------------------------------------------------
+# Functions that validate parameters passed to functions in chimeraviz
+
+.is.fusion.valid <- function(argument_checker, fusion) {
+  # Check if we got a fusion object
+  if (class(fusion) != "Fusion") {
+    ArgumentCheck::addError(
+      msg = "'fusion' argument must be an object of type Fusion",
+      argcheck = argument_checker
+    )
+  }
+  argument_checker
+}
+
+.is.edb.valid <- function(argument_checker, edb, fusion) {
+  if (!is.null(edb)) {
+    # If we got an edb object, check its validity
+    if (class(edb) != "EnsDb") {
+      ArgumentCheck::addError(
+        msg = "'edb' argument must be an object of type EnsDb",
+        argcheck = argument_checker
+      )
+    }
+  } else {
+    # If edb is not given then the fusion should have transcripts for both genes
+    if (isEmpty(fusion@geneA@transcripts)) {
+      ArgumentCheck::addError(
+        msg = paste0("There are no transcipts for gene A. Please provide an ",
+                     "EnsDb object to the edb parameter, or see",
+                     "getTranscriptsEnsembldb()."),
+        argcheck = argument_checker
+      )
+    } else if (isEmpty(fusion@geneB@transcripts)) {
+      ArgumentCheck::addError(
+        msg = paste0("There are no transcipts for gene B. Please provide an ",
+                     "EnsDb object to the edb parameter, or see",
+                     "getTranscriptsEnsembldb()."),
+        argcheck = argument_checker
+      )
+    }
+  }
+  argument_checker
+}
+
+.is.bamfile.valid <- function(argument_checker, bamfile) {
+  # Check that the argument is given
+  if (is.null(bamfile) || bamfile == "") {
+    ArgumentCheck::addError(
+      msg = "'bamfile' must be the path to a .BAM file.",
+      argcheck = argument_checker
+    )
+  }
+  # Check that the file exists
+  if (!file.exists(bamfile)) {
+    ArgumentCheck::addError(
+      msg = "The given 'bamfile' does not exist.",
+      argcheck = argument_checker
+    )
+  }
+  argument_checker
+}
+
+.is.whichTranscripts.valid <- function(argument_checker, whichTranscripts, fusion) {
+  if (class(whichTranscripts) != "character") {
+    ArgumentCheck::addError(
+      msg = paste0("'whichTranscripts' must be a character (or a character ",
+                   "vector) holding the desired transcript category or the ",
+                   "names of specific transcripts."),
+      argcheck = argument_checker
+    )
+  }
+  # Is whichTranscripts valid?
+  transcriptCategories <- c(
+    "exonBoundary",
+    "withinExon",
+    "withinIntron",
+    "intergenic"
+  )
+  # Check if the transcript(s) given actually exist, either in
+  # transcriptCategories, in geneA, or in geneB
+  for (i in 1:length(whichTranscripts)) {
+    if (
+      !whichTranscripts[[i]] %in% transcriptCategories &&
+      !whichTranscripts[[i]] %in% names(fusion@geneA@transcripts) &&
+      !whichTranscripts[[i]] %in% names(fusion@geneB@transcripts)
+    ) {
+      ArgumentCheck::addError(
+        msg = paste0("No transcript with name ", whichTranscripts[[i]],
+                     " was found."),
+        argcheck = argument_checker
+      )
+    }
+  }
+  argument_checker
+}
+
+.is.ylim.valid <- function(argument_checker, ylim) {
+  if (class(ylim) != "numeric" || length(ylim) != 2) {
+    ArgumentCheck::addError(
+      msg = "'ylim' must be a numeric vector of length 2",
+      argcheck = argument_checker
+    )
+  }
+  argument_checker
+}
+
+.is.parameter.boolean <- function(argument_checker, parameter, parameterName) {
+  if (class(parameter) != "logical") {
+    ArgumentCheck::addError(
+      msg = paste0("'", parameterName, "'", " must be a boolean."),
+      argcheck = argument_checker
+    )
+  }
+  argument_checker
+}
+
+is.nucleotideAmount.valid <- function(argument_checker, nucleotideAmount, fusion) {
+
+  fusionJunctionSequenceLength <-
+    length(fusion@geneA@junctionSequence) +
+    length(fusion@geneB@junctionSequence)
+
+  if (class(nucleotideAmount) != "numeric" ||
+      nucleotideAmount <= 0 ||
+      nucleotideAmount > fusionJunctionSequenceLength) {
+    ArgumentCheck::addError(
+      msg = paste0("'nucleotideAmount' must be a numeric bigger than or equal ",
+                   "to 0 and less than or equal to the fusion junction ",
+                   "sequence length."),
+      argcheck = argument_checker
+    )
+  }
+
+  argument_checker
+}
+
+# End of functions that validate parameters passed to functions in chimeraviz
+# -----------------------------------------------------------------------------
+
+.getTranscriptsIfNotThere <- function(fusion, edb) {
+  # Establish a new 'ArgCheck' object
+  argument_checker <- ArgumentCheck::newArgCheck()
+  # Check parameters
+  argument_checker <- .is.fusion.valid(argument_checker, fusion)
+  argument_checker <- .is.edb.valid(argument_checker, edb, fusion)
+  # Return errors and warnings (if any)
+  ArgumentCheck::finishArgCheck(argument_checker)
+
+  if (isEmpty(fusion@geneA@transcripts) || isEmpty(fusion@geneB@transcripts)) {
+    message("Fetching transcripts for gene partners..")
+    fusion <- getTranscriptsEnsembldb(fusion, edb)
+    message("..transcripts fetched.")
+  }
+  fusion
 }

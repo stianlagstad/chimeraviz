@@ -1,4 +1,4 @@
-context("Test plotTranscripts()")
+context("Test plotFusionTranscript()")
 
 # Load data and example fusion event
 defuse833ke <- system.file(

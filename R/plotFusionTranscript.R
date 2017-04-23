@@ -61,7 +61,8 @@ plotFusionTranscript <- function(
   bamfile = NULL,
   whichTranscripts = "exonBoundary") {
 
-  fusion <- .validateFusionPlotParams(fusion, edb, bamfile, whichTranscripts)
+  .validatePlotFusionTranscriptParams(fusion, edb, bamfile, whichTranscripts)
+  fusion <- .getTranscriptsIfNotThere(fusion, edb)
 
   # Select which transcripts to use
   transcriptsA <- selectTranscript(fusion@geneA, whichTranscripts)
@@ -221,4 +222,28 @@ plotFusionTranscript <- function(
       chromosome = "chrNA")
   }
 
+}
+
+.validatePlotFusionTranscriptParams <- function(
+  fusion,
+  edb,
+  bamfile,
+  whichTranscripts
+) {
+  # Establish a new 'ArgCheck' object
+  argument_checker <- ArgumentCheck::newArgCheck()
+
+  # Check parameters
+  argument_checker <- .is.fusion.valid(argument_checker, fusion)
+  argument_checker <- .is.edb.valid(argument_checker, edb, fusion)
+  if (!is.null(bamfile)) {
+    argument_checker <- .is.bamfile.valid(argument_checker, bamfile)
+  }
+  argument_checker <- .is.whichTranscripts.valid(
+    argument_checker,
+    whichTranscripts,
+    fusion)
+
+  # Return errors and warnings (if any)
+  ArgumentCheck::finishArgCheck(argument_checker)
 }
