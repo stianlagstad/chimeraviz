@@ -177,6 +177,23 @@ NULL
 #' The original_bamfile.bam is from a study of the 833KE cell line by Andreas M. Hoff et al., documented in the paper [Identification of Novel Fusion Genes in Testicular Germ Cell Tumors](http://cancerres.aacrjournals.org/content/76/1/108.full).
 NULL
 
+#' Fusion5267and11759 bedGraph file
+#'
+#' Documentation for the fusion5267and11759reads.bedGraph file containing read
+#' count data from the regions of the fusion event with cluster_id=5267.
+#'
+#' @name raw_fusion5267readsBedGraph
+#'
+#' @section fusion5267and11759reads.bedGraph:
+#'
+#' This file is the result of running this command:
+#'
+#' bedtools genomecov -ibam fusion5267and11759reads.bam -bg > fusion5267and11759reads.bam.bedGraph
+#'
+#' fusion5267and11759reads.bam has its own documentation entry for how it was
+#' created.
+NULL
+
 #' Cytoband information HG19
 #'
 #' Cytoband information for the HG19 assembly from UCSC. Downloaded from
