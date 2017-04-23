@@ -50,14 +50,8 @@ plotFusionTranscriptsGraph <- function(
   whichTranscripts = "exonBoundary",
   rankdir = "TB") {
 
-  # The "withinExon" option for whichTranscripts will not work for the fusion transcripts graph plot. Check if that was
-  # the wanted option
-  if (whichTranscripts[[1]] == "withinExon") {
-    stop(paste0("The \"withinExon\" option for whichTranscripts will not wosk for the fusion transcripts graph plot, ",
-                "as only complete exons can be shown."))
-  }
-
-  fusion <- .validateFusionPlotParams(fusion, edb, NULL, whichTranscripts)
+  .validatePlotFusionTranscriptsGraphParams(fusion, edb, whichTranscripts, rankdir)
+  fusion <- .getTranscriptsIfNotThere(fusion, edb)
 
   # Select which transcripts to use
   transcriptsA <- selectTranscript(fusion@geneA, whichTranscripts)
@@ -209,4 +203,43 @@ plotFusionTranscriptsGraph <- function(
     nodeAttrs = nAttrs,
     edgeAttrs = eAttrs)
 
+}
+
+.validatePlotFusionTranscriptsGraphParams <- function(
+  fusion,
+  edb,
+  whichTranscripts,
+  rankdir
+) {
+  # Establish a new 'ArgCheck' object
+  argument_checker <- ArgumentCheck::newArgCheck()
+
+  # Check parameters
+  argument_checker <- .is.fusion.valid(argument_checker, fusion)
+  argument_checker <- .is.edb.valid(argument_checker, edb, fusion)
+  argument_checker <- .is.whichTranscripts.valid(
+    argument_checker,
+    whichTranscripts,
+    fusion)
+
+  # The "withinExon" option for whichTranscripts will not work for the fusion transcripts graph plot. Check if that was
+  # the wanted option
+  if (whichTranscripts[[1]] == "withinExon") {
+    ArgumentCheck::addError(
+      msg = paste0("The \"withinExon\" option for whichTranscripts will not ",
+                   "work for the fusion transcripts graph plot, as only ",
+                   "complete exons can be shown."),
+      argcheck = argument_checker
+    )
+  }
+
+  if (class(rankdir) != "character" || !rankdir %in% c("LR", "TB")) {
+    ArgumentCheck::addError(
+      msg = "'rankdir' must be one of \"LR\" or \"TB\"",
+      argcheck = argument_checker
+    )
+  }
+
+  # Return errors and warnings (if any)
+  ArgumentCheck::finishArgCheck(argument_checker)
 }

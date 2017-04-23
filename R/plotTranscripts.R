@@ -69,7 +69,8 @@ plotTranscripts <- function(
   ylim = c(0,1000),
   reduceTranscripts = FALSE) {
 
-  fusion <- .validateFusionPlotParams(fusion, edb, bamfile, whichTranscripts)
+  .validatePlotFusionTranscriptsParams(fusion, edb, bamfile, whichTranscripts, nonUCSC, ylim, reduceTranscripts)
+  fusion <- .getTranscriptsIfNotThere(fusion, edb)
 
   # Select which transcripts to use
   transcriptsA <- selectTranscript(fusion@geneA, whichTranscripts)
@@ -495,4 +496,40 @@ plotTranscripts <- function(
   }
   # Close row 1, column 1
   grid::popViewport(1)
+}
+
+.validatePlotFusionTranscriptsParams <- function(
+  fusion,
+  edb,
+  bamfile,
+  whichTranscripts,
+  nonUCSC,
+  ylim,
+  reduceTranscripts
+) {
+  # Establish a new 'ArgCheck' object
+  argument_checker <- ArgumentCheck::newArgCheck()
+
+  # Check parameters
+  argument_checker <- .is.fusion.valid(argument_checker, fusion)
+  argument_checker <- .is.edb.valid(argument_checker, edb, fusion)
+  if (!is.null(bamfile)) {
+    argument_checker <- .is.bamfile.valid(argument_checker, bamfile)
+  }
+  argument_checker <- .is.whichTranscripts.valid(
+    argument_checker,
+    whichTranscripts,
+    fusion)
+  argument_checker <- .is.ylim.valid(argument_checker, ylim)
+  argument_checker <- .is.parameter.boolean(
+    argument_checker,
+    nonUCSC,
+    "nonUCSC")
+  argument_checker <- .is.parameter.boolean(
+    argument_checker,
+    reduceTranscripts,
+    "reduceTranscripts")
+
+  # Return errors and warnings (if any)
+  ArgumentCheck::finishArgCheck(argument_checker)
 }

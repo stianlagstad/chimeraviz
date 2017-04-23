@@ -244,3 +244,29 @@ plotCircle <- function(fusionList) {
   # When done, remove the RCircos.Env element from the global namespace
   remove("RCircos.Env", envir = .GlobalEnv)
 }
+
+.validatePlotCircleParams <- function(
+  fusionList
+) {
+  # Establish a new 'ArgCheck' object
+  argument_checker <- ArgumentCheck::newArgCheck()
+
+  # Add an error if the input isn't a list of fusion objects
+  if (!is.list(fusionList) || length(fusionList) == 0 || class(fusionList[[1]]) != "Fusion") {
+    ArgumentCheck::addError(
+      msg = "'fusionList' must be a list of fusion objects",
+      argcheck = argument_checker
+    )
+  }
+
+  if (!fusionList[[1]]@genomeVersion %in% list("hg19", "hg38")) {
+    ArgumentCheck::addError(
+      msg = paste0("The genomeVersion of the Fusion objects must be either",
+                   "'hg19' or 'hg38'."),
+      argcheck = argument_checker
+    )
+  }
+
+  # Return errors and warnings (if any)
+  ArgumentCheck::finishArgCheck(argument_checker)
+}
