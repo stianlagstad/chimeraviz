@@ -1017,6 +1017,24 @@ downShift <- function(transcript) {
   argument_checker
 }
 
+.is.bedfile.valid <- function(argument_checker, bedfile) {
+  # Check that the argument is given
+  if (is.null(bedfile) || bedfile == "") {
+    ArgumentCheck::addError(
+      msg = "'bedfile' must be the path to a .BED file.",
+      argcheck = argument_checker
+    )
+  }
+  # Check that the file exists
+  if (!file.exists(bedfile)) {
+    ArgumentCheck::addError(
+      msg = "The given 'bedfile' does not exist.",
+      argcheck = argument_checker
+    )
+  }
+  argument_checker
+}
+
 .is.whichTranscripts.valid <- function(argument_checker, whichTranscripts, fusion) {
   if (class(whichTranscripts) != "character") {
     ArgumentCheck::addError(
@@ -1065,6 +1083,17 @@ downShift <- function(transcript) {
   if (class(parameter) != "logical") {
     ArgumentCheck::addError(
       msg = paste0("'", parameterName, "'", " must be a boolean."),
+      argcheck = argument_checker
+    )
+  }
+  argument_checker
+}
+
+.is.character.parameter.valid <- function(argument_checker, parameter, parameterName) {
+  if (class(parameter) != "character") {
+    ArgumentCheck::addError(
+      msg = paste0("'", parameterName, "'", " must be a character vector of ",
+                   "length 1 (meaning that it's just a single string)."),
       argcheck = argument_checker
     )
   }

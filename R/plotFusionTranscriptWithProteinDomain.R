@@ -99,11 +99,16 @@ plotFusionTranscriptWithProteinDomain <- function(
     stop("geneBtranscript argument must not be blank")
   }
   # Validate parameters and fetch transcripts from database
-  fusion <- .validateFusionPlotParams(
+  .validatePlotFusionTranscriptWithProteinDomainParams(
     fusion,
     edb,
-    bamfile)
-  # Validate that the transcript ids are found in the edb
+    bamfile,
+    bedfile,
+    geneAtranscript,
+    geneBtranscript,
+    plotDownstreamProteinDomainsIfFusionIsOutOfFrame)
+  fusion <- .getTranscriptsIfNotThere(fusion, edb)
+  # Validate that the transcript ids are found in the fusion
   if (length(fusion@geneA@transcripts[names(fusion@geneA@transcripts) == geneAtranscript]) == 0) {
     stop(paste0(geneAtranscript, " was not found in among the transcripts for the upstream gene partner."))
   }
@@ -507,4 +512,38 @@ plotFusionTranscriptWithProteinDomain <- function(
       chromosome = "chrNA")
   }
 
+}
+
+.validatePlotFusionTranscriptWithProteinDomainParams <- function(
+  fusion,
+  edb,
+  bamfile,
+  bedfile,
+  geneAtranscript,
+  geneBtranscript,
+  plotDownstreamProteinDomainsIfFusionIsOutOfFrame
+) {
+  # Establish a new 'ArgCheck' object
+  argument_checker <- ArgumentCheck::newArgCheck()
+
+  # Check parameters
+  argument_checker <- .is.fusion.valid(argument_checker, fusion)
+  argument_checker <- .is.edb.valid(argument_checker, edb, fusion)
+  argument_checker <- .is.bamfile.valid(argument_checker, bamfile)
+  argument_checker <- .is.bedfile.valid(argument_checker, bedfile)
+  argument_checker <- .is.character.parameter.valid(
+    argument_checker,
+    geneAtranscript,
+    "geneAtranscript")
+  argument_checker <- .is.character.parameter.valid(
+    argument_checker,
+    geneBtranscript,
+    "geneAtranscript")
+  argument_checker <- .is.parameter.boolean(
+    argument_checker,
+    plotDownstreamProteinDomainsIfFusionIsOutOfFrame,
+    "plotDownstreamProteinDomainsIfFusionIsOutOfFrame")
+
+  # Return errors and warnings (if any)
+  ArgumentCheck::finishArgCheck(argument_checker)
 }
