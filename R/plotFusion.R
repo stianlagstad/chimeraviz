@@ -1,33 +1,3 @@
-# Use this command to create the bedgraphfile:
-# `bedtools genomecov -ibam chimeraviz-github/inst/extdata/fusion5267and11759reads.bam -bg > test.bed`
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #' Plot a fusion event with transcripts, coverage and ideograms.
 #'
 #' This function creates a plot with information about transcripts, coverage,
@@ -95,16 +65,51 @@
 #' # Close device
 #' dev.off()
 #'
+#' # Example using a .bedGraph file instead of a .bam file:
+#' # Load data and example fusion event
+#' defuse833ke <- system.file(
+#'   "extdata",
+#'   "defuse_833ke_results.filtered.tsv",
+#'   package="chimeraviz")
+#' fusions <- importDefuse(defuse833ke, "hg19", 1)
+#' fusion <- getFusionById(fusions, 5267)
+#' # Load edb
+#' edbSqliteFile <- system.file(
+#'   "extdata",
+#'   "Homo_sapiens.GRCh37.74.sqlite",
+#'   package="chimeraviz")
+#' edb <- ensembldb::EnsDb(edbSqliteFile)
+#' # bedgraphfile with coverage data from the regions of this fusion event
+#' bedGraphfile <- system.file(
+#'   "extdata",
+#'   "fusion5267and11759reads.bedGraph",
+#'   package="chimeraviz")
+#' # Temporary file to store the plot
+#' pngFilename <- tempfile(
+#'   pattern = "fusionPlot",
+#'   fileext = ".png",
+#'   tmpdir = tempdir())
+#' # Open device
+#' png(pngFilename, width = 1000, height = 750)
+#' # Plot!
+#' plotFusion(
+#'   fusion = fusion,
+#'   bedgraphfile = bedGraphfile,
+#'   edb = edb,
+#'   nonUCSC = TRUE)
+#' # Close device
+#' dev.off()
+#'
 #' @export
 plotFusion <- function(
   fusion,
   edb = NULL,
-  bamfile,
+  bamfile = NULL,
   whichTranscripts = "exonBoundary",
   ylim = c(0, 1000),
   nonUCSC = TRUE,
   reduceTranscripts = FALSE,
-  bedgraphfile = "") {
+  bedgraphfile = NULL) {
 
   .validatePlotFusionParams(
     fusion,
@@ -196,12 +201,12 @@ plotFusion <- function(
 plotFusionSeparate <- function(
   fusion,
   edb,
-  bamfile,
+  bamfile = NULL,
   whichTranscripts = "exonBoundary",
   ylim = c(0, 1000),
   nonUCSC = TRUE,
   reduceTranscripts = FALSE,
-  bedgraphfile = "") {
+  bedgraphfile = NULL) {
 
   .validatePlotFusionParams(
     fusion,
@@ -322,7 +327,9 @@ plotFusionSeparate <- function(
   Gviz::displayPars(idTrackB) <- ideogramDisplayParams
 
   # Create alignment track
-  if (FALSE) { # todo: if bamfile is set and bedgraphfile isn't
+  bamfileGiven <- !is.null(bamfile)
+  if (bamfileGiven) {
+    # We're getting coverage data from a bam file
     if (nonUCSC) {
       # If the bam file has non-ucsc chromosome names, i.e. "1" instead of "chr1",
       # then we need to use a custom import function that adds "chr" to the
@@ -359,7 +366,7 @@ plotFusionSeparate <- function(
       cex.axis = .6
     )
   } else {
-    # bedgraphfile will be used instead
+    # We're getting coverage data from a bedGraph file
     alTrack <- DataTrack(
       range = bedGraphfile,
       ylim = ylim,
@@ -750,12 +757,12 @@ plotFusionSeparate <- function(
 plotFusionTogether <- function(
   fusion,
   edb,
-  bamfile,
+  bamfile = NULL,
   whichTranscripts = "exonBoundary",
   ylim = c(0, 1000),
   nonUCSC = TRUE,
   reduceTranscripts = FALSE,
-  bedgraphfile = "") {
+  bedgraphfile = NULL) {
 
   .validatePlotFusionParams(
     fusion,
@@ -864,41 +871,74 @@ plotFusionTogether <- function(
   Gviz::displayPars(idTrack) <- ideogramDisplayParams
 
   # Create alignment track
-  if (nonUCSC) {
-    # If the bam file has non-ucsc chromosome names, i.e. "1" instead of "chr1",
-    # then we need to use a custom import function that adds "chr" to the
-    # chromosome names, to keep Gviz happy. Gviz strongly prefers having the
-    # "chr" prefix.
-    alTrack <- Gviz::AlignmentsTrack(
-      bamfile,
-      isPaired = TRUE,
-      genome = fusion@genomeVersion,
-      name = "RNA coverage",
-      ylim = ylim,
-      importFunction = importFunctionNonUCSC)
+  bamfileGiven <- !is.null(bamfile)
+  if (bamfileGiven) {
+    # We're getting coverage data from a bam file
+    if (nonUCSC) {
+      # If the bam file has non-ucsc chromosome names, i.e. "1" instead of "chr1",
+      # then we need to use a custom import function that adds "chr" to the
+      # chromosome names, to keep Gviz happy. Gviz strongly prefers having the
+      # "chr" prefix.
+      alTrack <- Gviz::AlignmentsTrack(
+        bamfile,
+        isPaired = TRUE,
+        genome = fusion@genomeVersion,
+        name = "RNA coverage",
+        ylim = ylim,
+        importFunction = importFunctionNonUCSC)
+    } else {
+      alTrack <- Gviz::AlignmentsTrack(
+        bamfile,
+        isPaired = TRUE,
+        genome = fusion@genomeVersion,
+        name = "RNA coverage",
+        ylim = ylim)
+    }
+    # Set display paramters
+    Gviz::displayPars(alTrack) <- list(
+      showTitle = FALSE, # hide name of track
+      background.panel = "transparent", # background color of the content panel
+      background.title = "transparent", # background color for the title panels
+      col.axis = "black",
+      col.coverage = "black",
+      col.title = "black",
+      fill.coverage = "orange",
+      fontsize = 15,
+      lwd.coverage = 0.4,
+      type = "coverage",
+      cex.title = .8,
+      cex.axis = .6
+    )
   } else {
-    alTrack <- Gviz::AlignmentsTrack(
-      bamfile,
-      isPaired = TRUE,
-      genome = fusion@genomeVersion,
-      name = "RNA coverage",
-      ylim = ylim)
+    # We're getting coverage data from a bedGraph file
+    alTrack <- DataTrack(
+      range = bedGraphfile,
+      ylim = ylim,
+      genome = "hg19",
+      chromosome = "1",
+      name = "Coverage",
+      type = "h",
+      col = 'orange',
+      fill = 'orange')
+    # Set display parameters
+    Gviz::displayPars(alTrack) <- list(
+      showTitle = FALSE, # hide name of track
+      background.panel = "transparent", # background color of the content panel
+      background.title = "transparent", # background color for the title panels
+      cex.axis = .6,
+      cex.title = .6,
+      col.axis = "black",
+      col.coverage = "black",
+      col.title = "black",
+      coverageHeight = 0.08,
+      fill.coverage = "orange",
+      fontsize = 15,
+      lty = 1,
+      lty.coverage = 1,
+      lwd = 0.5
+    )
   }
-  # Set display paramters
-  Gviz::displayPars(alTrack) <- list(
-    showTitle = FALSE, # hide name of track
-    background.panel = "transparent", # background color of the content panel
-    background.title = "transparent", # background color for the title panels
-    col.axis = "black",
-    col.coverage = "black",
-    col.title = "black",
-    fill.coverage = "orange",
-    fontsize = 15,
-    lwd.coverage = 0.4,
-    type = "coverage",
-    cex.title = .8,
-    cex.axis = .6
-  )
+
 
   # Display parameters for highlight tracks
   displayParsHighlightTracks <- list(
@@ -1292,7 +1332,8 @@ importFunctionNonUCSC <- function (file, selection) {
   whichTranscripts = "exonBoundary",
   ylim = c(0, 1000),
   nonUCSC = TRUE,
-  reduceTranscripts = FALSE
+  reduceTranscripts = FALSE,
+  bedgraphfile
 ) {
   # Establish a new 'ArgCheck' object
   argument_checker <- ArgumentCheck::newArgCheck()
@@ -1300,7 +1341,7 @@ importFunctionNonUCSC <- function (file, selection) {
   # Check parameters
   argument_checker <- .is.fusion.valid(argument_checker, fusion)
   argument_checker <- .is.edb.valid(argument_checker, edb, fusion)
-  argument_checker <- .is.bamfile.valid(argument_checker, bamfile)
+  argument_checker <- .is.either.bamfile.or.bedgraphfile.valid(argument_checker, bamfile, bedgraphfile)
   argument_checker <- .is.whichTranscripts.valid(
     argument_checker,
     whichTranscripts,

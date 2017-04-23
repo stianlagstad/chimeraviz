@@ -945,6 +945,46 @@ selectTranscript <- function(
   argument_checker
 }
 
+.is.bedgraphfile.valid <- function(argument_checker, bedgraphfile) {
+  # Check that the argument is given
+  if (is.null(bedgraphfile) || bedgraphfile == "") {
+    ArgumentCheck::addError(
+      msg = "'bedgraphfile' must be the path to a .bedGraph file.",
+      argcheck = argument_checker
+    )
+  }
+  # Check that the file exists
+  if (!file.exists(bedgraphfile)) {
+    ArgumentCheck::addError(
+      msg = "The given 'bedgraphfile' does not exist.",
+      argcheck = argument_checker
+    )
+  }
+  argument_checker
+}
+
+.is.either.bamfile.or.bedgraphfile.valid <- function(argument_checker, bamfile, bedgraphfile) {
+  # Either bamfile or bedgraphfile can be given, not both
+  bamfileGiven <- !is.null(bamfile)
+  bedgraphfileGiven <- !is.null(bedgraphfile)
+  if (bamfileGiven && bedgraphfileGiven) {
+    ArgumentCheck::addError(
+      msg = "Either 'bamfile' or 'bedgraphfile' must be given, not both.",
+      argcheck = argument_checker
+    )
+  } else if (!bamfileGiven && !bedgraphfileGiven) {
+    ArgumentCheck::addError(
+      msg = "Either 'bamfile' or 'bedgraphfile' must be given",
+      argcheck = argument_checker
+    )
+  } else if (bamfileGiven) {
+    argument_checker <- .is.bamfile.valid(argument_checker, bamfile)
+  } else {
+    argument_checker <- .is.bedgraphfile.valid(argument_checker, bedgraphfile)
+  }
+  argument_checker
+}
+
 .is.whichTranscripts.valid <- function(argument_checker, whichTranscripts, fusion) {
   if (class(whichTranscripts) != "character") {
     ArgumentCheck::addError(
