@@ -1,7 +1,7 @@
 Package: chimeraviz
 Type: Package
 Title: Visualization tools for gene fusions
-Version: 0.99.7
+Version: 0.99.8
 Authors@R: c(
   person(
     given = "Stian",
@@ -54,7 +54,8 @@ Imports:
     Rgraphviz,
     DT,
     plyr,
-    BiocStyle
+    BiocStyle,
+    ArgumentCheck
 Depends:
     Biostrings,
     GenomicRanges,

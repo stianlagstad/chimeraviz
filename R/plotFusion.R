@@ -106,9 +106,17 @@ plotFusion <- function(
   reduceTranscripts = FALSE,
   bedgraphfile = "") {
 
-  # fusion <- .validateFusionPlotParams(fusion, edb, bamfile, whichTranscripts)
-  fusion <- getTranscriptsEnsembldb(fusion, edb)
-  # todo: validate either bamfile or bedgraphfile?
+  .validatePlotFusionParams(
+    fusion,
+    edb,
+    bamfile,
+    whichTranscripts,
+    ylim,
+    nonUCSC,
+    reduceTranscripts,
+    bedgraphfile
+  )
+  fusion <- .getTranscriptsIfNotThere(fusion, edb)
 
   # Decide whether or not to plot the fusion on the same x-axis
   if (fusion@geneA@chromosome == fusion@geneB@chromosome) {
@@ -195,8 +203,17 @@ plotFusionSeparate <- function(
   reduceTranscripts = FALSE,
   bedgraphfile = "") {
 
-  # fusion <- .validateFusionPlotParams(fusion, edb, bamfile, whichTranscripts)
-  fusion <- getTranscriptsEnsembldb(fusion, edb)
+  .validatePlotFusionParams(
+    fusion,
+    edb,
+    bamfile,
+    whichTranscripts,
+    ylim,
+    nonUCSC,
+    reduceTranscripts,
+    bedgraphfile
+  )
+  fusion <- .getTranscriptsIfNotThere(fusion, edb)
 
   # Create tracks
 
@@ -740,8 +757,17 @@ plotFusionTogether <- function(
   reduceTranscripts = FALSE,
   bedgraphfile = "") {
 
-  # fusion <- .validateFusionPlotParams(fusion, edb, bamfile, whichTranscripts)
-  fusion <- getTranscriptsEnsembldb(fusion, edb)
+  .validatePlotFusionParams(
+    fusion,
+    edb,
+    bamfile,
+    whichTranscripts,
+    ylim,
+    nonUCSC,
+    reduceTranscripts,
+    bedgraphfile
+  )
+  fusion <- .getTranscriptsIfNotThere(fusion, edb)
 
   # Create tracks
 
@@ -1257,4 +1283,38 @@ importFunctionNonUCSC <- function (file, selection) {
     flag = reads$flag, md = md, seq = ans, isize = reads$isize,
     groupid = if (pairedEnd) reads$groupid else seq_along(reads$pos),
     status = if (pairedEnd) reads$mate_status else rep(factor("unmated", levels = c("mated", "ambiguous", "unmated")), length(reads$pos))))
+}
+
+.validatePlotFusionParams <- function(
+  fusion,
+  edb = NULL,
+  bamfile,
+  whichTranscripts = "exonBoundary",
+  ylim = c(0, 1000),
+  nonUCSC = TRUE,
+  reduceTranscripts = FALSE
+) {
+  # Establish a new 'ArgCheck' object
+  argument_checker <- ArgumentCheck::newArgCheck()
+
+  # Check parameters
+  argument_checker <- .is.fusion.valid(argument_checker, fusion)
+  argument_checker <- .is.edb.valid(argument_checker, edb, fusion)
+  argument_checker <- .is.bamfile.valid(argument_checker, bamfile)
+  argument_checker <- .is.whichTranscripts.valid(
+    argument_checker,
+    whichTranscripts,
+    fusion)
+  argument_checker <- .is.ylim.valid(argument_checker, ylim)
+  argument_checker <- .is.parameter.boolean(
+    argument_checker,
+    nonUCSC,
+    "nonUCSC")
+  argument_checker <- .is.parameter.boolean(
+    argument_checker,
+    reduceTranscripts,
+    "reduceTranscripts")
+
+  # Return errors and warnings (if any)
+  ArgumentCheck::finishArgCheck(argument_checker)
 }
