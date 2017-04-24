@@ -1,0 +1,700 @@
+---
+title: "chimeraviz"
+author: "Stian Lågstad"
+date: "`r Sys.Date()`"
+output: 
+  BiocStyle::html_document2
+vignette: >
+  %\VignetteIndexEntry{chimeraviz}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
+
+This is the vignette of _chimeraviz_, an R package that automates the creation of chimeric RNA visualizations. This vignette will take you through the functionality of _chimeraviz_.
+
+# Basic features
+
+_chimeraviz_ allows you to import data from nine different fusion-finders: deFuse, EricScript, InFusion, JAFFA, FusionCatcher, FusionMap, PRADA, SOAPFuse, and STAR-FUSION. Getting started is easy:
+
+```{r, message = FALSE}
+# Load chimeraviz
+library(chimeraviz)
+
+# Get reference to results file from deFuse
+defuse833ke <- system.file(
+"extdata",
+"defuse_833ke_results.filtered.tsv",
+package="chimeraviz")
+
+# Load the results file into a list of fusion objects
+fusions <- importDefuse(defuse833ke, "hg19")
+```
+
+A list of Fusion objects, objects that represent each fusion transcript, is now available in the list `fusions`.
+
+```{r, message = FALSE}
+length(fusions)
+```
+
+As you can see, this list has 17 fusion objects. It is straightforward to find a specific fusion event and print information
+about it, or about each of the partner genes.
+
+```{r, message = FALSE}
+# Find a specific fusion event
+fusion <- getFusionById(fusions, 5267)
+
+# Show information about this fusion event
+fusion
+
+# Show information about the upstream fusion partner
+upstreamPartnerGene(fusion)
+
+# Show information about the downstream fusion partner
+downstreamPartnerGene(fusion)
+```
+
+# Plotting
+
+## Overview plot
+
+The overview plot is a nice way to get an overview over the nominated fusions in a sample. It will produce a circular plot like this one:
+
+```{r, echo = FALSE, message = FALSE, fig.height = 8, fig.width = 8, dev='png'}
+# Load SOAPfuse data
+soapfuse833ke <- system.file(
+  "extdata",
+  "soapfuse_833ke_final.Fusion.specific.for.genes",
+  package = "chimeraviz")
+fusions <- importSoapfuse(soapfuse833ke, "hg38", 10)
+# Plot!
+plotCircle(fusions)
+```
+
+In this plot you can see the following:
+
+- All chromosomes with cytoband information
+- Fusion events as links between locations in chromosomes. (With gene names, if enough space in the plot.)
+- Red links indicate intrachromosomal fusions, while blue links indicate interchromosomal fusions.
+- The widths of each link varies according to how many reads support each fusion event. See the `plotCircle()` documentation for more detail on how this is computed.
+
+### Building the overview plot
+
+All we need for the overview plot is a list of fusion events. Let's import the SOAPfuse example data included with _chimeraviz_:
+
+```{r}
+# Load SOAPfuse data
+if(!exists("soapfuse833ke"))
+  soapfuse833ke <- system.file(
+    "extdata",
+    "soapfuse_833ke_final.Fusion.specific.for.genes",
+    package = "chimeraviz")
+fusions <- importSoapfuse(soapfuse833ke, "hg38", 10)
+```
+
+With these fusion events in the `fusions` variable, we're ready to plot:
+
+```{r, message = FALSE, fig.height = 8, fig.width = 8, dev='png'}
+plotCircle(fusions)
+```
+
+## Fusion reads plot
+
+The fusion reads plot is a way to visualize the reads supporting a fusion event mapped to the putative fusion sequence. Many fusion finders report a putative fusion sequence, and by mapping reads to this sequence we can get a picture on how well the fusion event is supported. The function `plotFusionReads()` will, given enough data, produce a plot like this one:
+
+```{r, echo = FALSE, message = FALSE, fig.height = 3, fig.width = 50, dev='png'}
+# Load data
+if(!exists("defuse833ke"))
+  defuse833ke <- system.file(
+    "extdata",
+    "defuse_833ke_results.filtered.tsv",
+    package="chimeraviz")
+fusions <- importDefuse(defuse833ke, "hg19", 1)
+# Find the specific fusion we have aligned reads for
+fusion <- getFusionById(fusions, 5267)
+if(!exists("bamfile5267"))
+  bamfile5267 <- system.file(
+    "extdata",
+    "5267readsAligned.bam",
+    package="chimeraviz")
+# Add the bam file of aligned fusion reads to the fusion object
+fusion <- addFusionReadsAlignment(fusion, bamfile5267)
+# Plot!
+plotFusionReads(fusion)
+```
+
+As seen in the plot, this fusion event is supported by 6 paired end reads.
+
+### Building the Fusion Reads Plot
+
+We have to complete a few steps in order to create the fusion reads plot. We have to:
+
+1. Align reads to the fusion sequence
+1. Import the alignment data into a fusion object
+1. Create the plot
+
+#### 1. Aligning reads to the fusion sequence
+
+##### Load example fusion event
+
+First we load an example fusion event:
+
+```{r}
+# Load deFuse data
+if(!exists("defuse833ke"))
+  defuse833ke <- system.file(
+    "extdata",
+    "defuse_833ke_results.filtered.tsv",
+    package = "chimeraviz")
+fusions <- importDefuse(defuse833ke, "hg19", 1)
+# Choose example fusion event
+fusion <- getFusionById(fusions, 5267)
+```
+
+##### Extracting fusion reads
+
+Some fusion finders report which reads gave evidence of the fusion event. By utilizing this information we can avoid mapping _all_ reads against the fusion sequence (that can take a while). deFuse is such a fusion finder. With the script `get_fusion_fastq.pl` that deFuse provides, we can extract the interesting reads. For the example fusion event, we have extracted the interesting reads into the files `reads_supporting_defuse_fusion_5267.1.fq` and `reads_supporting_defuse_fusion_5267.2.fq`. These are included in `chimeraviz` and can be referenced like this:
+
+```{r}
+fastq1 <- system.file(
+  "extdata",
+  "reads_supporting_defuse_fusion_5267.1.fq",
+  package = "chimeraviz")
+fastq2 <- system.file(
+  "extdata",
+  "reads_supporting_defuse_fusion_5267.2.fq",
+  package = "chimeraviz")
+```
+
+##### Extract the fusion junction sequence
+
+You can create a file containing the fusion junction sequence like this:
+
+```{r}
+referenceFilename <- "reference.fa"
+writeFusionReference(fusion = fusion, filename = referenceFilename)
+```
+
+This will create a fasta file with the sequence.
+
+##### Map fusion reads to the fusion junction sequence
+
+The goal in this step is to align the reads you have against the fusion junction sequence. There are many ways to do this. `cimeraviz` offers wrapper functions for both Bowtie and Rsubread:
+
+* Bowtie is an ultrafast and memory-efficient tool for aligning sequencing reads to reference sequences (read more [here](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)). Note that both Bowtie 1 and 2 can be used.
+* Rsubread is an R package that performs (among other things) read alignment (read more [here](https://bioconductor.org/packages/release/bioc/html/Rsubread.html)).
+
+We have to first create an index for our reference sequence, the fusion junction sequence. Then we will align the reads against the reference. The steps are similar for both Bowtie and Rsubread:
+
+###### Bowtie
+
+```{r, eval=FALSE}
+# First load the bowtie functions
+source(system.file(
+  "scripts",
+  "bowtie.R",
+  package="chimeraviz"))
+# Then create index
+bowtieIndex(
+  bowtieBuildLocation = "/path/to/bowtie-build",
+  referenceFasta = referenceFilename)
+# And align
+outputBamFilename = "fusionAlignment"
+bowtieAlign(
+  bowtieLocation = "/path/to/bowtie",
+  referenceName = referenceFilename,
+  fastq1 = fastq1,
+  fastq2 = fastq2,
+  outputBamFilename = outputbam)
+```
+
+The code above first loads the bowtie wrapper functions. This is necessary because the wrapper functions are not part of the `chimeraviz` package, but are added as external scripts. We then create an index for the reference sequence, and align the fusion reads to the reference. The result of this will be the files `fusionAlignment.bam` and `fusionAlignment.bam.bai`, plus some additional files that Bowtie creates for indexing.
+
+Note that you can use the parameter `p` with `bowtieAlign` to tell bowtie how many threads to use. The more you have available, the faster the alignment will complete.
+
+###### Rsubread
+
+```{r, eval=FALSE}
+# First load the rsubread functions
+source(system.file(
+  "scripts",
+  "rsubread.R",
+  package="chimeraviz"))
+# Then create index
+rsubreadIndex(referenceFasta = referenceFilename)
+# And align
+outputBamFilename = "fusionAlignment"
+rsubreadAlign(
+  referenceName = referenceFilename,
+  fastq1 = fastq1,
+  fastq2 = fastq2,
+  outputBamFilename = outputBamFilename)
+```
+
+The code above first loads the rsubread wrapper functions. This is necessary because the wrapper functions are not part of the `chimeraviz` package, but are added as external scripts. We then create an index for the reference sequence, and align the fusion reads to the reference. The result of this will be the files `fusionAlignment.bam` and `fusionAlignment.bam.bai`, plus some additional files that Rsubread creates for indexing and aligning.
+
+###### A note on alignment performance
+
+If you're planning to align the original fastq files against the fusion junction sequence, note that the alignment might take a while. The original fastq files used to generate all chimeraviz example data were 7.3 GB each. Helping in this regard is the fact that many fusion finders report which reads supports each fusion event. deFuse does this with the script `get_fusion_fastq.pl` (introduced in version 0.7 of deFuse). Other fusion finders may only output which read ids supported each fusion event. In that case, chimeraviz will help the user extract specific read ids from the original fastq files using the function `fetchReadsFromFastq()`. The fastq files produced by `get_fusion_fastq.pl` and `fetchReadsFromFastq()` are much smaller, resulting in the alignment step only taking a few seconds.
+
+##### Example .bam file for this example
+
+We've included an example .bam file with `chimeraviz` that contains the reads supporting fusion event 5267 aligned to the fusion junction sequence. We will continue this example with this .bam file:
+
+```{r}
+if(!exists("bamfile5267"))
+  bamfile5267 <- system.file(
+    "extdata",
+    "5267readsAligned.bam",
+    package="chimeraviz")
+```
+
+#### 2. Import the alignment data into our fusion object
+
+Now that we have a .bam file with the fusion reads aligned to the fusion sequence, we can import it to our fusion object:
+
+```{r}
+# Add bamfile of fusion reads to the fusion oject
+fusion <- addFusionReadsAlignment(fusion, bamfile5267)
+```
+
+#### 3. Create the plot
+
+With all that done, we're ready to plot:
+
+```{r, message = FALSE, fig.height = 3, fig.width = 50, dev='png'}
+plotFusionReads(fusion)
+```
+
+## Fusion plot
+
+The fusion plot is the main product of `chimeraviz`, created with the `plotFusion` function. It will create a plot like this one:
+
+```{r, echo = FALSE, message = FALSE, fig.height = 7, fig.width = 10, dev='png'}
+# Load deFuse data
+if(!exists("defuse833ke"))
+  defuse833ke <- system.file(
+    "extdata",
+    "defuse_833ke_results.filtered.tsv",
+    package = "chimeraviz")
+fusions <- importDefuse(defuse833ke, "hg19", 1)
+# Choose a fusion object
+fusion <- getFusionById(fusions, 5267)
+# Load edb
+if(!exists("edbSqliteFile"))
+  edbSqliteFile <- system.file(
+    "extdata",
+    "Homo_sapiens.GRCh37.74.sqlite",
+    package="chimeraviz")
+edb <- ensembldb::EnsDb(edbSqliteFile)
+# bamfile with reads in the regions of this fusion event
+if(!exists("fusion5267and11759reads"))
+  fusion5267and11759reads <- system.file(
+   "extdata",
+   "fusion5267and11759reads.bam",
+   package = "chimeraviz")
+# Plot!
+plotFusion(
+ fusion = fusion,
+ bamfile = fusion5267and11759reads,
+ edb = edb,
+ nonUCSC = TRUE)
+```
+
+Or, alternatively:
+
+```{r, echo = FALSE, message = FALSE, fig.height = 5, fig.width = 10, dev='png'}
+# Plot!
+plotFusion(
+ fusion = fusion,
+ bamfile = bamfile5267,
+ edb = edb,
+ nonUCSC = TRUE,
+ reduceTranscripts = TRUE)
+```
+
+This plot holds a lot of information. You can see:
+
+- Chromosome ideograms showing location of the partner genes in each chromosome.
+- Transcript information showing exons in each partner gene.
+- The breakpoint between the partner genes, indicated with a red link.
+- Above the red link you can see the number of sequencing reads that support the fusion event.
+- Coverage information showing the RNA expression level.
+
+The fusion you can see above is the `RCC1-HENMT1` fusion described by Andreas M. Hoff et al. in the paper [Identification of Novel Fusion Genes in Testicular Germ Cell Tumors](http://cancerres.aacrjournals.org/content/76/1/108.full).
+
+Note that the plot reverses genes as necessary, so that the fused genes are plotted in the correct relative orientation.
+
+### Building the fusion plot
+
+In order to build the fusion plot we need a few things. We need:
+
+1. Information about a fusion event
+1. A way to get transcript information
+1. Coverage information from a bamfile
+
+We will go through these steps in turn.
+
+#### 1. Load fusion data and find a fusion event
+
+For this example we will load data from a deFuse run. deFuse, described in the paper [deFuse: An Algorithm for Gene Fusion Discovery in Tumor RNA-Seq Data](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1001138), is a Perl program that nominates possible gene fusions given RNA-seq data. `chimeraviz` includes example data from a deFuse run, so let's load it using the `importDefuse()` function:
+
+```{r}
+# First find the example data
+if(!exists("defuse833ke"))
+  defuse833ke <- system.file(
+    "extdata",
+    "defuse_833ke_results.filtered.tsv",
+    package = "chimeraviz")
+# Then load the fusion events
+fusions <- importDefuse(defuse833ke, "hg19", 1)
+```
+
+We should now have a list of fusion events in the `fusions` variable.
+
+Let's try to find the `RCC1-HENMT1` fusion. In order to do that we will first search our list of fusion events for fusions involving the gene `RCC1` using the function `getFusionByGeneName()`:
+
+```{r}
+# See if we can find any fusions involving RCC1
+getFusionByGeneName(fusions, "RCC1")
+```
+
+As you can see, we found one fusion event involving this gene. Let's use the `getFusionById()` function to retrieve the fusion event:
+
+```{r}
+# See if we can find any fusions involving RCC1
+fusion <- getFusionById(fusions, 5267)
+```
+
+We now have the fusion event we want to plot in the variable `fusion`.
+
+#### 2. Create an ensembldb object
+
+In order to get transcript information we'll use the some functions from the `ensembldb` package. We will use an `EnsDb` object to retrieve transcript information for each of the partner genes in our fusion event. Let's load an example `EnsDb` object:
+
+```{r}
+# First find our example EnsDb file
+if(!exists("edbSqliteFile"))
+  edbSqliteFile <- system.file(
+    "extdata",
+    "Homo_sapiens.GRCh37.74.sqlite",
+    package="chimeraviz")
+# Then load it
+edb <- ensembldb::EnsDb(edbSqliteFile)
+```
+
+This example object, loaded from the file `Homo_sapiens.GRCh37.74.sqlite` that is distributed with `chimeraviz`, only holds transcript data for our specific example fusion transcript. If you want to, you can create a full `EnsDb` by downloding Ensembl data and creating an `EnsDb` object like this:
+
+```{r, eval = FALSE}
+# Create EnsDb from a downloaded .gtf file
+edb <- ensDbFromGtf(gtf = "Homo_sapiens.GRCh37.74.gtf")
+# The function above create a .sqlite file, like the one that is included with
+# chimeraviz. The path to the file is stored in the edb variable. To load the
+# database, do this:
+edb <- ensembldb::EnsDb(edb)
+```
+
+If you choose to do this, note that it might take some time. You only have to do it once, though. The .sqlite file that `ensDbFromGtf` creates can be used in later sessions, like this:
+
+```{r, eval = FALSE}
+# Create an edb object directly from the .sqlite file
+edb <- ensembldb::EnsDb("Homo_sapiens.GRCh37.74.sqlite")
+```
+
+#### 3. Coverage information from a bamfile
+
+We need a .bam file if we want to show coverage information in the fusion plot. `chimeraviz` includes an example .bam file that contains only the reads in the region of `RCC1` and `HENMT1`. We only need a variable pointing to it:
+
+```{r}
+if(!exists("fusion5267and11759reads"))
+  fusion5267and11759reads <- system.file(
+    "extdata",
+    "fusion5267and11759reads.bam",
+    package = "chimeraviz")
+```
+
+### Plotting the example fusion event
+
+With the fusion event, transcript database and bamfile ready, we can create our plot with the function `plotFusion()`:
+
+```{r, message = FALSE, fig.height = 7, fig.width = 10, dev='png'}
+plotFusion(
+ fusion = fusion,
+ bamfile = fusion5267and11759reads,
+ edb = edb,
+ nonUCSC = TRUE)
+```
+
+To reduce all transcripts into one, use the `reduceTranscripts` parameter:
+
+```{r, message = FALSE, fig.height = 5, fig.width = 10, dev='png'}
+plotFusion(
+ fusion = fusion,
+ bamfile = bamfile5267,
+ edb = edb,
+ nonUCSC = TRUE,
+ reduceTranscripts = TRUE)
+```
+
+Note the `nonUCSC` parameter we're setting to `TRUE`. If the chromosome names in your .bam file are called "1" instead of "chr1", then you need to set `nonUCSC = TRUE` when using `plotFusion()`.
+
+## Fusion transcripts plot
+
+If you're only interested in the transcripts of each partner gene in a fusion event, then it is not necessary to show all the information that is in the fusion plot. The transcripts plot is designed to give a simple view on the transcripts that might be included in the fusion transcript. It can be created like this:
+
+```{r, message = FALSE, fig.height = 5, fig.width = 10, dev='png'}
+# Load deFuse data
+if(!exists("defuse833ke"))
+  defuse833ke <- system.file(
+    "extdata",
+    "defuse_833ke_results.filtered.tsv",
+    package = "chimeraviz")
+fusions <- importDefuse(defuse833ke, "hg19", 1)
+# Choose a fusion object
+fusion <- getFusionById(fusions, 5267)
+# Load edb
+if(!exists("edbSqliteFile"))
+  edbSqliteFile <- system.file(
+    "extdata",
+    "Homo_sapiens.GRCh37.74.sqlite",
+    package="chimeraviz")
+edb <- ensembldb::EnsDb(edbSqliteFile)
+# Plot!
+plotTranscripts(
+  fusion = fusion,
+  edb = edb)
+```
+
+The transcripts of the upstream gene is shown on top, and the transcripts of the downstream gene is shown on the bottom of the figure. As before, the exons that might be part of the fusion transcript are in darker colors. The interesting exons are also highlighted with gray boxes. Below each transcript, the gene name and the Ensembl transcript id is shown. This transcripts plot can also be shown with coverage data, if you're interested in seeing expression levels:
+
+```{r, message = FALSE, fig.height = 5, fig.width = 10, dev='png'}
+# Choose a fusion object
+fusion <- getFusionById(fusions, 5267)
+# Load edb
+if(!exists("edbSqliteFile"))
+  edbSqliteFile <- system.file(
+    "extdata",
+    "Homo_sapiens.GRCh37.74.sqlite",
+    package="chimeraviz")
+edb <- ensembldb::EnsDb(edbSqliteFile)
+# Get reference to the .BAM file
+if(!exists("fusion5267and11759reads"))
+  fusion5267and11759reads <- system.file(
+    "extdata",
+    "fusion5267and11759reads.bam",
+    package="chimeraviz")
+# Plot!
+plotTranscripts(
+  fusion = fusion,
+  edb = edb,
+  bamfile = fusion5267and11759reads,
+  nonUCSC = TRUE)
+```
+
+Similar to the fusion plot, it is also possible to reduce the transcripts for both genes into a single transcript track. Note the use of the parameter ylim to set a fixed limit for both y-axes in the plot:
+
+```{r, message = FALSE, fig.height = 5, fig.width = 10, dev='png'}
+# Load deFuse data
+if(!exists("defuse833ke"))
+  defuse833ke <- system.file(
+  "extdata",
+  "defuse_833ke_results.filtered.tsv",
+  package="chimeraviz")
+fusions <- importDefuse(defuse833ke, "hg19", 1)
+# Choose a fusion object
+fusion <- getFusionById(fusions, 5267)
+# Load edb
+if(!exists("edbSqliteFile"))
+  edbSqliteFile <- system.file(
+    "extdata",
+    "Homo_sapiens.GRCh37.74.sqlite",
+    package="chimeraviz")
+edb <- ensembldb::EnsDb(edbSqliteFile)
+# Get reference to the .BAM file
+if(!exists("fusion5267and11759reads"))
+  fusion5267and11759reads <- system.file(
+    "extdata",
+    "fusion5267and11759reads.bam",
+    package="chimeraviz")
+# Plot!
+plotTranscripts(
+  fusion = fusion,
+  edb = edb,
+  bamfile = fusion5267and11759reads,
+  nonUCSC = TRUE,
+  reduceTranscripts = TRUE,
+  ylim = c(0,1000))
+```
+
+## Fusion transcript plot
+
+The fusion transcript plot shows the reduced version of all exons that could be part of a fusion transcript. This is a way to view all the possible parts of a fusion transcript merged into one.
+
+```{r, message = FALSE, fig.height = 2, fig.width = 10, dev='png'}
+# Load deFuse data
+if(!exists("defuse833ke"))
+  defuse833ke <- system.file(
+    "extdata",
+    "defuse_833ke_results.filtered.tsv",
+    package="chimeraviz")
+fusions <- importDefuse(defuse833ke, "hg19", 1)
+# Choose a fusion object
+fusion <- getFusionById(fusions, 5267)
+# Load edb
+if(!exists("edbSqliteFile"))
+  edbSqliteFile <- system.file(
+    "extdata",
+    "Homo_sapiens.GRCh37.74.sqlite",
+    package="chimeraviz")
+edb <- ensembldb::EnsDb(edbSqliteFile)
+# Plot!
+plotFusionTranscript(
+  fusion,
+  edb)
+```
+
+As with previous visualizations, coverage data can be added.
+
+```{r, message = FALSE, fig.height = 4, fig.width = 10, dev='png'}
+# Load deFuse data
+if(!exists("defuse833ke"))
+  defuse833ke <- system.file(
+    "extdata",
+    "defuse_833ke_results.filtered.tsv",
+    package="chimeraviz")
+fusions <- importDefuse(defuse833ke, "hg19", 1)
+# Choose a fusion object
+fusion <- getFusionById(fusions, 5267)
+# Load edb
+if(!exists("edbSqliteFile"))
+  edbSqliteFile <- system.file(
+    "extdata",
+    "Homo_sapiens.GRCh37.74.sqlite",
+    package="chimeraviz")
+edb <- ensembldb::EnsDb(edbSqliteFile)
+# Get reference to the .BAM file
+if(!exists("fusion5267and11759reads"))
+  fusion5267and11759reads <- system.file(
+    "extdata",
+    "fusion5267and11759reads.bam",
+    package="chimeraviz")
+# Plot!
+plotFusionTranscript(
+  fusion,
+  edb,
+  fusion5267and11759reads)
+```
+
+The fusion transcript plot merges the available transcripts of both genes, remove the parts that are not possible parts of the fusion transcript, and puts the included parts together into a new transcript. With the coverage data included, it is easy to see the expression levels of the parts that might be included in a fusion transcript.
+
+## Fusion transcript graph plot
+
+All that is known about a fusion event is that a fusion finder has scored a possible link between two genes. If there are four variants of the upstream gene partner, and four variants of the downstream gene partner, then there are in total 16 different ways the fusion transcript could be put together. And that's only if we count the known, annotated versions of each gene. How can we make sense of all this? Plotting the transcript together as in previous plots helps, but there is a better way to visualize the putative fusion transcript: As a graph. By representing transcripts as a graph, with exons as nodes and splice junctions as edges, it is much easier to get a view on what the putative fusion transcript could look like.
+
+```{r, message = FALSE, fig.height = 5, fig.width = 10, dev='png'}
+# Load deFuse data
+if(!exists("defuse833ke"))
+  defuse833ke <- system.file(
+    "extdata",
+    "defuse_833ke_results.filtered.tsv",
+    package="chimeraviz")
+fusions <- importDefuse(defuse833ke, "hg19", 1)
+# Choose a fusion object
+fusion <- getFusionById(fusions, 5267)
+# Plot!
+plotFusionTranscriptsGraph(
+  fusion,
+  edb)
+```
+
+As in previous plots, exons from the upstream gene are shown in blue, and exons from the downstream gene are shown in green. This graph plot is a compact view of all possible fusion transcripts based on the known exon boundary transcripts. It is easy to see that there are four possible versions of the first exon in the upstream gene. In the downstream gene, all transcripts first use the same six exons, but they differ in the end. In total, sixteen different transcript variants for the fusion transcript is shown in the graph.
+
+# Reporting and filtering
+
+## Working with Fusion objects
+
+There are nine different functions that let's you import fusion data, one for each fusion finder:
+
+1. `importDefuse()`
+1. `importEricscript()`
+1. `importFusioncatcher()`
+1. `importFusionmap()`
+1. `importInfusion()`
+1. `importJaffa()`
+1. `importPrada()`
+1. `importSoapfuse()`
+1. `importStarfusion()`
+
+Let's continue working with the deFuse example data included with _chimeraviz_:
+
+```{r, message = FALSE}
+# Get reference to results file from deFuse
+if(!exists("defuse833ke"))
+  defuse833ke <- system.file(
+    "extdata",
+    "defuse_833ke_results.filtered.tsv",
+    package="chimeraviz")
+
+# Load the results file into a list of fusion objects
+fusions <- importDefuse(defuse833ke, "hg19")
+```
+
+There are three helpful functions that allows you to manage your list of fusion objects:
+
+```{r, message = FALSE}
+# Get a specific fusion object by id
+getFusionById(fusions, 5267)
+
+# Get all fusions with a matching gene name
+length(getFusionByGeneName(fusions, "RCC1"))
+
+# Get all fusions on a specific chromosome
+length(getFusionByChromosome(fusions, "chr1"))
+```
+
+## The fusion report
+
+Creating a fusion report based on a list of fusion events is a nice way to get an overview on the fusions in a sample. The function `createFusionReport(fusions, "output.html")` will create an HTML page with an overview plot and a table of searchable, sortable fusion data. The function can be used like this:
+
+```{r, eval = FALSE, echo = TRUE, message = FALSE}
+# Load SOAPfuse data
+if(!exists("soapfuse833ke"))
+  soapfuse833ke <- system.file(
+    "extdata",
+    "soapfuse_833ke_final.Fusion.specific.for.genes",
+    package = "chimeraviz")
+fusions <- importSoapfuse(soapfuse833ke, "hg38", 10)
+# Create report!
+createFusionReport(fusions, "output.html")
+```
+
+The result will be a file, `output.html`, that will look somewhat like this:
+
+```{r, echo = FALSE, message = FALSE, fig.height = 7, fig.width = 7, fig.align='center', dev='png'}
+# Load SOAPfuse data
+if(!exists("defuse833ke"))
+  defuse833ke <- system.file(
+    "extdata",
+    "defuse_833ke_results.filtered.tsv",
+    package="chimeraviz")
+fusions <- importDefuse(defuse833ke, "hg19")
+# Plot!
+plotCircle(fusions)
+```
+
+```{r, echo = FALSE}
+# with the as.data.frame.Fusion function above, we can use ldply() from the plyr package to create a data frame of our fusion objects:
+dfFusions <- plyr::ldply(fusions, fusionToDataFrame)
+
+# with this data frame, we can use datatable() from the DT package to create an html sortable table:
+DT::datatable(dfFusions, filter = 'top')
+```
+
+# Session Information
+
+All code in this vignette was executed in the following environment:
+
+```{r}
+sessionInfo()
+```
