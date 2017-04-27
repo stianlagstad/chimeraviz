@@ -45,7 +45,7 @@ test_that("plotFusionTranscriptWithProteinDomain produces a png file", {
       geneAtranscript = geneAtranscript,
       geneBtranscript = geneBtranscript,
       plotDownstreamProteinDomainsIfFusionIsOutOfFrame = TRUE),
-    "The fusion is out of frame, but since plotDownstreamProteinDomainsIfFusionIsOutOfFrame = TRUE, we'll consider them anyway..")
+    "No protein domains are retained in the downstream gene, because the fusion is not in frame. But since plotDownstreamProteinDomainsIfFusionIsOutOfFrame = TRUE, we'll plot the protein domains in the downstream gene anyway..")
   # Close device
   dev.off()
   # See if we actually produced a file with size > 0
