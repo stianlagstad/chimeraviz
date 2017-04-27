@@ -19,6 +19,8 @@
 #' "chr1" and "chrX".
 #' @param reduceTranscripts Boolean indicating whether or not to reduce all
 #' transcripts into a single transcript for each partner gene.
+#' @param bedgraphfile A bedGraph file to use instead of the bamfile to plot
+#' coverage.
 #'
 #' @return Creates a fusion transcripts plot.
 #'
@@ -57,6 +59,41 @@
 #' # Close device
 #' dev.off()
 #'
+#' # Example using a .bedGraph file instead of a .bam file:
+#' # Load data and example fusion event
+#' defuse833ke <- system.file(
+#'   "extdata",
+#'   "defuse_833ke_results.filtered.tsv",
+#'   package="chimeraviz")
+#' fusions <- importDefuse(defuse833ke, "hg19", 1)
+#' fusion <- getFusionById(fusions, 5267)
+#' # Load edb
+#' edbSqliteFile <- system.file(
+#'   "extdata",
+#'   "Homo_sapiens.GRCh37.74.sqlite",
+#'   package="chimeraviz")
+#' edb <- ensembldb::EnsDb(edbSqliteFile)
+#' # bedgraphfile with coverage data from the regions of this fusion event
+#' bedgraphfile <- system.file(
+#'   "extdata",
+#'   "fusion5267and11759reads.bedGraph",
+#'   package="chimeraviz")
+#' # Temporary file to store the plot
+#' pngFilename <- tempfile(
+#'   pattern = "fusionPlot",
+#'   fileext = ".png",
+#'   tmpdir = tempdir())
+#' # Open device
+#' png(pngFilename, width = 500, height = 500)
+#' # Plot!
+#' plotTranscripts(
+#'   fusion = fusion,
+#'   edb = edb,
+#'   bedgraphfile = bedgraphfile,
+#'   nonUCSC = TRUE)
+#' # Close device
+#' dev.off()
+#'
 #' @importFrom ensembldb EnsDb
 #'
 #' @export
@@ -67,9 +104,18 @@ plotTranscripts <- function(
   whichTranscripts = "exonBoundary",
   nonUCSC = TRUE,
   ylim = c(0,1000),
-  reduceTranscripts = FALSE) {
+  reduceTranscripts = FALSE,
+  bedgraphfile = NULL) {
 
-  .validatePlotFusionTranscriptsParams(fusion, edb, bamfile, whichTranscripts, nonUCSC, ylim, reduceTranscripts)
+  .validatePlotFusionTranscriptsParams(
+    fusion,
+    edb,
+    bamfile,
+    whichTranscripts,
+    nonUCSC,
+    ylim,
+    reduceTranscripts,
+    bedgraphfile)
   fusion <- .getTranscriptsIfNotThere(fusion, edb)
 
   # Select which transcripts to use
@@ -292,42 +338,72 @@ plotTranscripts <- function(
   }
 
   # Plot coverage?
-  if (!is.null(bamfile)) {
+  if (!is.null(bamfile) || !is.null(bedgraphfile)) {
     # Create alignment track
-    if (nonUCSC) {
-      # If the bam file has non-ucsc chromosome names, i.e. "1" instead of "chr1",
-      # then we need to use a custom import function that adds "chr" to the
-      # chromosome names, to keep Gviz happy. Gviz strongly prefers having the
-      # "chr" prefix.
-      alTrack <- Gviz::AlignmentsTrack(
-        bamfile,
-        isPaired = TRUE,
-        genome = fusion@genomeVersion,
-        ylim = ylim,
-        importFunction = importFunctionNonUCSC)
+    if (!is.null(bamfile)) {
+      # We're getting coverage data from a bam file
+      if (nonUCSC) {
+        # If the bam file has non-ucsc chromosome names, i.e. "1" instead of "chr1",
+        # then we need to use a custom import function that adds "chr" to the
+        # chromosome names, to keep Gviz happy. Gviz strongly prefers having the
+        # "chr" prefix.
+        alTrack <- Gviz::AlignmentsTrack(
+          bamfile,
+          isPaired = TRUE,
+          genome = fusion@genomeVersion,
+          ylim = ylim,
+          importFunction = importFunctionNonUCSC)
+      } else {
+        alTrack <- Gviz::AlignmentsTrack(
+          bamfile,
+          isPaired = TRUE,
+          genome = fusion@genomeVersion,
+          ylim = ylim)
+      }
+      # Set display paramters
+      Gviz::displayPars(alTrack) <- list(
+        showTitle = FALSE, # hide name of track
+        background.panel = "transparent", # background color of the content panel
+        background.title = "transparent", # background color for the title panels
+        col.axis = "black",
+        col.coverage = "black",
+        col.title = "black",
+        fill.coverage = "orange",
+        fontsize = 15,
+        lwd.coverage = 0.4,
+        type = "coverage",
+        cex.title = .8,
+        cex.axis = .6,
+        show
+      )
     } else {
-      alTrack <- Gviz::AlignmentsTrack(
-        bamfile,
-        isPaired = TRUE,
-        genome = fusion@genomeVersion,
-        ylim = ylim)
+      # We're getting coverage data from a bedGraph file
+      alTrack <- DataTrack(
+        range = bedgraphfile,
+        ylim = ylim,
+        genome = "hg19",
+        name = "Coverage",
+        type = "h",
+        col = 'orange',
+        fill = 'orange')
+      # Set display parameters
+      Gviz::displayPars(alTrack) <- list(
+        showTitle = FALSE, # hide name of track
+        background.panel = "transparent", # background color of the content panel
+        background.title = "transparent", # background color for the title panels
+        cex.axis = .6,
+        cex.title = .6,
+        col.axis = "black",
+        col.coverage = "black",
+        col.title = "black",
+        coverageHeight = 0.08,
+        fill.coverage = "orange",
+        fontsize = 15,
+        lty = 1,
+        lty.coverage = 1,
+        lwd = 0.5
+      )
     }
-    # Set display paramters
-    Gviz::displayPars(alTrack) <- list(
-      showTitle = FALSE, # hide name of track
-      background.panel = "transparent", # background color of the content panel
-      background.title = "transparent", # background color for the title panels
-      col.axis = "black",
-      col.coverage = "black",
-      col.title = "black",
-      fill.coverage = "orange",
-      fontsize = 15,
-      lwd.coverage = 0.4,
-      type = "coverage",
-      cex.title = .8,
-      cex.axis = .6,
-      show
-    )
 
     # Highlight coverage tracks
 
@@ -384,7 +460,7 @@ plotTranscripts <- function(
   grid::pushViewport(grid::viewport(layout.pos.row = 1, layout.pos.col = 1))
   # Plot transcriptsA and coverage with highlight
   # Plot coverage?
-  if (!is.null(bamfile)) {
+  if (!is.null(bamfile) || !is.null(bedgraphfile)) {
 
     # Only plot highlight tracks if we actually have transcripts that has the
     # fusion breakpoint within them
@@ -394,6 +470,8 @@ plotTranscripts <- function(
       Gviz::plotTracks(
         collapse = FALSE, # without this gviz create cluster_X entries in the GeneRegionTrack
         list(grTrackHighlightA, alTrackHighlightA),
+        from = min(start(trAtrack)),
+        to = max(end(trAtrack)),
         sizes = c(5, 2),
         add = TRUE,
         margin = 3,
@@ -404,6 +482,8 @@ plotTranscripts <- function(
       Gviz::plotTracks(
         collapse = FALSE, # without this gviz create cluster_X entries in the GeneRegionTrack
         list(trAtrack, alTrack),
+        from = min(start(trAtrack)),
+        to = max(end(trAtrack)),
         sizes = c(5, 2),
         add = TRUE,
         margin = 3,
@@ -420,6 +500,8 @@ plotTranscripts <- function(
       Gviz::plotTracks(
         collapse = FALSE, # without this gviz create cluster_X entries in the GeneRegionTrack
         grTrackHighlightA,
+        from = min(start(trAtrack)),
+        to = max(end(trAtrack)),
         add = TRUE,
         margin = 3,
         innerMargin = 0,
@@ -429,6 +511,8 @@ plotTranscripts <- function(
       Gviz::plotTracks(
         collapse = FALSE, # without this gviz create cluster_X entries in the GeneRegionTrack
         trAtrack,
+        from = min(start(trAtrack)),
+        to = max(end(trAtrack)),
         add = TRUE,
         margin = 3,
         innerMargin = 0,
@@ -443,7 +527,7 @@ plotTranscripts <- function(
   grid::pushViewport(grid::viewport(layout.pos.row = 2, layout.pos.col = 1))
   # Plot transcriptsA and coverage with highlight
   # Plot coverage?
-  if (!is.null(bamfile)) {
+  if (!is.null(bamfile) || !is.null(bedgraphfile)) {
     # Only plot highlight tracks if we actually have transcripts that has the
     # fusion breakpoint within them
     if (any(start(trBtrack) < fusion@geneB@breakpoint) &&
@@ -452,6 +536,8 @@ plotTranscripts <- function(
       Gviz::plotTracks(
         collapse = FALSE, # without this gviz create cluster_X entries in the GeneRegionTrack
         list(grTrackHighlightB, alTrackHighlightB),
+        from = min(start(trBtrack)),
+        to = max(end(trBtrack)),
         sizes = c(5, 2),
         add = TRUE,
         margin = 3,
@@ -462,6 +548,8 @@ plotTranscripts <- function(
       Gviz::plotTracks(
         collapse = FALSE, # without this gviz create cluster_X entries in the GeneRegionTrack
         list(trBtrack, alTrackHighlightB),
+        from = min(start(trBtrack)),
+        to = max(end(trBtrack)),
         sizes = c(5, 2),
         add = TRUE,
         margin = 3,
@@ -478,6 +566,8 @@ plotTranscripts <- function(
       Gviz::plotTracks(
         collapse = FALSE, # without this gviz create cluster_X entries in the GeneRegionTrack
         grTrackHighlightB,
+        from = min(start(trBtrack)),
+        to = max(end(trBtrack)),
         add = TRUE,
         margin = 3,
         innerMargin = 0,
@@ -487,6 +577,8 @@ plotTranscripts <- function(
       Gviz::plotTracks(
         collapse = FALSE, # without this gviz create cluster_X entries in the GeneRegionTrack
         trAtrack,
+        from = min(start(trBtrack)),
+        to = max(end(trBtrack)),
         add = TRUE,
         margin = 3,
         innerMargin = 0,
@@ -505,7 +597,8 @@ plotTranscripts <- function(
   whichTranscripts,
   nonUCSC,
   ylim,
-  reduceTranscripts
+  reduceTranscripts,
+  bedgraphfile
 ) {
   # Establish a new 'ArgCheck' object
   argument_checker <- ArgumentCheck::newArgCheck()
@@ -513,8 +606,20 @@ plotTranscripts <- function(
   # Check parameters
   argument_checker <- .is.fusion.valid(argument_checker, fusion)
   argument_checker <- .is.edb.valid(argument_checker, edb, fusion)
-  if (!is.null(bamfile)) {
+  # Either bamfile or bedgraphfile can be given, not both
+  bamfileGiven <- !is.null(bamfile)
+  bedgraphfileGiven <- !is.null(bedgraphfile)
+  if (bamfileGiven && bedgraphfileGiven) {
+    ArgumentCheck::addError(
+      msg = "Either 'bamfile' or 'bedgraphfile' must be given, not both.",
+      argcheck = argument_checker
+    )
+  }
+  if (bamfileGiven) {
     argument_checker <- .is.bamfile.valid(argument_checker, bamfile)
+  }
+  if (bedgraphfileGiven) {
+    argument_checker <- .is.bedgraphfile.valid(argument_checker, bedgraphfile)
   }
   argument_checker <- .is.whichTranscripts.valid(
     argument_checker,

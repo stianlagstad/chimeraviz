@@ -17,6 +17,8 @@
 #' to be plotted. Can be "exonBoundary", "withinExon", "withinIntron",
 #' "intergenic", or a character vector with specific transcript ids. Default
 #' value is "exonBoundary".
+#' @param bedgraphfile A bedGraph file to use instead of the bamfile to plot
+#' coverage.
 #'
 #' @return Creates a fusion transcript plot.
 #'
@@ -54,14 +56,49 @@
 #' # Close device
 #' dev.off()
 #'
+#' # Example using a .bedGraph file instead of a .bam file:
+#' # Load data and example fusion event
+#' defuse833ke <- system.file(
+#'   "extdata",
+#'   "defuse_833ke_results.filtered.tsv",
+#'   package="chimeraviz")
+#' fusions <- importDefuse(defuse833ke, "hg19", 1)
+#' fusion <- getFusionById(fusions, 5267)
+#' # Load edb
+#' edbSqliteFile <- system.file(
+#'   "extdata",
+#'   "Homo_sapiens.GRCh37.74.sqlite",
+#'   package="chimeraviz")
+#' edb <- ensembldb::EnsDb(edbSqliteFile)
+#' # bedgraphfile with coverage data from the regions of this fusion event
+#' bedgraphfile <- system.file(
+#'   "extdata",
+#'   "fusion5267and11759reads.bedGraph",
+#'   package="chimeraviz")
+#' # Temporary file to store the plot
+#' pngFilename <- tempfile(
+#'   pattern = "fusionPlot",
+#'   fileext = ".png",
+#'   tmpdir = tempdir())
+#' # Open device
+#' png(pngFilename, width = 500, height = 500)
+#' # Plot!
+#' plotFusionTranscript(
+#'   fusion = fusion,
+#'   bamfile = bamfile5267,
+#'   edb = edb)
+#' # Close device
+#' dev.off()
+#'
 #' @export
 plotFusionTranscript <- function(
   fusion,
   edb = NULL,
   bamfile = NULL,
-  whichTranscripts = "exonBoundary") {
+  whichTranscripts = "exonBoundary",
+  bedgraphfile = NULL) {
 
-  .validatePlotFusionTranscriptParams(fusion, edb, bamfile, whichTranscripts)
+  .validatePlotFusionTranscriptParams(fusion, edb, bamfile, whichTranscripts, bedgraphfile)
   fusion <- .getTranscriptsIfNotThere(fusion, edb)
 
   # Select which transcripts to use
@@ -121,7 +158,9 @@ plotFusionTranscript <- function(
   # If we've got a bamfile, calculate coverage
   if (!is.null(bamfile)) {
     # Get coverage
-    cov <- coverage(bamfile, param = Rsamtools::ScanBamParam(which = fusionTranscript))
+    cov <- GenomicAlignments::coverage(
+      bamfile,
+      param = Rsamtools::ScanBamParam(which = fusionTranscript))
     # Coverage only for my transcript
     cov <- cov[fusionTranscript]
     # Unlist
@@ -140,6 +179,33 @@ plotFusionTranscript <- function(
       col = 'orange',
       fill = 'orange',
       data = cov)
+    # Set display parameters
+    Gviz::displayPars(dTrack) <- list(
+      showTitle = FALSE, # hide name of track
+      background.panel = "transparent", # background color of the content panel
+      background.title = "transparent", # background color for the title panels
+      cex.axis = .6,
+      cex.title = .6,
+      col.axis = "black",
+      col.coverage = "black",
+      col.title = "black",
+      coverageHeight = 0.08,
+      fill.coverage = "orange",
+      fontsize = 15,
+      lty = 1,
+      lty.coverage = 1,
+      lwd = 0.5
+    )
+  } else if (!is.null(bedgraphfile)) {
+    # We're getting coverage data from a bedGraph file
+    dTrack <- DataTrack(
+      range = bedgraphfile,
+      genome = "hg19",
+      chromosome = "chrNA",
+      name = "Coverage",
+      type = "h",
+      col = 'orange',
+      fill = 'orange')
     # Set display parameters
     Gviz::displayPars(dTrack) <- list(
       showTitle = FALSE, # hide name of track
@@ -210,7 +276,7 @@ plotFusionTranscript <- function(
   )
 
   # If we've got a bamfile, plot with coverage
-  if (!is.null(bamfile)) {
+  if (!is.null(bamfile) || !is.null(bedgraphfile)) {
     Gviz::plotTracks(
       list(dTrack, trTrack, axisTrack),
       main = paste(fusion@geneA@name, fusion@geneB@name, sep = ":"),
@@ -228,7 +294,8 @@ plotFusionTranscript <- function(
   fusion,
   edb,
   bamfile,
-  whichTranscripts
+  whichTranscripts,
+  bedgraphfile
 ) {
   # Establish a new 'ArgCheck' object
   argument_checker <- ArgumentCheck::newArgCheck()
@@ -236,8 +303,20 @@ plotFusionTranscript <- function(
   # Check parameters
   argument_checker <- .is.fusion.valid(argument_checker, fusion)
   argument_checker <- .is.edb.valid(argument_checker, edb, fusion)
-  if (!is.null(bamfile)) {
+  # Either bamfile or bedgraphfile can be given, not both
+  bamfileGiven <- !is.null(bamfile)
+  bedgraphfileGiven <- !is.null(bedgraphfile)
+  if (bamfileGiven && bedgraphfileGiven) {
+    ArgumentCheck::addError(
+      msg = "Either 'bamfile' or 'bedgraphfile' must be given, not both.",
+      argcheck = argument_checker
+    )
+  }
+  if (bamfileGiven) {
     argument_checker <- .is.bamfile.valid(argument_checker, bamfile)
+  }
+  if (bedgraphfileGiven) {
+    argument_checker <- .is.bedgraphfile.valid(argument_checker, bedgraphfile)
   }
   argument_checker <- .is.whichTranscripts.valid(
     argument_checker,
