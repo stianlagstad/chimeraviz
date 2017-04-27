@@ -588,6 +588,66 @@ plotFusionTranscript(
 
 The fusion transcript plot merges the available transcripts of both genes, remove the parts that are not possible parts of the fusion transcript, and puts the included parts together into a new transcript. With the coverage data included, it is easy to see the expression levels of the parts that might be included in a fusion transcript.
 
+## Fusion transcript plot with protein domain annotations
+
+The fusion transcript plot with protein domain annotations shows a specific fusion transcript along with protein domain annotation data. If a bamfile is specified, the fusion transcript will be plotted with coverage information as well.
+
+```{r, message = FALSE, fig.height = 2, fig.width = 10, dev='png'}
+# Load deFuse data
+if(!exists("defuse833ke"))
+  defuse833ke <- system.file(
+    "extdata",
+    "defuse_833ke_results.filtered.tsv",
+    package="chimeraviz")
+fusions <- importDefuse(defuse833ke, "hg19", 1)
+# Choose a fusion object
+fusion <- getFusionById(fusions, 5267)
+# Select transcripts
+geneAtranscript <- "ENST00000434290"
+geneBtranscript <- "ENST00000370031"
+# Load edb
+if(!exists("edbSqliteFile"))
+  edbSqliteFile <- system.file(
+    "extdata",
+    "Homo_sapiens.GRCh37.74.sqlite",
+    package="chimeraviz")
+edb <- ensembldb::EnsDb(edbSqliteFile)
+# bamfile with reads in the regions of this fusion event
+if(!exists("fusion5267and11759reads"))
+  fusion5267and11759reads <- system.file(
+    "extdata",
+    "fusion5267and11759reads.bam",
+    package="chimeraviz")
+# bedfile with protein domains for the transcripts in this example
+if(!exists("bedfile"))
+  bedfile <- system.file(
+    "extdata",
+    "protein_domains_5267.bed",
+    package="chimeraviz")
+# Plot!
+plotFusionTranscriptWithProteinDomain(
+      fusion = fusion,
+      edb = edb,
+      bamfile = fusion5267and11759reads,
+      bedfile = bedfile,
+      geneAtranscript = geneAtranscript,
+      geneBtranscript = geneBtranscript,
+      plotDownstreamProteinDomainsIfFusionIsOutOfFrame = TRUE)
+```
+
+Note the optional parameter `plotDownstreamProteinDomainsIfFusionIsOutOfFrame`. This let's the user see protein domains in the downstream gene even though the reading frame is not kept in the fusion.
+
+This plot requires a bed file that contains the transcript level coordinates of protein domains. The bed file must be in this format:
+
+```{r, echo = FALSE, message = FALSE, results = 'asis'}
+bedfile <- system.file(
+  "extdata",
+  "protein_domains_5267.bed",
+  package="chimeraviz")
+bedfile_contents <- readr::read_tsv(bedfile)
+knitr::kable(bedfile_contents)
+```
+
 ## Fusion transcript graph plot
 
 All that is known about a fusion event is that a fusion finder has scored a possible link between two genes. If there are four variants of the upstream gene partner, and four variants of the downstream gene partner, then there are in total 16 different ways the fusion transcript could be put together. And that's only if we count the known, annotated versions of each gene. How can we make sense of all this? Plotting the transcript together as in previous plots helps, but there is a better way to visualize the putative fusion transcript: As a graph. By representing transcripts as a graph, with exons as nodes and splice junctions as edges, it is much easier to get a view on what the putative fusion transcript could look like.

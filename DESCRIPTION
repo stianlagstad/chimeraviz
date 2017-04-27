@@ -54,6 +54,7 @@ Imports:
     Rgraphviz,
     DT,
     plyr,
+    dplyr,
     BiocStyle,
     ArgumentCheck
 Depends:
