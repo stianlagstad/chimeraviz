@@ -208,3 +208,14 @@ test_that("fusionToDataFrame works as expected", {
   # Expect error when given something other than a Fusion object
   expect_error(fusionToDataFrame(42))
 })
+
+test_that("downShift works as expected", {
+  ir <- IRanges::IRanges(
+    start = c(13, 40, 100),
+    end = c(20, 53, 110))
+  gr <- GenomicRanges::GRanges(seqnames = "chr1", ranges = ir)
+  # Downshift it and see the introns are removed:
+  gr_downshifted <- downShift(gr)
+  expect_is(gr_downshifted, "GRanges")
+  expect_equal(IRanges::width(gr), IRanges::width(gr_downshifted))
+})

@@ -871,16 +871,88 @@ selectTranscript <- function(
   transcriptsB) {
   if (!any(start(transcriptsA) < fusion@geneA@breakpoint) &&
       any(fusion@geneA@breakpoint < end(transcriptsA))) {
-    stop(paste(
+    stop(paste0(
       "None of the transcripts given for gene A has the fusion breakpoint ",
       "within them. This plot cannot be created with the given transcripts."))
   }
   if (!any(start(transcriptsB) < fusion@geneB@breakpoint) &&
       any(fusion@geneB@breakpoint < end(transcriptsB))) {
-    stop(paste(
+    stop(paste0(
       "None of the transcripts given for gene B has the fusion breakpoint ",
       "within them. This plot cannot be created with the given transcripts."))
   }
+}
+
+# Check that the transcripts have a breakpoint exon
+.checkThatTranscriptsHaveBreakpointExons <- function(
+  fusion,
+  transcriptA,
+  transcriptB) {
+
+  if (fusion@geneA@strand == "+") {
+    if (length(transcriptA[end(ranges(transcriptA)) == fusion@geneA@breakpoint]) == 0) {
+      stop(paste(
+        "The transcript for gene A doesn't have an exon boundary matching the",
+        "fusion breakpoint. The plot cannot be created."))
+    }
+  } else {
+    if (length(transcriptA[start(ranges(transcriptA)) == fusion@geneA@breakpoint]) == 0) {
+      stop(paste(
+        "The transcript for gene A doesn't have an exon boundary matching the",
+        "fusion breakpoint. The plot cannot be created."))
+    }
+  }
+  if (fusion@geneB@strand == "+") {
+    if (length(transcriptB[start(ranges(transcriptB)) == fusion@geneB@breakpoint]) == 0) {
+      stop(paste(
+        "The transcript for gene B doesn't have an exon boundary matching the",
+        "fusion breakpoint. The plot cannot be created."))
+    }
+  } else {
+    if (length(transcriptB[end(ranges(transcriptB)) == fusion@geneB@breakpoint]) == 0) {
+      stop(paste(
+        "The transcript for gene B doesn't have an exon boundary matching the",
+        "fusion breakpoint. The plot cannot be created."))
+    }
+  }
+}
+
+#' Remove introns and shift exons leftward
+#'
+#' This function takes a GRanges object and moves each IRanges object within
+#' next to each other starting at 1. This effectively removes the introns from
+#' the GRanges object.
+#'
+#' @param transcript The GRanges object to remove introns from.
+#'
+#' @return A GRanges object with introns removed.
+#'
+#' @examples
+#' # Create a simple GRanges object:
+#' gr <- IRanges::IRanges(
+#'   start = c(13, 40, 100),
+#'   end = c(20, 53, 110))
+#' # Downshift it and see the introns are removed:
+#' downShift(gr)
+#'
+#' @export
+downShift <- function(transcript) {
+
+  # Check if we got a GRanges object
+  if (!class(transcript) %in% c("GRanges", "IRanges")) {
+    stop("transcript argument must be an object of type GRanges")
+  }
+
+  for (i in 1:length(transcript)) {
+    if (i == 1) {
+      transcript[i] <- IRanges::shift(transcript[i], shift = 1-start(transcript[i]))
+    } else {
+      shiftDownBy <- -(start(transcript[i])-end(transcript[i-1]))+1
+      transcript[i] <- IRanges::shift(transcript[i], shift = shiftDownBy)
+    }
+  }
+
+  transcript
 }
 
 # -----------------------------------------------------------------------------
@@ -945,6 +1017,24 @@ selectTranscript <- function(
   argument_checker
 }
 
+.is.bedfile.valid <- function(argument_checker, bedfile) {
+  # Check that the argument is given
+  if (is.null(bedfile) || bedfile == "") {
+    ArgumentCheck::addError(
+      msg = "'bedfile' must be the path to a .BED file.",
+      argcheck = argument_checker
+    )
+  }
+  # Check that the file exists
+  if (!file.exists(bedfile)) {
+    ArgumentCheck::addError(
+      msg = "The given 'bedfile' does not exist.",
+      argcheck = argument_checker
+    )
+  }
+  argument_checker
+}
+
 .is.whichTranscripts.valid <- function(argument_checker, whichTranscripts, fusion) {
   if (class(whichTranscripts) != "character") {
     ArgumentCheck::addError(
@@ -993,6 +1083,17 @@ selectTranscript <- function(
   if (class(parameter) != "logical") {
     ArgumentCheck::addError(
       msg = paste0("'", parameterName, "'", " must be a boolean."),
+      argcheck = argument_checker
+    )
+  }
+  argument_checker
+}
+
+.is.character.parameter.valid <- function(argument_checker, parameter, parameterName) {
+  if (class(parameter) != "character") {
+    ArgumentCheck::addError(
+      msg = paste0("'", parameterName, "'", " must be a character vector of ",
+                   "length 1 (meaning that it's just a single string)."),
       argcheck = argument_checker
     )
   }
