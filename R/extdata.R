@@ -177,6 +177,22 @@ NULL
 #' The original_bamfile.bam is from a study of the 833KE cell line by Andreas M. Hoff et al., documented in the paper [Identification of Novel Fusion Genes in Testicular Germ Cell Tumors](http://cancerres.aacrjournals.org/content/76/1/108.full).
 NULL
 
+#' protein_domains_5267 bed file
+#'
+#' Documentation for the protein_domains_5267.bed file containing protein
+#' domains for the genes in the fusion with cluster_id=5267.
+#'
+#' @name raw_fusion5267proteindomains
+#'
+#' @section protein_domains_5267.bed:
+#'
+#' This file is an excerpt from a larger file that we created by:
+#' - downloading domain name annotation from Pfam database (PfamA version 31)
+#'   and domain region annotation from Ensembl database through BioMart API
+#' - switching the domain coordinates in the protein level to these in
+#'   transcript level.
+NULL
+
 #' Cytoband information HG19
 #'
 #' Cytoband information for the HG19 assembly from UCSC. Downloaded from
