@@ -32,14 +32,15 @@ package="chimeraviz")
 fusions <- importDefuse(defuse833ke, "hg19")
 ```
 
+Import functions for the other supported fusion-finders are similarly named (for example `importEriscript` or `importInfusion`).
+
 A list of Fusion objects, objects that represent each fusion transcript, is now available in the list `fusions`.
 
 ```{r, message = FALSE}
 length(fusions)
 ```
 
-As you can see, this list has 17 fusion objects. It is straightforward to find a specific fusion event and print information
-about it, or about each of the partner genes.
+As you can see, this list has 17 fusion objects. It is straightforward to find a specific fusion event and print information about it, or about each of the partner genes.
 
 ```{r, message = FALSE}
 # Find a specific fusion event
@@ -200,16 +201,15 @@ bowtieIndex(
   bowtieBuildLocation = "/path/to/bowtie-build",
   referenceFasta = referenceFilename)
 # And align
-outputBamFilename = "fusionAlignment"
 bowtieAlign(
   bowtieLocation = "/path/to/bowtie",
   referenceName = referenceFilename,
   fastq1 = fastq1,
   fastq2 = fastq2,
-  outputBamFilename = outputbam)
+  outputBamFilename = "fusionAlignment")
 ```
 
-The code above first loads the bowtie wrapper functions. This is necessary because the wrapper functions are not part of the `chimeraviz` package, but are added as external scripts. We then create an index for the reference sequence, and align the fusion reads to the reference. The result of this will be the files `fusionAlignment.bam` and `fusionAlignment.bam.bai`, plus some additional files that Bowtie creates for indexing.
+The code above first loads the bowtie wrapper functions. This is necessary because the wrapper functions are not part of the `chimeraviz` package, but are added as external scripts. We then create an index for the reference sequence, and align the fusion reads to the reference. The result of this will be the files `fusionAlignment.bam`,  `fusionAlignment.bam.bai`, and some additional files that Bowtie creates for indexing.
 
 Note that you can use the parameter `p` with `bowtieAlign` to tell bowtie how many threads to use. The more you have available, the faster the alignment will complete.
 
@@ -224,15 +224,14 @@ source(system.file(
 # Then create index
 rsubreadIndex(referenceFasta = referenceFilename)
 # And align
-outputBamFilename = "fusionAlignment"
 rsubreadAlign(
   referenceName = referenceFilename,
   fastq1 = fastq1,
   fastq2 = fastq2,
-  outputBamFilename = outputBamFilename)
+  outputBamFilename = "fusionAlignment")
 ```
 
-The code above first loads the rsubread wrapper functions. This is necessary because the wrapper functions are not part of the `chimeraviz` package, but are added as external scripts. We then create an index for the reference sequence, and align the fusion reads to the reference. The result of this will be the files `fusionAlignment.bam` and `fusionAlignment.bam.bai`, plus some additional files that Rsubread creates for indexing and aligning.
+The code above first loads the rsubread wrapper functions. This is necessary because the wrapper functions are not part of the `chimeraviz` package, but are added as external scripts. We then create an index for the reference sequence, and align the fusion reads to the reference. The result of this will be the files `fusionAlignment.bam`, `fusionAlignment.bam.bai`, and some additional files that Rsubread creates for indexing and aligning.
 
 ###### A note on alignment performance
 
@@ -240,7 +239,7 @@ If you're planning to align the original fastq files against the fusion junction
 
 ##### Example .bam file for this example
 
-We've included an example .bam file with `chimeraviz` that contains the reads supporting fusion event 5267 aligned to the fusion junction sequence. We will continue this example with this .bam file:
+We've included an example .bam file with `chimeraviz` that contains the reads supporting fusion event 5267 aligned to the fusion junction sequence. We will continue this example with that .bam file:
 
 ```{r}
 if(!exists("bamfile5267"))
@@ -332,7 +331,7 @@ In order to build the fusion plot we need a few things. We need:
 
 1. Information about a fusion event
 1. A way to get transcript information
-1. Coverage information from a bamfile
+1. Coverage information from a .bam file (or a .bedGraph file)
 
 We will go through these steps in turn.
 
@@ -363,7 +362,7 @@ getFusionByGeneName(fusions, "RCC1")
 As you can see, we found one fusion event involving this gene. Let's use the `getFusionById()` function to retrieve the fusion event:
 
 ```{r}
-# See if we can find any fusions involving RCC1
+# Extract the specific fusion
 fusion <- getFusionById(fusions, 5267)
 ```
 
@@ -388,11 +387,11 @@ This example object, loaded from the file `Homo_sapiens.GRCh37.74.sqlite` that i
 
 ```{r, eval = FALSE}
 # Create EnsDb from a downloaded .gtf file
-edb <- ensDbFromGtf(gtf = "Homo_sapiens.GRCh37.74.gtf")
+edbSqliteFile <- ensDbFromGtf(gtf = "Homo_sapiens.GRCh37.74.gtf")
 # The function above create a .sqlite file, like the one that is included with
-# chimeraviz. The path to the file is stored in the edb variable. To load the
-# database, do this:
-edb <- ensembldb::EnsDb(edb)
+# chimeraviz. The path to the file is stored in the edbSqliteFile variable. To
+# load the database, do this:
+edb <- ensembldb::EnsDb(edbSqliteFile)
 ```
 
 If you choose to do this, note that it might take some time. You only have to do it once, though. The .sqlite file that `ensDbFromGtf` creates can be used in later sessions, like this:
@@ -404,7 +403,7 @@ edb <- ensembldb::EnsDb("Homo_sapiens.GRCh37.74.sqlite")
 
 #### 3. Coverage information from a bamfile
 
-We need a .bam file if we want to show coverage information in the fusion plot. `chimeraviz` includes an example .bam file that contains only the reads in the region of `RCC1` and `HENMT1`. We only need a variable pointing to it:
+We need a .bam file (or a .bedGraph file) if we want to show coverage information in the fusion plot. `chimeraviz` includes an example .bam file that contains only the reads in the region of `RCC1` and `HENMT1`. We only need a variable pointing to it:
 
 ```{r}
 if(!exists("fusion5267and11759reads"))
@@ -438,6 +437,8 @@ plotFusion(
 ```
 
 Note the `nonUCSC` parameter we're setting to `TRUE`. If the chromosome names in your .bam file are called "1" instead of "chr1", then you need to set `nonUCSC = TRUE` when using `plotFusion()`.
+
+If you have read counts in a .bedGraph file (from bedtools genomecov for example), you can use the `bedGraph` parameter instead of the `bamfile` parameter and point to a .bedGraph file.
 
 ## Fusion transcripts plot
 
@@ -527,6 +528,8 @@ plotTranscripts(
   ylim = c(0,1000))
 ```
 
+It is also possible to use a .bedGraph file instead of a .bam file in this plot.
+
 ## Fusion transcript plot
 
 The fusion transcript plot shows the reduced version of all exons that could be part of a fusion transcript. This is a way to view all the possible parts of a fusion transcript merged into one.
@@ -554,7 +557,7 @@ plotFusionTranscript(
   edb)
 ```
 
-As with previous visualizations, coverage data can be added.
+As with previous visualizations, coverage data can be added (either with a .bam file or a .bedGraph file).
 
 ```{r, message = FALSE, fig.height = 4, fig.width = 10, dev='png'}
 # Load deFuse data
@@ -650,7 +653,7 @@ knitr::kable(bedfile_contents)
 
 ## Fusion transcript graph plot
 
-All that is known about a fusion event is that a fusion finder has scored a possible link between two genes. If there are four variants of the upstream gene partner, and four variants of the downstream gene partner, then there are in total 16 different ways the fusion transcript could be put together. And that's only if we count the known, annotated versions of each gene. How can we make sense of all this? Plotting the transcript together as in previous plots helps, but there is a better way to visualize the putative fusion transcript: As a graph. By representing transcripts as a graph, with exons as nodes and splice junctions as edges, it is much easier to get a view on what the putative fusion transcript could look like.
+All that is known about a fusion event is that a fusion-finder has scored a possible link between two genes. If there are four variants of the upstream gene partner and four variants of the downstream gene partner, then there are in total sixteen different ways the fusion transcript could be put together. And that's only if we count the known, annotated versions of each gene. How can we make sense of all this? Plotting the transcript together as in previous plots helps, but there is a better way to visualize the putative fusion transcript: As a graph. By representing transcripts as a graph, with exons as nodes and splice junctions as edges, it is much easier to get a view on what the putative fusion transcript could look like.
 
 ```{r, message = FALSE, fig.height = 5, fig.width = 10, dev='png'}
 # Load deFuse data
@@ -750,6 +753,12 @@ dfFusions <- plyr::ldply(fusions, fusionToDataFrame)
 # with this data frame, we can use datatable() from the DT package to create an html sortable table:
 DT::datatable(dfFusions, filter = 'top')
 ```
+
+# More information / where to get help
+
+The first place to look for help is in this vignette or in the reference manual for `chimeraviz`. If the documentation and examples there is insufficient, a good place to ask for help is on the [Bioconductor support site](https://support.bioconductor.org/). The [Biostars site](https://www.biostars.org/) may also be of help.
+
+Any bug reports or feature ideas for `chimeraviz` are very welcome! Please report them as issues on [Github](https://github.com/stianlagstad/chimeraviz/issues).
 
 # Session Information
 
