@@ -11,21 +11,21 @@ If you would like to build the package yourself, first install these CRAN depend
 ```
 # CRAN
 cranPackages <- c(
-  "devtools",     # For installing chimeraviz
-  "graphics",     # For plotting
-  "DT",           # For creating a fusion report
-  "rmarkdown",    # For creating a fusion report
-  "readr",        # For reading fusion-finder result files
-  "grid",         # For plotting
-  "RColorBrewer", # For picking colors in plotting
-  "RCircos",      # For creating overview plot
-  "plyr",         # For converting fusion data to data.frame format
-  "dplyr",        # For filtering transcript data
-  "ArgumentCheck" # For validating function arguments
-  "testthat",     # For running tests
-  "roxygen2",     # For generating documentation
-  "devtools",     # For installing chimeraviz
-  "knitr"         # For creating vignettes
+  "devtools",      # For installing chimeraviz
+  "graphics",      # For plotting
+  "DT",            # For creating a fusion report
+  "rmarkdown",     # For creating a fusion report
+  "readr",         # For reading fusion-finder result files
+  "grid",          # For plotting
+  "RColorBrewer",  # For picking colors in plotting
+  "RCircos",       # For creating overview plot
+  "plyr",          # For converting fusion data to data.frame format
+  "dplyr",         # For filtering transcript data
+  "ArgumentCheck", # For validating function arguments
+  "testthat",      # For running tests
+  "roxygen2",      # For generating documentation
+  "devtools",      # For installing chimeraviz
+  "knitr"          # For creating vignettes
 )
 install.packages(cranPackages)
 ```
