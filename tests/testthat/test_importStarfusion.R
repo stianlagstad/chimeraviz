@@ -10,8 +10,8 @@ fusion <- fusions[[1]]
 test_that("importStarfusion imports data into Fusion objects", {
   expect_equal(length(fusions), 3)
   expect_equal(fusion@id, "1")
-  expect_equal(fusion@geneA@name, "CACNG6")
-  expect_equal(fusion@geneA@chromosome, "chr19")
+  expect_equal(fusion@geneA@name, "THRA")
+  expect_equal(fusion@geneA@chromosome, "chr17")
 })
 
 test_that("importStarfusion fails to import data", {
