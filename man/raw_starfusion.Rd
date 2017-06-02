@@ -9,7 +9,7 @@ Documentation for the STAR-Fusion example data.
 \section{star-fusion.fusion_candidates.final.abridged.txt}{
 
 
-This example data was retrieved from the STAR-Fusion github page April 13.th
-2016.
+This example data was retrieved from the STAR-Fusion github page June 2.nd
+2017.
 }
 

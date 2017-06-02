@@ -39,14 +39,21 @@ importStarfusion <- function (filename, genomeVersion, limit) {
   report <- tryCatch(
     {
       col_types_starfusion = readr::cols_only(
-        "#fusion_name" = col_skip(),
-        "JunctionReads" = col_integer(),
-        "SpanningFrags" = col_integer(),
-        "Splice_type" = col_skip(),
+        "#FusionName" = col_skip(),
+        "JunctionReadCount" = col_integer(),
+        "SpanningFragCount" = col_integer(),
+        "SpliceType" = col_skip(),
         "LeftGene" = col_character(),
         "LeftBreakpoint" = col_character(),
         "RightGene" = col_character(),
-        "RightBreakpoint" = col_character()
+        "RightBreakpoint" = col_character(),
+        "LargeAnchorSupport" = col_character(),
+        "LeftBreakDinuc" = col_character(),
+        "LeftBreakEntropy" = col_number(),
+        "RightBreakDinuc" = col_character(),
+        "RightBreakEntropy" = col_number(),
+        "J_FFPM" = col_number(),
+        "S_FFPM" = col_number()
       )
       if (missing(limit)) {
         # Read all lines
@@ -90,6 +97,13 @@ importStarfusion <- function (filename, genomeVersion, limit) {
 
     # Import starfusion-specific fields
     fusionToolSpecificData <- list()
+    fusionToolSpecificData[["LargeAnchorSupport"]] = report[[i, "LargeAnchorSupport"]]
+    fusionToolSpecificData[["LeftBreakDinuc"]] = report[[i, "LeftBreakDinuc"]]
+    fusionToolSpecificData[["LeftBreakEntropy"]] = report[[i, "LeftBreakEntropy"]]
+    fusionToolSpecificData[["RightBreakDinuc"]] = report[[i, "RightBreakDinuc"]]
+    fusionToolSpecificData[["RightBreakEntropy"]] = report[[i, "RightBreakEntropy"]]
+    fusionToolSpecificData[["J_FFPM"]] = report[[i, "J_FFPM"]]
+    fusionToolSpecificData[["S_FFPM"]] = report[[i, "S_FFPM"]]
 
     # id for this fusion
     id <- as.character(i)
@@ -110,8 +124,8 @@ importStarfusion <- function (filename, genomeVersion, limit) {
     strandB <- rightBreakPoint[3]
 
     # Number of supporting reads
-    splitReadsCount <- report[[i, "JunctionReads"]]
-    spanningReadsCount <- report[[i, "SpanningFrags"]]
+    splitReadsCount <- report[[i, "JunctionReadCount"]]
+    spanningReadsCount <- report[[i, "SpanningFragCount"]]
 
     # STAR-Fusion doesn't provide the fusion sequence
     junctionSequenceA <- Biostrings::DNAString()
