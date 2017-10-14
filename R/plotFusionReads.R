@@ -111,7 +111,7 @@ plotFusionReads <- function(
   # Set display parameters for the fusion reads
   Gviz::displayPars(fusion@fusionReadsAlignment) <- list(
     showTitle = FALSE,
-    min.height = 20, # Minimum height of nucleotide names in pixels
+    min.height = 10, # Minimum height of nucleotide names in pixels
     min.width = 10, # Minimum width of nucleotide names in pixels
     showMismatches = FALSE # Show mismatched reads?
   )
