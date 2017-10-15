@@ -1,0 +1,6 @@
+CHANGES IN VERSION 1.2.3
+-------------------------
+
+BUG FIXES
+
+    o Fixed a bug in plotFusionReads where too many supporting reads would lead to an error.
