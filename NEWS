@@ -1,6 +1,10 @@
 CHANGES IN VERSION 1.2.3
 -------------------------
 
+NEW FEATURES
+
+    o Added the protein domain plot to show which protein domains are retained in the fusion.
+
 BUG FIXES
 
     o Fixed a bug in plotFusionReads where too many supporting reads would lead to an error.
