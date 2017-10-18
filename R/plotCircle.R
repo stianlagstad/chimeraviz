@@ -68,8 +68,12 @@
   }
 
   # Normalize all link width values to the interval [minLinkWidth, maxLinkWidt]
+  if (length(linkWidth) <= 1) {
+     linkWidth[[1]] <- 2
+  }
+  else {
   linkWidth <- .scaleListToInterval(linkWidth, minLinkWidth, maxLinkWidt)
-
+  }
   data.frame(Chromosome,
              chromStart,
              chromEnd,
