@@ -17,3 +17,13 @@ dfFusions <- plyr::ldply(reportFusions, fusionToDataFrame)
 # with this data frame, we can use datatable() from the DT package to create an html sortable table:
 DT::datatable(dfFusions, filter = 'top')
 ```
+```{r, echo = FALSE}
+edb <- ensembldb::EnsDb(params$edbSqliteFile)
+for (fusion in reportFusions) {
+    plotFusion(
+    fusion = fusion,
+    bamfile = params$bam,
+    edb = edb,
+    nonUCSC = TRUE)
+}
+```
