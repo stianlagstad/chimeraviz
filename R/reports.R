@@ -49,3 +49,27 @@ createFusionReport <- function(fusions, outputFilename, quiet = TRUE) {
     params = list(fusions = fusions),
     quiet = quiet)
 }
+
+createFusionReport2 <- function(fusions, outputFilename, ibam, edbFile, quiet = TRUE) {
+
+  # Check if we got a list of fusion objects
+  if (class(fusions[[1]]) != "Fusion") {
+    stop("fusions argument must be a list of Fusion objects")
+  }
+
+  # Get reference to the fusion list report file
+  fusionReportRmd <- system.file(
+    "reports",
+    "fusionListReport2.Rmd",
+    package="chimeraviz")
+
+  bam <- system.file(ibam)
+  
+  # Render the report
+  rmarkdown::render(
+    fusionReportRmd,
+    output_file = outputFilename,
+    params = list(fusions = fusions, bam = bam, edbFile = edbFile),
+    quiet = quiet)
+}
+
