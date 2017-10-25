@@ -18,7 +18,7 @@ dfFusions <- plyr::ldply(reportFusions, fusionToDataFrame)
 DT::datatable(dfFusions, filter = 'top')
 ```
 ```{r, echo = FALSE}
-edb <- ensembldb::EnsDb(params$edbSqliteFile)
+edb <- ensembldb::EnsDb(params$edbFile)
 for (fusion in reportFusions) {
     plotFusion(
     fusion = fusion,
