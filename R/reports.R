@@ -50,7 +50,7 @@ createFusionReport <- function(fusions, outputFilename, quiet = TRUE) {
     quiet = quiet)
 }
 
-createFusionReport2 <- function(fusions, outputFilename, ibam, quiet = TRUE) {
+createFusionReport2 <- function(fusions, outputFilename, ibam, edbFile, quiet = TRUE) {
 
   # Check if we got a list of fusion objects
   if (class(fusions[[1]]) != "Fusion") {
@@ -69,8 +69,7 @@ createFusionReport2 <- function(fusions, outputFilename, ibam, quiet = TRUE) {
   rmarkdown::render(
     fusionReportRmd,
     output_file = outputFilename,
-    bam,
-    params = list(fusions = fusions),
+    params = list(fusions = fusions, bam = bam, edbFile = edbFile),
     quiet = quiet)
 }
 
