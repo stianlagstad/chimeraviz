@@ -523,9 +523,9 @@ plotTranscripts <- function(
   # Close row 1, column 1
   grid::popViewport(1)
 
-  # Open row 1, column 1
+  # Open row 2, column 1
   grid::pushViewport(grid::viewport(layout.pos.row = 2, layout.pos.col = 1))
-  # Plot transcriptsA and coverage with highlight
+  # Plot transcriptsB and coverage with highlight
   # Plot coverage?
   if (!is.null(bamfile) || !is.null(bedgraphfile)) {
     # Only plot highlight tracks if we actually have transcripts that has the
@@ -547,7 +547,7 @@ plotTranscripts <- function(
     } else {
       Gviz::plotTracks(
         collapse = FALSE, # without this gviz create cluster_X entries in the GeneRegionTrack
-        list(trBtrack, alTrackHighlightB),
+        list(trBtrack, alTrack),
         from = min(start(trBtrack)),
         to = max(end(trBtrack)),
         sizes = c(5, 2),
@@ -576,7 +576,7 @@ plotTranscripts <- function(
     } else {
       Gviz::plotTracks(
         collapse = FALSE, # without this gviz create cluster_X entries in the GeneRegionTrack
-        trAtrack,
+        trBtrack,
         from = min(start(trBtrack)),
         to = max(end(trBtrack)),
         add = TRUE,
