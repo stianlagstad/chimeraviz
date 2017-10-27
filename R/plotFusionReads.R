@@ -98,21 +98,16 @@ plotFusionReads <- function(
   # DISPLAY PARAMETERS
 
   # Set display parameters for the fusion sequence
-  Gviz::displayPars(ref_chimera) <- list(
-    showTitle = FALSE,
-    col = "blue", # The color of the line when no indiviual letters can be plotted due to size limitations.
-    fontsize = 10
-  )
-  Gviz::displayPars(ref_chimera_short) <- list(
+  displayParameters <- list(
     showTitle = FALSE,
     col = "blue" # The color of the line when no indiviual letters can be plotted due to size limitations.
   )
+  Gviz::displayPars(ref_chimera) <- displayParameters
+  Gviz::displayPars(ref_chimera_short) <- displayParameters
 
   # Set display parameters for the fusion reads
   Gviz::displayPars(fusion@fusionReadsAlignment) <- list(
     showTitle = FALSE,
-    min.height = 10, # Minimum height of nucleotide names in pixels
-    min.width = 10, # Minimum width of nucleotide names in pixels
     showMismatches = FALSE # Show mismatched reads?
   )
 
@@ -198,7 +193,7 @@ plotFusionReads <- function(
     # Close row 1, column 1
     grid::popViewport(1)
 
-    # Open row 1, column 2
+    # Open row 2, column 1
     grid::pushViewport(grid::viewport(layout.pos.row = 2, layout.pos.col = 1))
     # Plot a part of the fusion junction sequence
     Gviz::plotTracks(
