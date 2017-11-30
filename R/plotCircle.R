@@ -176,8 +176,21 @@ plotCircle <- function(fusionList) {
     stop("items in fusionList must be an object of type Fusion")
   }
 
-  if (!fusionList[[1]]@genomeVersion %in% list("hg19", "hg38")) {
-    stop("Invalid input. genomeVersion must be either \"hg19\" or \"hg38\".")
+  if (!fusionList[[1]]@genomeVersion %in% list("hg19", "hg38", "mm10")) {
+    stop("Invalid input. genomeVersion must be either \"hg19\", \"hg38\" or \"mm10\".")
+  }
+
+  if (any(rapply(fusionList, function(fusion) fusion@geneA@chromosome == "chrM" || fusion@geneB@chromosome == "chrM"))) {
+    indexesMitochondrialGenes <-
+      rapply(fusionList, function(fusion) fusion@geneA@chromosome == "chrM" || fusion@geneB@chromosome == "chrM")
+    fusionList <- fusionList[!indexesMitochondrialGenes]
+    message(
+      paste0(
+        "Removing ",
+        length(fusionList[indexesMitochondrialGenes]),
+        " fusions involving mitochondrial genes as they cannot be plotted in the circle plot."
+        )
+      )
   }
 
   # Read cytoband information depending on genome version
@@ -191,6 +204,12 @@ plotCircle <- function(fusionList) {
       "extdata",
       "UCSC.HG38.Human.CytoBandIdeogram.txt",
       package="chimeraviz")
+  } else if (fusionList[[1]]@genomeVersion == "mm10") {
+    cytobandFile <- system.file(
+      "extdata",
+      "UCSC.MM10.Mus.musculus.CytoBandIdeogram.txt",
+      package="chimeraviz"
+    )
   }
   cytoband <- utils::read.table(cytobandFile)
   # Set names to what RCircos expects

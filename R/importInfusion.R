@@ -21,7 +21,7 @@
 importInfusion <- function (filename, genomeVersion, limit) {
 
   # Is the genome version valid?
-  validGenomes <- c("hg19", "hg38")
+  validGenomes <- c("hg19", "hg38", "mm10")
   if (is.na(match(tolower(genomeVersion), tolower(validGenomes)))) {
     stop("Invalid genome version given")
   }

@@ -13,8 +13,8 @@ getEnsemblIds(fusion)
 The Fusion object with Ensembl ids set.
 }
 \description{
-This function will get the ensembl ids from the org.Hs.eg.db package given
-the gene names of the fusion event.
+This function will get the ensembl ids from the org.Hs.eg.db/org.Mm.eg.db
+package given the gene names of the fusion event.
 }
 \examples{
 # Import the filtered defuse results

@@ -299,11 +299,18 @@ plotFusionSeparate <- function(
       "extdata",
       "UCSC.HG19.Human.CytoBandIdeogram.txt",
       package="chimeraviz")
-  } else {
+  } else if (fusion@genomeVersion == "hg38") {
     cytobandFile <- system.file(
       "extdata",
       "UCSC.HG38.Human.CytoBandIdeogram.txt",
       package="chimeraviz")
+  } else if (fusion@genomeVersion == "mm10") {
+    cytobandFile <- system.file(
+      "extdata",
+      "UCSC.MM10.Mus.musculus.CytoBandIdeogram.txt",
+      package="chimeraviz")
+  } else {
+    stop("Unsupported genome version")
   }
   cytoband <- utils::read.table(cytobandFile)
   # Set names to what Gviz expects
@@ -846,11 +853,18 @@ plotFusionTogether <- function(
       "extdata",
       "UCSC.HG19.Human.CytoBandIdeogram.txt",
       package="chimeraviz")
-  } else {
+  } else if (fusion@genomeVersion == "hg38") {
     cytobandFile <- system.file(
       "extdata",
       "UCSC.HG38.Human.CytoBandIdeogram.txt",
       package="chimeraviz")
+  } else if (fusion@genomeVersion == "mm10") {
+    cytobandFile <- system.file(
+      "extdata",
+      "UCSC.MM10.Mus.musculus.CytoBandIdeogram.txt",
+      package="chimeraviz")
+  } else {
+    stop("Unsupported genome version")
   }
   cytoband <- utils::read.table(cytobandFile)
   # Set names to what Gviz expects

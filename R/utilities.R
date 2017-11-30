@@ -149,14 +149,14 @@ writeFusionReference <- function(fusion, filename) {
 
 #' Get ensembl ids for a fusion object
 #'
-#' This function will get the ensembl ids from the org.Hs.eg.db package given
-#' the gene names of the fusion event.
+#' This function will get the ensembl ids from the org.Hs.eg.db/org.Mm.eg.db
+#' package given the gene names of the fusion event.
 #'
 #' @param fusion The Fusion object we want to get ensembl ids for.
 #'
 #' @return The Fusion object with Ensembl ids set.
 #'
-#' @import org.Hs.eg.db
+#' @import org.Hs.eg.db org.Mm.eg.db
 #'
 #' @examples
 #' # Import the filtered defuse results
@@ -191,8 +191,16 @@ getEnsemblIds <- function(fusion) {
     stop("fusion argument must be an object of type Fusion")
   }
 
+  if (startsWith(fusion@genomeVersion, "hg")) {
+    annotationDb <- org.Hs.eg.db
+  } else if (startsWith(fusion@genomeVersion, "mm")) {
+    annotationDb <- org.Mm.eg.db
+  } else {
+    stop("Unsupported genome version")
+  }
+
   result <- AnnotationDbi::select(
-    org.Hs.eg.db,
+    annotationDb,
     keys = c(fusion@geneA@name, fusion@geneB@name),
     keytype = "ALIAS",
     columns = c("ALIAS", "ENSEMBL"))
