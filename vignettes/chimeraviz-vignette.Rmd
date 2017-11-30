@@ -3,7 +3,7 @@ title: "chimeraviz"
 author: "Stian Lågstad"
 date: "`r Sys.Date()`"
 output: 
-  BiocStyle::html_document2
+  BiocStyle::html_document
 vignette: >
   %\VignetteIndexEntry{chimeraviz}
   %\VignetteEngine{knitr::rmarkdown}
