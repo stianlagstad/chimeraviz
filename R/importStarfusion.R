@@ -52,8 +52,7 @@ importStarfusion <- function (filename, genomeVersion, limit) {
         "LeftBreakEntropy" = col_number(),
         "RightBreakDinuc" = col_character(),
         "RightBreakEntropy" = col_number(),
-        "J_FFPM" = col_number(),
-        "S_FFPM" = col_number()
+        "FFPM" = col_number()
       )
       if (missing(limit)) {
         # Read all lines
@@ -102,8 +101,7 @@ importStarfusion <- function (filename, genomeVersion, limit) {
     fusionToolSpecificData[["LeftBreakEntropy"]] = report[[i, "LeftBreakEntropy"]]
     fusionToolSpecificData[["RightBreakDinuc"]] = report[[i, "RightBreakDinuc"]]
     fusionToolSpecificData[["RightBreakEntropy"]] = report[[i, "RightBreakEntropy"]]
-    fusionToolSpecificData[["J_FFPM"]] = report[[i, "J_FFPM"]]
-    fusionToolSpecificData[["S_FFPM"]] = report[[i, "S_FFPM"]]
+    fusionToolSpecificData[["FFPM"]] = report[[i, "FFPM"]]
 
     # id for this fusion
     id <- as.character(i)
