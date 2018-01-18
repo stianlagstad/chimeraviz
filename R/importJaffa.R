@@ -34,7 +34,7 @@ importJaffa <- function (filename, genomeVersion, limit) {
   }
 
   # Try to read the fusion report
-  report <- tryCatch(
+  report <- withCallingHandlers(
     {
       col_types_jaffa = readr::cols_only(
         "sample" = col_character(),
@@ -70,11 +70,11 @@ importJaffa <- function (filename, genomeVersion, limit) {
       }
     },
     error = function(cond) {
-      message("Reading filename caused an error:")
+      message(paste0("Reading ", filename, " caused an error: ", cond[[1]]))
       stop(cond)
     },
     warning = function(cond) {
-      message("Reading filename caused a warning:")
+      message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
       warning(cond)
     }
   )
