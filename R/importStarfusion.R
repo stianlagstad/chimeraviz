@@ -136,12 +136,8 @@ importStarfusion <- function (filename, genomeVersion, limit) {
     nameB <- geneNames2[1]
 
     # Ensembl ids
-    # ensemblIdA <- geneNames1[2]
-    # ensemblIdB <- geneNames2[2]
-
-    # Until we have example data we are sure about, don't set ensemblIds:
-    ensemblIdA <- NA_character_
-    ensemblIdB <- NA_character_
+    ensemblIdA <- geneNames1[2]
+    ensemblIdB <- geneNames2[2]
 
     # PartnerGene objects
     geneA <- new(Class = "PartnerGene",

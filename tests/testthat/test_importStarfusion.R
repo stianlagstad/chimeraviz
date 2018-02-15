@@ -12,6 +12,7 @@ test_that("importStarfusion imports data into Fusion objects", {
   expect_equal(fusion@id, "1")
   expect_equal(fusion@geneA@name, "THRA")
   expect_equal(fusion@geneA@chromosome, "chr17")
+  expect_equal(fusion@geneA@ensemblId, "ENSG00000126351.8")
 })
 
 test_that("importStarfusion fails to import data", {
