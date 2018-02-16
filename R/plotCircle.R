@@ -180,18 +180,18 @@ plotCircle <- function(fusionList) {
     stop("Invalid input. genomeVersion must be either \"hg19\", \"hg38\" or \"mm10\".")
   }
 
-  if (any(rapply(fusionList, function(fusion) fusion@geneA@chromosome == "chrM" || fusion@geneB@chromosome == "chrM"))) {
-    indexesMitochondrialGenes <-
-      rapply(fusionList, function(fusion) fusion@geneA@chromosome == "chrM" || fusion@geneB@chromosome == "chrM")
-    fusionList <- fusionList[!indexesMitochondrialGenes]
-    message(
-      paste0(
-        "Removing ",
-        length(fusionList[indexesMitochondrialGenes]),
-        " fusions involving mitochondrial genes as they cannot be plotted in the circle plot."
-        )
-      )
-  }
+##   if (any(rapply(fusionList, function(fusion) fusion@geneA@chromosome == "chrM" || fusion@geneB@chromosome == "chrM"))) {
+##     indexesMitochondrialGenes <-
+##       rapply(fusionList, function(fusion) fusion@geneA@chromosome == "chrM" || fusion@geneB@chromosome == "chrM")
+##     fusionList <- fusionList[!indexesMitochondrialGenes]
+##     message(
+##       paste0(
+##         "Removing ",
+##         length(fusionList[indexesMitochondrialGenes]),
+##         " fusions involving mitochondrial genes as they cannot be plotted in the circle plot."
+##         )
+##       )
+##   }
 
   # Read cytoband information depending on genome version
   if (fusionList[[1]]@genomeVersion == "hg19") {
