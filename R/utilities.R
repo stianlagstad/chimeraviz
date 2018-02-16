@@ -847,15 +847,17 @@ selectTranscript <- function(
 
     # If the user has chosen one of the four transcript categories, then we want to check whether or not such
     # transcripts exist. If they exist, simply return them. If they don't exist, go on to try the other categories. Try
-    # the wanted category first:
-    if (length(genePartner@transcripts[mcols(genePartner@transcripts)$transcriptCategory == whichTranscripts[[1]] ]) > 0) {
-      message(paste0("..found transcripts of type ", whichTranscripts[[1]]))
+                                        # the wanted category first:
+    l <- length(genePartner@transcripts[mcols(genePartner@transcripts)$transcriptCategory == whichTranscripts[[1]] ])
+    if (l > 0) {
+      message(paste0("... found ", l, " transcripts of type ", whichTranscripts[[1]]))
       return(genePartner@transcripts[mcols(genePartner@transcripts)$transcriptCategory == whichTranscripts[[1]] ])
     }
     # Check the remaining categories
     for(transcriptCategory in transcriptCategories[transcriptCategories != whichTranscripts[[1]]]) {
-      if (length(genePartner@transcripts[mcols(genePartner@transcripts)$transcriptCategory == transcriptCategory ]) > 0) {
-        message(paste0("..found transcripts of type ", transcriptCategory))
+      l <- length(genePartner@transcripts[mcols(genePartner@transcripts)$transcriptCategory == transcriptCategory ])
+      if (l > 0) {
+        message(paste0(" ... found ",l, " transcripts of type ", transcriptCategory))
         return(genePartner@transcripts[mcols(genePartner@transcripts)$transcriptCategory == transcriptCategory ])
       }
     }
