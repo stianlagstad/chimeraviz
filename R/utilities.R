@@ -1154,13 +1154,19 @@ is.nucleotideAmount.valid <- function(argument_checker, nucleotideAmount, fusion
     length(fusion@geneA@junctionSequence) +
     length(fusion@geneB@junctionSequence)
 
+  if (fusionJunctionSequenceLength == 0 ) {
+      ArgumentCheck::addWarning(
+      msg = "length of junction sequence is 0, have they been determined?",
+      argcheck = argument_checker
+      )
+  }
+  
   if (class(nucleotideAmount) != "numeric" ||
       nucleotideAmount <= 0 ||
       nucleotideAmount > fusionJunctionSequenceLength) {
-    ArgumentCheck::addError(
-      msg = paste0("'nucleotideAmount' must be a numeric bigger than or equal ",
-                   "to 0 and less than or equal to the fusion junction ",
-                   "sequence length."),
+    ArgumentCheck::addWarning(
+      msg = paste0("'nucleotideAmount' must be a numeric larger > 0  ",
+                   "and <= fusion junction sequence length."),
       argcheck = argument_checker
     )
   }
