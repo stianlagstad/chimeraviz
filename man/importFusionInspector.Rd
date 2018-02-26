@@ -9,5 +9,8 @@
   limit = Inf)
 }
 \description{
-read the results from runnning FusionInspector
+Note: there may not be perfect match between the fusions found by STAR-Fusion
+and FusionInspector (since the latter reruns STAR on the mini contig; also,
+selfie fusions are ignored).
+If no match can be found, the whole fusion is skipped
 }
