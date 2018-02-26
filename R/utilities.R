@@ -701,7 +701,7 @@ getTranscriptsEnsembldb <- function(fusion, edb) {
 #' fusion <- addFusionReadsAlignment(fusion, bamfile5267)
 #'
 #' @export
-addFusionReadsAlignment <- function(fusion, bamfile) {
+addFusionReadsAlignment <- function(fusion, bamfile, chromosome="chrNA") {
 
   # Check if we got a fusion object
   if (class(fusion) != "Fusion") {
@@ -713,7 +713,7 @@ addFusionReadsAlignment <- function(fusion, bamfile) {
     isPaired = TRUE,
     # Setting chromosome to chrNA because this is a fusion sequence not found in
     # any reference genome.
-    chromosome = "chrNA",
+    chromosome = chromosome,
     name="Fusion Reads",
     genome = fusion@genomeVersion)
 
