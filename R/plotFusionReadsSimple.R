@@ -16,14 +16,11 @@ plotFusionReadsSimple <- function(fusion) {
     widths = grid::unit(c(1), "null"))
   
   grid::grid.newpage()
-  grid::pushViewport(grid::viewport(layout = nf))
-  grid::pushViewport(grid::viewport(layout.pos.row = 1, layout.pos.col = 1))
   Gviz::plotTracks(
     fusion@fusionReadsAlignment,
-    from = fusion@geneA@breakpoint-1000,
-    to = fusion@geneB@breakpoint+1000,
+    from = fusion@geneA@breakpoint-10000,
+    to = fusion@geneB@breakpoint+10000,
     chromosome = fusion@fusionReadsAlignment@chromosome,
     type = "pileup",
-    add = FALSE)
-  grid::popViewport(2)
+    add = TRUE)
 }                                       #plotFusionReadsSimple
