@@ -42,8 +42,8 @@ importFusionInspector <- function (filename='FusionInspector-inspect/finspector.
     colnames(report)[1] <- 'id'
     d <-
       data.frame(id=with(report, id[ !duplicated(id) ]),
-                 starts=with(report, tapply(start, id, min)),
-                 ends=with(report, tapply(end, id, max)))
+                 start=with(report, tapply(break_left, id, min)),
+                 end=with(report, tapply(break_right, id, max)))
     rownames(d) <- d$id
     d
 }                                        #importFusionInspector
@@ -135,7 +135,6 @@ importStarfusion <- function (filename, genomeVersion, limit=Inf,
       l <- limit+10
       fi.table <- importFusionInspector(limit=l)
   }
-
   
   # Set variables
   id                    <- NA
@@ -267,4 +266,4 @@ on virtual contig, ignoring it (line %d)", fusion.name, i+1))
 
   ## when useFusionInspector was used, some list elements can be NULL
   Filter(function(elt)!is.null(elt), fusionList)
-}
+}                                       #importStarFusion
