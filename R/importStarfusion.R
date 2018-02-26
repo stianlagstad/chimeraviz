@@ -1,5 +1,10 @@
 #' read the results from runnning FusionInspector
 #'
+#' Note: there may not be perfect match between the fusions found by STAR-Fusion
+#' and FusionInspector (since the latter reruns STAR on the mini contig; also,
+#' selfie fusions are ignored).
+#' If no match can be found, the whole fusion is skipped
+#'
 #' @export
 importFusionInspector <- function (filename='FusionInspector-inspect/finspector.igv.FusionJuncSpan',
                                   limit=Inf) {
@@ -260,6 +265,6 @@ on virtual contig, ignoring it (line %d)", fusion.name, i+1))
                            fusionToolSpecificData = fusionToolSpecificData)
   }                                     #for i
 
-  # Return the list of Fusion objects
-  fusionList
+  ## when useFusionInspector was used, some list elements can be NULL
+  Filter(function(elt)!is.null(elt), fusionList)
 }
