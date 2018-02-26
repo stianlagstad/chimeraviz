@@ -3,7 +3,7 @@
 #' 
 #'
 #' @export
-plotFusionReadsSimple <- function(fusion) {
+plotFusionReadsSimple <- function(fusion, leftFlank=10000, rightFlank=leftFlank) {
   Gviz::displayPars(fusion@fusionReadsAlignment) <- list(
     showTitle = FALSE,
     showMismatches = FALSE # Show mismatched reads?
@@ -18,8 +18,8 @@ plotFusionReadsSimple <- function(fusion) {
   grid::grid.newpage()
   Gviz::plotTracks(
     fusion@fusionReadsAlignment,
-    from = fusion@geneA@breakpoint-10000,
-    to = fusion@geneB@breakpoint+10000,
+    from = fusion@geneA@breakpoint-leftFlank,
+    to = fusion@geneB@breakpoint+rightFlank,
     chromosome = fusion@fusionReadsAlignment@chromosome,
     type = "pileup",
     add = TRUE)
