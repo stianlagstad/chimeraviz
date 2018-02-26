@@ -39,7 +39,8 @@ importStarfusion <- function (filename, genomeVersion, limit) {
   report <- withCallingHandlers(
     {
       col_types_starfusion = readr::cols_only(
-        "#FusionName" = col_skip(),
+##        "#FusionName" = col_skip(),
+        "#FusionName" = col_character(), 
         "JunctionReadCount" = col_integer(),
         "SpanningFragCount" = col_integer(),
         "SpliceType" = col_skip(),
@@ -97,6 +98,7 @@ importStarfusion <- function (filename, genomeVersion, limit) {
 
     # Import starfusion-specific fields
     fusionToolSpecificData <- list()
+    fusionToolSpecificData[["FusionName"]] = report[[i, "#FusionName"]]
     fusionToolSpecificData[["LargeAnchorSupport"]] = report[[i, "LargeAnchorSupport"]]
     fusionToolSpecificData[["LeftBreakDinuc"]] = report[[i, "LeftBreakDinuc"]]
     fusionToolSpecificData[["LeftBreakEntropy"]] = report[[i, "LeftBreakEntropy"]]
