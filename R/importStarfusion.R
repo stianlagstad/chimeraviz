@@ -20,7 +20,8 @@
 #' # This should import a list of 3 fusions described in Fusion objects.
 #'
 #' @export
-importStarfusion <- function (filename, genomeVersion, limit=Inf) {
+importStarfusion <- function (filename, genomeVersion, limit=Inf,
+                              useFusionInspector=FALSE) {
   # Is the genome version valid?
   validGenomes <- c("hg19", "hg38", "mm10")
   if (is.na(match(tolower(genomeVersion), tolower(validGenomes)))) {
