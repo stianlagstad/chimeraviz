@@ -1,3 +1,48 @@
+#' read the results from runnning FusionInspector
+#'
+#' @export
+importFusionInspector <- function (filename='FusionInspector-inspect/finspector.igv.FusionJuncSpan',
+                                  limit=Inf) {
+    ## Try to read the FusionInspector report.
+    ## Within one 'scaffold', only keep the leftmost and rightmost coordinate
+    report <- withCallingHandlers({
+        col_types_fusioninspector = readr::cols_only(
+          "#scaffold" = col_character(),
+          "fusion_break_name" = col_skip(),
+          "break_left" = col_integer(),
+          "break_right" = col_integer(),
+          "num_junction_reads" = col_skip(),
+          "num_spanning_frags" = col_skip(),
+          "spanning_frag_coords" = col_skip()
+          )
+        if (missing(limit)) {
+            readr::read_tsv(
+              file = filename,
+              col_types = col_types_fusioninspector)
+        } else {
+            readr::read_tsv(
+              file = filename,
+              col_types = col_types_fusioninspector,
+              n_max = limit)
+        }
+    },
+      error = function(cond) {
+          message(paste0("Reading ", filename, " caused an error: ", cond[[1]]))
+          stop(cond)
+      },
+      warning = function(cond) {
+          message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
+          warning(cond)
+      })
+    colnames(report)[1] <- 'id'
+    d <-
+      data.frame(id=with(report, id[ !duplicated(id) ]),
+                 starts=with(report, tapply(start, id, min)),
+                 ends=with(report, tapply(end, id, max)))
+    rownames(d) <- d$id
+    d
+}                                        #importFusionInspector
+
 #' Import results from a STAR-Fusion run into a list of Fusion objects.
 #'
 #' A function that imports the results from a STAR-Fusion run, typically from
@@ -81,10 +126,16 @@ importStarfusion <- function (filename, genomeVersion, limit=Inf,
     }
   )
 
+  if(useFusionInspector) {
+      l <- limit+10
+      fi.table <- importFusionInspector(limit=l)
+  }
+
+  
   # Set variables
   id                    <- NA
   inframe               <- NA
-  fusionTool            <- "starfusion"
+  fusionTool            <- ifelse(useFusionInspector, "starfusion+fusioninspector", "starfusion")
   spanningReadsCount    <- NA
   splitReadsCount       <- NA
   junctionSequence      <- NA
@@ -153,6 +204,31 @@ importStarfusion <- function (filename, genomeVersion, limit=Inf,
     ensemblIdA <- geneNames1[2]
     ensemblIdB <- geneNames2[2]
 
+    if (useFusionInspector) {
+        ## override things to go with the FI's virtual 'mini genome', but
+        ## first save them in fusionToolSpecificData:
+        fusionToolSpecificData[['orig_chromosomeA']] <- chromosomeA
+        fusionToolSpecificData[['orig_breakpointA']] <- breakpointA
+        fusionToolSpecificData[['orig_strandA']] <- strandA
+        fusionToolSpecificData[['orig_chromosomeB']] <- chromosomeB
+        fusionToolSpecificData[['orig_breakpointB']] <- breakpointB
+        fusionToolSpecificData[['orig_strandB']] <- strandB
+
+        fusion.name <- report[[i, "#FusionName"]]
+        if(fusion.name %in% fi.table$id) {
+            chromosomeA <- fusion.name
+            chromosomeB <- fusion.name
+            strandA <- '+'
+            strandB <- '+'
+            breakpointA <- fi.table[fusion.name, 'start']
+            breakpointB <- fi.table[fusion.name, 'end']
+        } else {
+            warning(sprintf("Could not find location for fusion %s
+on virtual contig, ignoring it (line %d)", fusion.name, i+1))
+            next
+        }
+    }
+
     # PartnerGene objects
     geneA <- new(Class = "PartnerGene",
                  name = nameA,
@@ -182,7 +258,7 @@ importStarfusion <- function (filename, genomeVersion, limit=Inf,
                            geneB = geneB,
                            inframe = inframe,
                            fusionToolSpecificData = fusionToolSpecificData)
-  }
+  }                                     #for i
 
   # Return the list of Fusion objects
   fusionList
