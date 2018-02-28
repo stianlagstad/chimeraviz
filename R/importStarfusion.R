@@ -53,7 +53,9 @@ importStarfusion <- function (filename, genomeVersion, limit) {
         "RightBreakDinuc" = col_character(),
         "RightBreakEntropy" = col_number(),
         "FFPM" = col_number(),
-        "PROT_FUSION_TYPE" = col_character()
+        "PROT_FUSION_TYPE" = col_character(),
+        "annots" = col_character(), # e.g. '[SELFIE]'
+        "FUSION_CDS" = col_character() # fusion sequence?
       )
       if (missing(limit)) {
         # Read all lines
@@ -103,6 +105,8 @@ importStarfusion <- function (filename, genomeVersion, limit) {
     fusionToolSpecificData[["RightBreakDinuc"]] = report[[i, "RightBreakDinuc"]]
     fusionToolSpecificData[["RightBreakEntropy"]] = report[[i, "RightBreakEntropy"]]
     fusionToolSpecificData[["FFPM"]] = report[[i, "FFPM"]]
+    fusionToolSpecificData[["annots"]] = report[[i, "annots"]]
+    seq <- report[[i, "FUSION_CDS"]] # looks like '...aacgatcgtgaACTGATCGATG...'
 
     if(!is.null(report$PROT_FUSION_TYPE)) {
         ## only available when loading from coding_effect file (i.e.
@@ -137,9 +141,16 @@ importStarfusion <- function (filename, genomeVersion, limit) {
     splitReadsCount <- report[[i, "JunctionReadCount"]]
     spanningReadsCount <- report[[i, "SpanningFragCount"]]
 
-    # STAR-Fusion doesn't provide the fusion sequence
     junctionSequenceA <- Biostrings::DNAString()
     junctionSequenceB <- Biostrings::DNAString()
+
+    seqa <- gsub("[A-Z]+$", "", seq)
+    seqb <- gsub("^[a-z]+", "", seq)
+
+    if(!is.null(seqa))
+      junctionSequenceA <- Biostrings::DNAString(seqa)
+    if(!is.null(seqb))
+      junctionSequenceB <- Biostrings::DNAString(seqb)
 
     # Gene names
     geneNames1 <- unlist(strsplit(report[[i, "LeftGene"]], split="\\^"))
