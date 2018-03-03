@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 ^.*\.png$
 ^.*\.md$
+.travis.yml
+
