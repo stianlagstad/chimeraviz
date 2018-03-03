@@ -1,0 +1,22 @@
+# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
+language: r
+sudo: false
+cache: packages
+
+r:
+  - bioc-release
+
+warnings_are_errors: true
+bioc_required: true
+bioc_use_devel: true
+
+bioc_packages:
+  - BiocCheck
+
+script:
+  - Rscript -e "library(devtools); devtools::check()"
+
+notifications:
+  email:
+    on_success: always
+    on_failure: always
