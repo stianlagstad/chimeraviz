@@ -2,6 +2,8 @@ Package: chimeraviz
 Type: Package
 Title: Visualization tools for gene fusions
 Version: 1.5.4
+Author: Stian Lågstad
+Maintainer: Stian Lågstad <stianlagstad@gmail.com>
 Authors@R: c(
   person(
     given = "Stian",

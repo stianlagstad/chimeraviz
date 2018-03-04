@@ -4,7 +4,7 @@
 \alias{addFusionReadsAlignment}
 \title{Add fusion reads alignment to fusion object}
 \usage{
-addFusionReadsAlignment(fusion, bamfile)
+addFusionReadsAlignment(fusion, bamfile, chromosome = "chrNA")
 }
 \arguments{
 \item{fusion}{The fusion object to add a genomic alignment to.}

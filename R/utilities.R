@@ -701,7 +701,7 @@ getTranscriptsEnsembldb <- function(fusion, edb) {
 #' fusion <- addFusionReadsAlignment(fusion, bamfile5267)
 #'
 #' @export
-addFusionReadsAlignment <- function(fusion, bamfile) {
+addFusionReadsAlignment <- function(fusion, bamfile, chromosome="chrNA") {
 
   # Check if we got a fusion object
   if (class(fusion) != "Fusion") {
@@ -713,7 +713,7 @@ addFusionReadsAlignment <- function(fusion, bamfile) {
     isPaired = TRUE,
     # Setting chromosome to chrNA because this is a fusion sequence not found in
     # any reference genome.
-    chromosome = "chrNA",
+    chromosome = chromosome,
     name="Fusion Reads",
     genome = fusion@genomeVersion)
 
@@ -847,15 +847,17 @@ selectTranscript <- function(
 
     # If the user has chosen one of the four transcript categories, then we want to check whether or not such
     # transcripts exist. If they exist, simply return them. If they don't exist, go on to try the other categories. Try
-    # the wanted category first:
-    if (length(genePartner@transcripts[mcols(genePartner@transcripts)$transcriptCategory == whichTranscripts[[1]] ]) > 0) {
-      message(paste0("..found transcripts of type ", whichTranscripts[[1]]))
+                                        # the wanted category first:
+    l <- length(genePartner@transcripts[mcols(genePartner@transcripts)$transcriptCategory == whichTranscripts[[1]] ])
+    if (l > 0) {
+      message(paste0("... found ", l, " transcripts of type ", whichTranscripts[[1]]))
       return(genePartner@transcripts[mcols(genePartner@transcripts)$transcriptCategory == whichTranscripts[[1]] ])
     }
     # Check the remaining categories
     for(transcriptCategory in transcriptCategories[transcriptCategories != whichTranscripts[[1]]]) {
-      if (length(genePartner@transcripts[mcols(genePartner@transcripts)$transcriptCategory == transcriptCategory ]) > 0) {
-        message(paste0("..found transcripts of type ", transcriptCategory))
+      l <- length(genePartner@transcripts[mcols(genePartner@transcripts)$transcriptCategory == transcriptCategory ])
+      if (l > 0) {
+        message(paste0(" ... found ",l, " transcripts of type ", transcriptCategory))
         return(genePartner@transcripts[mcols(genePartner@transcripts)$transcriptCategory == transcriptCategory ])
       }
     }
@@ -1154,13 +1156,19 @@ is.nucleotideAmount.valid <- function(argument_checker, nucleotideAmount, fusion
     length(fusion@geneA@junctionSequence) +
     length(fusion@geneB@junctionSequence)
 
+  if (fusionJunctionSequenceLength == 0 ) {
+      ArgumentCheck::addWarning(
+      msg = "length of junction sequence is 0, have they been determined?",
+      argcheck = argument_checker
+      )
+  }
+  
   if (class(nucleotideAmount) != "numeric" ||
       nucleotideAmount <= 0 ||
       nucleotideAmount > fusionJunctionSequenceLength) {
-    ArgumentCheck::addError(
-      msg = paste0("'nucleotideAmount' must be a numeric bigger than or equal ",
-                   "to 0 and less than or equal to the fusion junction ",
-                   "sequence length."),
+      ArgumentCheck::addWarning(
+      msg = paste0("'nucleotideAmount' must be a numeric larger > 0  ",
+                   "and <= fusion junction sequence length."),
       argcheck = argument_checker
     )
   }

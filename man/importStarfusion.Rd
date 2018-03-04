@@ -4,7 +4,7 @@
 \alias{importStarfusion}
 \title{Import results from a STAR-Fusion run into a list of Fusion objects.}
 \usage{
-importStarfusion(filename, genomeVersion, limit)
+importStarfusion(filename, genomeVersion, limit = Inf)
 }
 \arguments{
 \item{filename}{Filename for the STAR-Fusion

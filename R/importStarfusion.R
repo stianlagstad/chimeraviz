@@ -20,8 +20,7 @@
 #' # This should import a list of 3 fusions described in Fusion objects.
 #'
 #' @export
-importStarfusion <- function (filename, genomeVersion, limit) {
-
+importStarfusion <- function (filename, genomeVersion, limit=Inf) {
   # Is the genome version valid?
   validGenomes <- c("hg19", "hg38", "mm10")
   if (is.na(match(tolower(genomeVersion), tolower(validGenomes)))) {
@@ -39,7 +38,8 @@ importStarfusion <- function (filename, genomeVersion, limit) {
   report <- withCallingHandlers(
     {
       col_types_starfusion = readr::cols_only(
-        "#FusionName" = col_skip(),
+##        "#FusionName" = col_skip(),
+        "#FusionName" = col_character(), 
         "JunctionReadCount" = col_integer(),
         "SpanningFragCount" = col_integer(),
         "SpliceType" = col_skip(),
@@ -52,7 +52,8 @@ importStarfusion <- function (filename, genomeVersion, limit) {
         "LeftBreakEntropy" = col_number(),
         "RightBreakDinuc" = col_character(),
         "RightBreakEntropy" = col_number(),
-        "FFPM" = col_number()
+        "FFPM" = col_number(),
+        "PROT_FUSION_TYPE" = col_character()
       )
       if (missing(limit)) {
         # Read all lines
@@ -96,6 +97,7 @@ importStarfusion <- function (filename, genomeVersion, limit) {
 
     # Import starfusion-specific fields
     fusionToolSpecificData <- list()
+    fusionToolSpecificData[["FusionName"]] = report[[i, "#FusionName"]]
     fusionToolSpecificData[["LargeAnchorSupport"]] = report[[i, "LargeAnchorSupport"]]
     fusionToolSpecificData[["LeftBreakDinuc"]] = report[[i, "LeftBreakDinuc"]]
     fusionToolSpecificData[["LeftBreakEntropy"]] = report[[i, "LeftBreakEntropy"]]
@@ -103,6 +105,17 @@ importStarfusion <- function (filename, genomeVersion, limit) {
     fusionToolSpecificData[["RightBreakEntropy"]] = report[[i, "RightBreakEntropy"]]
     fusionToolSpecificData[["FFPM"]] = report[[i, "FFPM"]]
 
+    if(!is.null(report$PROT_FUSION_TYPE)) {
+        ## only available when loading from coding_effect file (i.e.
+        ## star-fusion.fusion_predictions.abridged.annotated.coding_effect.tsv)
+        ft <- report[[i, "PROT_FUSION_TYPE"]]
+        fusionToolSpecificData[["inframe"]] <- ft
+        if (ft == 'INFRAME')
+          inframe <- TRUE
+        if (ft == 'FRAMESHIFT')
+          inframe <- FALSE
+    }
+    
     # id for this fusion
     id <- as.character(i)
 
