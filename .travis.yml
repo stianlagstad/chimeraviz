@@ -7,11 +7,6 @@ r:
   - bioc-release
 
 warnings_are_errors: true
-bioc_required: true
-bioc_use_devel: true
-
-bioc_packages:
-  - BiocCheck
 
 script:
   - Rscript -e "library(devtools); devtools::check()"
