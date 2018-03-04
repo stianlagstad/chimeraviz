@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/stianlagstad/chimeraviz.svg?branch=master)](https://travis-ci.org/stianlagstad/chimeraviz)
+
 # chimeraviz
 
 `chimeraviz` is an R package that automates the creation of chimeric RNA visualizations.
