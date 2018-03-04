@@ -139,6 +139,17 @@ writeFusionReference <- function(fusion, filename) {
   fusionSequence <- Biostrings::DNAStringSet(
     x = c(fusion@geneA@junctionSequence,
           fusion@geneB@junctionSequence))
+
+  # Give an error if the length of the fusionSequence is 0:
+  if (nchar(fusionSequence) == 0) {
+    stop(
+      paste0(
+        "The fusion sequence length is zero, so the fusion reference sequence",
+        " cannot be written."
+      )
+    )
+  }
+
   # Set sequence name to chrNA, since this is a sequence created from a fusion
   # event (i.e. not a sequence from a real chromosome). The "chrNA" name will
   # make Gviz happy.
