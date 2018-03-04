@@ -229,7 +229,7 @@ plotFusionReads <- function(
     grid::popViewport(1)
   }
 
-}
+}                                       #plotFusionReads
 
 .validatePlotFusionReadsParams <- function(
   fusion,
