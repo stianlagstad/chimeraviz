@@ -172,6 +172,10 @@ devtools::install_github(
 
 Please [create an issue on Github](https://github.com/stianlagstad/chimeraviz/issues) if you have any problems at all.
 
+# Development
+
+If you wish to make changes to chimeraviz, I recommend you use Docker. See the `README.md` file in the `docker` folder for more information.
+
 # Tests
 
 Tests are written with [testthat](https://cran.r-project.org/web/packages/testthat/index.html) and are located in `tests/testthat`. They can be run with `devtools::test()` if you have cloned this repository, _i.e._ not installed the package with `devtools::install_github()` but have used `git clone git@github.com:stianlagstad/chimeraviz.git chimeraviz`.

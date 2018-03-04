@@ -3,4 +3,5 @@
 ^.*\.png$
 ^.*\.md$
 .travis.yml
+/docker
 
