@@ -11,6 +11,12 @@ warnings_are_errors: true
 script:
   - Rscript -e "library(devtools); devtools::check()"
 
+r_github_packages:
+  - r-lib/covr
+
+after_success:
+  - Rscript -e 'covr::codecov()'
+
 notifications:
   email:
     on_success: always
