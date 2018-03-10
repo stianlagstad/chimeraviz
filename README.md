@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/stianlagstad/chimeraviz.svg?branch=RELEASE_3_6)](https://travis-ci.org/stianlagstad/chimeraviz)
+[![Build Status](https://travis-ci.org/stianlagstad/chimeraviz.svg?branch=RELEASE_3_6)](https://travis-ci.org/stianlagstad/chimeraviz) [![codecov](https://codecov.io/gh/stianlagstad/chimeraviz/branch/RELEASE_3_6/graph/badge.svg)](https://codecov.io/gh/stianlagstad/chimeraviz)
 
 # chimeraviz
 
