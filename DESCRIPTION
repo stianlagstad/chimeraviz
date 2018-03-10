@@ -69,7 +69,8 @@ Suggests:
     testthat,
     roxygen2,
     devtools,
-    knitr
+    knitr,
+    lintr
 SystemRequirements: bowtie, samtools, and egrep are required for some
     functionalities
 RoxygenNote: 6.0.1
