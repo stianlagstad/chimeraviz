@@ -149,8 +149,6 @@ See how to build this plot in the package vignette: [Building the fusion transcr
 
 ### Fusion transcript plot with protein domain annotations
 
-(Note that this plot is currently only available in the [devel version](https://bioconductor.org/packages/devel/bioc/html/chimeraviz.html).)
-
 The fusion transcript plot with protein domain annotations shows a specific fusion transcript along with protein domain annotation data. If a bamfile is specified, the fusion transcript will be plotted with coverage information as well.
 
 ![fusion transcript plot with protein domain annotations](fusion-transcript-plot-with-protein-domain-annotations.png)
