@@ -110,6 +110,17 @@ test_that("writeFusionReference fails when given invalid input", {
   expect_error(writeFusionReference("not-a-fusion-object", fastaFileOut))
 })
 
+test_that("writeFusionReference fails when there's no fusion junction sequence in the Fusion object", {
+  # Create a Fusion object with no fusion junction sequences
+  fusion_without_fusion_junction_sequences = fusion
+  fusion_without_fusion_junction_sequences@geneA@junctionSequence = Biostrings::DNAString("")
+  fusion_without_fusion_junction_sequences@geneB@junctionSequence = Biostrings::DNAString("")
+  # Create temporary file to hold the fusion sequence
+  fastaFileOut <- tempfile(pattern = "fq1", tmpdir = tempdir())
+  # Call the function
+  expect_error(writeFusionReference(fusion_without_fusion_junction_sequences, fastaFileOut))
+})
+
 test_that("addFusionReadsAlignment works as expected", {
   # We will test this by checking the value of
   # fusion@fusionReadsAlignment@genome before and after adding the bamfile.
