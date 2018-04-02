@@ -4,4 +4,4 @@
 ^.*\.md$
 .travis.yml
 /docker
-
+.lintr

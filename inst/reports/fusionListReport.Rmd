@@ -7,12 +7,12 @@ params:
 
 ```{r, echo = FALSE, message = FALSE, fig.height = 7, fig.width = 7, fig.align='center', dev='png'}
 reportFusions <- params$fusions
-plotCircle(reportFusions)
+plot_circle(reportFusions)
 ```
 
 ```{r, echo = FALSE}
-# with the fusionToDataFrame function, we can use ldply() from the plyr package to create a data frame of our fusion objects:
-dfFusions <- plyr::ldply(reportFusions, fusionToDataFrame)
+# with the fusion_to_data_frame function, we can use ldply() from the plyr package to create a data frame of our fusion objects:
+dfFusions <- plyr::ldply(reportFusions, fusion_to_data_frame)
 
 # with this data frame, we can use datatable() from the DT package to create an html sortable table:
 DT::datatable(dfFusions, filter = 'top')

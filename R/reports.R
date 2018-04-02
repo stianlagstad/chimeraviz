@@ -4,7 +4,7 @@
 #' searchable table with the fusion data.
 #'
 #' @param fusions A list of Fusion objects.
-#' @param outputFilename Output html-file filename.
+#' @param output_filename Output html-file filename.
 #' @param quiet Parameter passed to rmarkdown::render() to toggle its output.
 #'
 #' @return Creates a html report with an overplot and a sortable, searchable
@@ -16,20 +16,24 @@
 #'   "extdata",
 #'   "defuse_833ke_results.filtered.tsv",
 #'   package="chimeraviz")
-#' fusions <- importDefuse(defuse833ke, "hg19", 3)
+#' fusions <- import_defuse(defuse833ke, "hg19", 3)
 #' # Temporary file to store the report
-#' outputFilename <- tempfile(
+#' output_filename <- tempfile(
 #'   pattern = "fusionReport",
 #'   fileext = ".html",
 #'   tmpdir = tempdir())
 #' # Create report
-#' createFusionReport(fusions, outputFilename)
+#' create_fusion_report(fusions, output_filename)
 #'
 #' @importFrom DT datatable
 #' @importFrom plyr ldply
 #'
 #' @export
-createFusionReport <- function(fusions, outputFilename, quiet = TRUE) {
+create_fusion_report <- function(
+  fusions,
+  output_filename,
+  quiet = TRUE
+) {
 
   # Check if we got a list of fusion objects
   if (class(fusions[[1]]) != "Fusion") {
@@ -37,15 +41,15 @@ createFusionReport <- function(fusions, outputFilename, quiet = TRUE) {
   }
 
   # Get reference to the fusion list report file
-  fusionReportRmd <- system.file(
+  fusion_report_rmd <- system.file(
     "reports",
     "fusionListReport.Rmd",
-    package="chimeraviz")
+    package = "chimeraviz")
 
   # Render the report
   rmarkdown::render(
-    fusionReportRmd,
-    output_file = outputFilename,
+    fusion_report_rmd,
+    output_file = output_filename,
     params = list(fusions = fusions),
     quiet = quiet)
 }

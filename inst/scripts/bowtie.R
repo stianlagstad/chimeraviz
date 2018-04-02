@@ -13,51 +13,53 @@
 #' See the plot-fusion-reads vignette for a complete example of how to use the
 #' Bowtie functions.
 #'
-#' @seealso bowtieAlign
+#' @seealso bowtie_align
 #'
-#' @param bowtieBuildLocation The path to bowtie-build on your system.
-#' @param referenceFasta The path to the reference sequence to build index from.
+#' @param bowtie_build_location The path to bowtie-build on your system.
+#' @param reference_fasta The path to the reference sequence to build index from.
 #'
 #' @examples
 #' \dontrun{
-#' bowtieIndex(
-#'   bowtieBuildLocation = "path/to/bowtie-build",
-#'   referenceFasta = "reference.fa")
+#' bowtie_index(
+#'   bowtie_build_location = "path/to/bowtie-build",
+#'   reference_fasta = "reference.fa")
 #' }
 #'
 #' @export
-bowtieIndex <- function(bowtieBuildLocation, referenceFasta) {
+bowtie_index <- function(bowtie_build_location, reference_fasta) {
 
   # Check if the input paths actually exist
-  if (file.exists(bowtieBuildLocation) == FALSE) {
-    stop("Invalid bowtieBuildLocation. File doesn't exist.")
+  if (file.exists(bowtie_build_location) == FALSE) {
+    stop("Invalid bowtie_build_location File doesn't exist.")
   }
-  if (file.exists(referenceFasta) == FALSE) {
-    stop("Invalid referenceFasta filename. File doesn't exist.")
+  if (file.exists(reference_fasta) == FALSE) {
+    stop("Invalid reference_fasta filename. File doesn't exist.")
   }
 
-  createIndexCommand <- paste(shQuote(bowtieBuildLocation),
-                              shQuote(referenceFasta),
-                              shQuote(referenceFasta),
-                              sep = " ")
+  create_index_command <- paste(
+    shQuote(bowtie_build_location),
+    shQuote(reference_fasta),
+    shQuote(reference_fasta),
+    sep = " "
+  )
 
   # This should create a command like this:
-  # "bowtie2-build referenceFasta referenceFasta"
+  # "bowtie2-build referenceFasta reference_fasta" # Exclude Linting
 
   # From the bowtie manual: "The command should print many lines of output then
   # quit. When the command completes, the current directory will contain four
-  # new files that all start with `referenceFasta` and end with `.1.bt2`,
+  # new files that all start with `reference_fasta` and end with `.1.bt2`,
   # `.2.bt2`, `.3.bt2`, `.4.bt2`, `.rev.1.bt2`, and `.rev.2.bt2`. These files
   # constitute the index."
 
   # Run the command and wait for it to complete
-  system(createIndexCommand, wait = TRUE)
+  system(create_index_command, wait = TRUE)
 
   # Did we actually get an output?
-  thisFileShouldExist <- paste(referenceFasta, ".1.bt2", sep = "")
-  if (file.exists(thisFileShouldExist) == FALSE) {
-    warning(paste("It doesn't look like bowtieIndex() worked. Command tried:",
-                  createIndexCommand))
+  this_file_should_exist <- paste(reference_fasta, ".1.bt2", sep = "")
+  if (file.exists(this_file_should_exist) == FALSE) {
+    warning(paste("It doesn't look like bowtie_index() worked. Command tried:",
+                  create_index_command))
   }
 }
 
@@ -72,41 +74,43 @@ bowtieIndex <- function(bowtieBuildLocation, referenceFasta) {
 #' See the plot-fusion-reads vignette for a complete example of how to use the
 #' Bowtie functions.
 #'
-#' @seealso bowtieIndex
+#' @seealso bowtie_index
 #'
-#' @param bowtieLocation The path to bowtie on your system.
-#' @param referenceName Name of the reference file.
+#' @param bowtie_location The path to bowtie on your system.
+#' @param reference_name Name of the reference file.
 #' @param fastq1 The first fastq file.
 #' @param fastq2 The second fastq file.
-#' @param outputBamFilename Filename for the resulting .bam file.
+#' @param output_bam_filename Filename for the resulting .bam file.
 #' @param p Number of alignment threads to launch (default: 1). Given to -p (or
 #' --threads).
 #'
 #' @examples
 #' \dontrun{
-#' bowtieAlign(
-#'   bowtieLocation = "path/to/bowtie",
-#'   referenceName = "reference.fa",
+#' bowtie_align(
+#'   bowtie_location = "path/to/bowtie",
+#'   reference_name = "reference.fa",
 #'   fastq1 = "reads1.fq",
 #'   fastq2 = "reads2.fq",
-#'   outputBamFilename = "outputbam",
+#'   output_bam_filename = "outputbam",
 #'   p = 2)
 #' }
 #'
 #' @export
-bowtieAlign <- function(bowtieLocation,
-                        referenceName,
-                        fastq1,
-                        fastq2,
-                        outputBamFilename,
-                        p = 1) {
+bowtie_align <- function(
+  bowtie_location,
+  reference_name,
+  fastq1,
+  fastq2,
+  output_bam_filename,
+  p = 1
+) {
 
   # Check if the input paths actually exist
-  if (file.exists(bowtieLocation) == FALSE) {
-    stop("Invalid bowtieLocation File doesn't exist.")
+  if (file.exists(bowtie_location) == FALSE) {
+    stop("Invalid bowtie_location File doesn't exist.")
   }
-  if (file.exists(referenceName) == FALSE) {
-    stop("Invalid referenceName filename. File doesn't exist.")
+  if (file.exists(reference_name) == FALSE) {
+    stop("Invalid reference_name filename. File doesn't exist.")
   }
   if (file.exists(fastq1) == FALSE || file.exists(fastq2) == FALSE) {
     stop("Invalid fastq filenames. File(s) doesn't exist.")
@@ -115,29 +119,31 @@ bowtieAlign <- function(bowtieLocation,
     stop("Invalid p. Must be integer.")
   }
 
-  alignCommand <- paste(bowtieLocation,
-                        "-x", shQuote(referenceName),
-                        "-1", shQuote(fastq1),
-                        "-2", shQuote(fastq2),
-                        "--very-sensitive", "-p", p,
-                        "-S",
-                        paste(outputBamFilename, ".sam", sep = ""),
-                        sep = " ")
+  align_command <- paste(
+    bowtie_location,
+    "-x", shQuote(reference_name),
+    "-1", shQuote(fastq1),
+    "-2", shQuote(fastq2),
+    "--very-sensitive", "-p", p,
+    "-S",
+    paste(output_bam_filename, ".sam", sep = ""),
+    sep = " "
+  )
 
   # This should create a command like this:
   # "bowtie2 -x ref.fa -1 fastq1 -2 fastq2 --very-sensitive -p 1
 
   # Run the command and wait for it to complete
-  system(alignCommand, wait = TRUE)
+  system(align_command, wait = TRUE)
 
   # Sort and index
   Rsamtools::asBam(
-    file = paste(outputBamFilename, ".sam", sep = ""),
-    destination = outputBamFilename)
+    file = paste(output_bam_filename, ".sam", sep = ""),
+    destination = output_bam_filename)
 
   # Did we actually get an output?
-  if (file.exists(paste(outputBamFilename, ".bam", sep = "")) == FALSE) {
-    warning(paste("It doesn't look like bowtieAlign() worked. Command tried:",
-                  alignCommand))
+  if (file.exists(paste(output_bam_filename, ".bam", sep = "")) == FALSE) {
+    warning(paste("It doesn't look like bowtie_align() worked. Command tried:",
+                  align_command))
   }
 }

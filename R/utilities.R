@@ -8,11 +8,11 @@
 #'
 #' @param reads List of read IDs that is to be fetched.
 #'
-#' @param fastqFileIn1 First fastq file to search in.
-#' @param fastqFileIn2 Second fastq file to seach in.
+#' @param fastq_file_in1 First fastq file to search in.
+#' @param fastq_file_in2 Second fastq file to seach in.
 #'
-#' @param fastqFileOut1 First fastq file with results.
-#' @param fastqFileOut2 Second fastq file with results.
+#' @param fastq_file_out1 First fastq file with results.
+#' @param fastq_file_out2 Second fastq file with results.
 #'
 #' @return The files fastqFileOut1 and fastqFileOut2 populated with the
 #' specified reads.
@@ -30,21 +30,23 @@
 #' # "fastqFileOut2"
 #' fastqFileOut1 <- tempfile(pattern = "fq1", tmpdir = tempdir())
 #' fastqFileOut2 <- tempfile(pattern = "fq2", tmpdir = tempdir())
-#' fetchReadsFromFastq(reads, fastq1, fastq2,
+#' fetch_reads_from_fastq(reads, fastq1, fastq2,
 #'     fastqFileOut1, fastqFileOut2)
 #' # We now have the reads supporting fusion 5267 in the two files.
 #' }
 #'
 #' @export
-fetchReadsFromFastq <- function(reads,
-                                fastqFileIn1,
-                                fastqFileIn2,
-                                fastqFileOut1,
-                                fastqFileOut2) {
+fetch_reads_from_fastq <- function(
+  reads,
+  fastq_file_in1,
+  fastq_file_in2,
+  fastq_file_out1,
+  fastq_file_out2
+  ) {
 
   # Since this function use the bash function egrep to extract reads, give a
   # warning if we're running on windows
-  if (Sys.info()['sysname'] == "Windows") {
+  if (Sys.info()["sysname"] == "Windows") {
     stop(paste("This function uses the bash function egrep. It looks like",
                "you're running on windows, so this function will terminate."))
   }
@@ -53,7 +55,8 @@ fetchReadsFromFastq <- function(reads,
     stop("reads should be a character vector of read ids")
   }
 
-  if (file.exists(fastqFileIn1) == FALSE || file.exists(fastqFileIn2) == FALSE) {
+  if (file.exists(fastq_file_in1) == FALSE ||
+      file.exists(fastq_file_in2) == FALSE) {
     stop("Invalid fastq input files")
   }
 
@@ -67,21 +70,21 @@ fetchReadsFromFastq <- function(reads,
 
   # First build the query with the read ids
   query <- paste("@",
-                 paste(reads, collapse = '|'),
+                 paste(reads, collapse = "|"),
                  sep = "")
 
   # Then create commands for each fastq file
   command1 <- paste("egrep -A 3 '",
                     query,
                     "' ",
-                    shQuote(fastqFileIn1),
-                    " | sed '/^--$/d'",
+                    shQuote(fastq_file_in1),
+                    " | sed '/^--$/d'", # Exclude Linting
                     sep = "")
   command2 <- paste("egrep -A 3 '",
                     query,
                     "' ",
-                    shQuote(fastqFileIn2),
-                    " | sed '/^--$/d'",
+                    shQuote(fastq_file_in2),
+                    " | sed '/^--$/d'", # Exclude Linting
                     sep = "")
 
   # We now have two commands:
@@ -89,15 +92,15 @@ fetchReadsFromFastq <- function(reads,
   # egrep -A 1 '@11|22|33' reads.2.fastq | sed '/^--$/d'
 
   # Run the command and capture output
-  supportingReadsFq1 <- system(command1, intern = TRUE)
-  supportingReadsFq2 <- system(command2, intern = TRUE)
+  supporting_reads_fq1 <- system(command1, intern = TRUE)
+  supporting_reads_fq2 <- system(command2, intern = TRUE)
 
   # Write these to each their own files
-  write(supportingReadsFq1, file = fastqFileOut1)
-  write(supportingReadsFq1, file = fastqFileOut2)
+  write(supporting_reads_fq1, file = fastq_file_out1)
+  write(supporting_reads_fq2, file = fastq_file_out2)
 
   # Check file sizes
-  if (file.info(fastqFileOut1)$size <= 10) {
+  if (file.info(fastq_file_out1)$size <= 10) {
     warning(paste("It looks like we couldn't find any of the reads in the",
                   "fastq file. Check your arguments."))
   }
@@ -119,16 +122,16 @@ fetchReadsFromFastq <- function(reads,
 #'   "extdata",
 #'   "defuse_833ke_results.filtered.tsv",
 #'   package="chimeraviz")
-#' fusions <- importDefuse(defuse833keFiltered, "hg19", 1)
+#' fusions <- import_defuse(defuse833keFiltered, "hg19", 1)
 #' # Get a specific fusion
-#' fusion <- getFusionById(fusions, 5267)
+#' fusion <- get_fusion_by_id(fusions, 5267)
 #' # Create temporary file to hold the fusion sequence
 #' fastaFileOut <- tempfile(pattern = "fusionSequence", tmpdir = tempdir())
 #' # Write fusion sequence to file
-#' writeFusionReference(fusion, fastaFileOut)
+#' write_fusion_reference(fusion, fastaFileOut)
 #'
 #' @export
-writeFusionReference <- function(fusion, filename) {
+write_fusion_reference <- function(fusion, filename) {
 
   # Check if we got a fusion object
   if (class(fusion) != "Fusion") {
@@ -136,12 +139,12 @@ writeFusionReference <- function(fusion, filename) {
   }
 
   # First put the fusion junction sequence in a DNAStringSet object
-  fusionSequence <- Biostrings::DNAStringSet(
-    x = c(fusion@geneA@junctionSequence,
-          fusion@geneB@junctionSequence))
+  fusion_sequence <- Biostrings::DNAStringSet(
+    x = c(fusion@gene_upstream@junction_sequence,
+          fusion@gene_downstream@junction_sequence))
 
   # Give an error if the length of the fusionSequence is 0:
-  if (nchar(fusionSequence) == 0) {
+  if (nchar(fusion_sequence) == 0) {
     stop(
       paste0(
         "The fusion sequence length is zero, so the fusion reference sequence",
@@ -153,9 +156,9 @@ writeFusionReference <- function(fusion, filename) {
   # Set sequence name to chrNA, since this is a sequence created from a fusion
   # event (i.e. not a sequence from a real chromosome). The "chrNA" name will
   # make Gviz happy.
-  names(fusionSequence) <- "chrNA"
+  names(fusion_sequence) <- "chrNA"
   # Write to file
-  Biostrings::writeXStringSet(fusionSequence, filename)
+  Biostrings::writeXStringSet(fusion_sequence, filename)
 }
 
 #' Get ensembl ids for a fusion object
@@ -175,67 +178,81 @@ writeFusionReference <- function(fusion, filename) {
 #'   "extdata",
 #'   "defuse_833ke_results.filtered.tsv",
 #'   package="chimeraviz")
-#' fusions <- importDefuse(defuse833keFiltered, "hg19", 1)
+#' fusions <- import_defuse(defuse833keFiltered, "hg19", 1)
 #' # Get a specific fusion
-#' fusion <- getFusionById(fusions, 5267)
+#' fusion <- get_fusion_by_id(fusions, 5267)
 #' # See the ensembl ids:
-#' partnerGeneEnsemblId(upstreamPartnerGene(fusion))
+#' partner_gene_ensembl_id(upstream_partner_gene(fusion))
 #' # [1] "ENSG00000180198"
-#' partnerGeneEnsemblId(downstreamPartnerGene(fusion))
+#' partner_gene_ensembl_id(downstream_partner_gene(fusion))
 #' # [1] "ENSG00000162639"
 #' # Reset the fusion objects ensembl ids
-#' partnerGeneEnsemblId(upstreamPartnerGene(fusion)) <- ""
-#' partnerGeneEnsemblId(downstreamPartnerGene(fusion))  <- ""
+#' partner_gene_ensembl_id(upstream_partner_gene(fusion)) <- ""
+#' partner_gene_ensembl_id(downstream_partner_gene(fusion))  <- ""
 #' # Get the ensembl ids
-#' fusion <- getEnsemblIds(fusion)
+#' fusion <- get_ensembl_ids(fusion)
 #' # See that we now have the same ensembl ids again:
-#' partnerGeneEnsemblId(upstreamPartnerGene(fusion))
+#' partner_gene_ensembl_id(upstream_partner_gene(fusion))
 #' # [1] "ENSG00000180198"
-#' partnerGeneEnsemblId(downstreamPartnerGene(fusion))
+#' partner_gene_ensembl_id(downstream_partner_gene(fusion))
 #' # [1] "ENSG00000162639"
 #'
 #' @export
-getEnsemblIds <- function(fusion) {
+get_ensembl_ids <- function(fusion) {
 
   # Check if we got a fusion object
   if (class(fusion) != "Fusion") {
     stop("fusion argument must be an object of type Fusion")
   }
 
-  if (startsWith(fusion@genomeVersion, "hg")) {
-    annotationDb <- org.Hs.eg.db
-  } else if (startsWith(fusion@genomeVersion, "mm")) {
-    annotationDb <- org.Mm.eg.db
+  if (startsWith(fusion@genome_version, "hg")) {
+    annotation_db <- org.Hs.eg.db # Exclude Linting
+  } else if (startsWith(fusion@genome_version, "mm")) {
+    annotation_db <- org.Mm.eg.db # Exclude Linting
   } else {
     stop("Unsupported genome version")
   }
 
   result <- AnnotationDbi::select(
-    annotationDb,
-    keys = c(fusion@geneA@name, fusion@geneB@name),
+    annotation_db,
+    keys = c(fusion@gene_upstream@name, fusion@gene_downstream@name),
     keytype = "ALIAS",
     columns = c("ALIAS", "ENSEMBL"))
 
-  geneAresults <- result[which(result$ALIAS == fusion@geneA@name), ]
-  geneBresults <- result[which(result$ALIAS == fusion@geneB@name), ]
+  upstream_gene_result <-
+    result[which(result$ALIAS == fusion@gene_upstream@name), ]
+  downstream_gene_result <-
+    result[which(result$ALIAS == fusion@gene_downstream@name), ]
 
   # Stop execution if no results
-  if (any(is.na(geneAresults$ENSEMBL))) {
-    stop(paste("Could not find Ensembl id for ", fusion@geneA@name, ". ",
-               "If you know the id, add it manually with ",
-               "fusion@geneA@ensemblId <- \"ensemblId\"",
-               sep = ""))
+  if (any(is.na(upstream_gene_result$ENSEMBL))) {
+    stop(
+      paste(
+        "Could not find Ensembl id for ",
+        fusion@gene_upstream@name,
+        ". ",
+        "If you know the id, add it manually with ",
+        "fusion@gene_upstream@ensembl_id <- \"ensemblId\"",
+        sep = ""
+      )
+    )
   }
-  if (any(is.na(geneBresults$ENSEMBL))) {
-    stop(paste("Could not find Ensembl id for ", fusion@geneB@name, ". ",
-               "If you know the id, add it manually with ",
-               "fusion@geneB@ensemblId <- \"ensemblId\"",
-               sep = ""))
+  if (any(is.na(downstream_gene_result$ENSEMBL))) {
+    stop(
+      paste(
+        "Could not find Ensembl id for ",
+        fusion@gene_downstream@name,
+        ". ",
+        "If you know the id, add it manually with ",
+        "fusion@gene_downstream@ensembl_id <- \"ensemblId\"",
+        sep = ""
+      )
+    )
   }
 
   # Store ensembl ids in fusion object
-  fusion@geneA@ensemblId <- geneAresults[, 2]
-  fusion@geneB@ensemblId <- geneBresults[, 2]
+  fusion@gene_upstream@ensembl_id <- upstream_gene_result[, 2]
+  fusion@gene_downstream@ensembl_id <- downstream_gene_result[, 2]
 
   # Return updated fusion object
   fusion
@@ -259,8 +276,8 @@ getEnsemblIds <- function(fusion) {
 #'   "extdata",
 #'   "defuse_833ke_results.filtered.tsv",
 #'   package="chimeraviz")
-#' fusions <- importDefuse(defuseData, "hg19", 1)
-#' fusion <- getFusionById(fusions, 5267)
+#' fusions <- import_defuse(defuseData, "hg19", 1)
+#' fusion <- get_fusion_by_id(fusions, 5267)
 #' # Create edb object
 #' edbSqliteFile <- system.file(
 #'   "extdata",
@@ -273,8 +290,8 @@ getEnsemblIds <- function(fusion) {
 #'   filter = list(
 #'     AnnotationFilter::GeneIdFilter(
 #'       list(
-#'         partnerGeneEnsemblId(upstreamPartnerGene(fusion)),
-#'         partnerGeneEnsemblId(downstreamPartnerGene(fusion))))),
+#'         partner_gene_ensembl_id(upstream_partner_gene(fusion)),
+#'         partner_gene_ensembl_id(downstream_partner_gene(fusion))))),
 #'   columns = c(
 #'     "gene_id",
 #'     "gene_name",
@@ -289,7 +306,7 @@ getEnsemblIds <- function(fusion) {
 #' # Should be 9 ranges
 #' # Split the ranges containing the cds start/stop positions and add feature
 #' # values:
-#' gr <- splitOnUtrAndAddFeature(gr)
+#' gr <- split_on_utr_and_add_feature(gr)
 #' # Check the length again
 #' length(gr)
 #' # Should be 11 now, as the range containing the cds_strat position and the
@@ -298,7 +315,7 @@ getEnsemblIds <- function(fusion) {
 #' @importFrom S4Vectors mcols
 #'
 #' @export
-splitOnUtrAndAddFeature <- function(gr) {
+split_on_utr_and_add_feature <- function(gr) {
 
   # Check if we got a valid GRanges object
   if (class(gr) != "GRanges") {
@@ -322,7 +339,7 @@ splitOnUtrAndAddFeature <- function(gr) {
     first <- gr[cds_start_exon]
     second <- gr[cds_start_exon]
     # Update ranges for the new objects
-    end(first) <- cds_start-1
+    end(first) <- cds_start - 1
     start(second) <- cds_start
     # Remove the original range
     gr <- gr[!cds_start_exon]
@@ -342,7 +359,7 @@ splitOnUtrAndAddFeature <- function(gr) {
     second <- gr[cds_end_exon]
     # Update ranges for the new objects
     end(first) <- cds_end
-    start(second) <- cds_end+1
+    start(second) <- cds_end + 1
     # Remove the original range
     gr <- gr[!cds_end_exon]
     # Add new ranges
@@ -356,23 +373,27 @@ splitOnUtrAndAddFeature <- function(gr) {
   S4Vectors::mcols(gr)$feature <- "protein_coding"
   # 5utr:
   #   plus strand:
-  #     end(gr) < cds_start
+  #     end(gr) < cds_start # Exclude Linting
   #   minus strand:
-  #     start(gr) > cds_end
+  #     start(gr) > cds_end # Exclude Linting
   if (length(gr[as.character(strand(gr)) == "+" & end(gr) < cds_start |
                 as.character(strand(gr)) == "-" & start(gr) > cds_end])) {
-    S4Vectors::mcols(gr[as.character(strand(gr)) == "+" & end(gr) < cds_start |
-               as.character(strand(gr)) == "-" & start(gr) > cds_end])$feature <- "5utr"
+    S4Vectors::mcols(
+      gr[as.character(strand(gr)) == "+" & end(gr) < cds_start |
+           as.character(strand(gr)) == "-" & start(gr) > cds_end]
+      )$feature <- "5utr"
   }
   # 3utr:
   #   plus strand:
-  #     start(gr) > cds_end
+  #     start(gr) > cds_end # Exclude Linting
   #   minus strand:
-  #     end(gr) < cds_start
+  #     end(gr) < cds_start # Exclude Linting
   if (length(gr[as.character(strand(gr)) == "+" & start(gr) > cds_end |
                 as.character(strand(gr)) == "-" & end(gr) < cds_start])) {
-    S4Vectors::mcols(gr[as.character(strand(gr)) == "+" & start(gr) > cds_end |
-               as.character(strand(gr)) == "-" & end(gr) < cds_start])$feature <- "3utr"
+    S4Vectors::mcols(
+      gr[as.character(strand(gr)) == "+" & start(gr) > cds_end |
+           as.character(strand(gr)) == "-" & end(gr) < cds_start]
+      )$feature <- "3utr"
   }
 
   gr
@@ -396,8 +417,8 @@ splitOnUtrAndAddFeature <- function(gr) {
 #'   "extdata",
 #'   "defuse_833ke_results.filtered.tsv",
 #'   package="chimeraviz")
-#' fusions <- importDefuse(defuseData, "hg19", 1)
-#' fusion <- getFusionById(fusions, 5267)
+#' fusions <- import_defuse(defuseData, "hg19", 1)
+#' fusion <- get_fusion_by_id(fusions, 5267)
 #' # Create edb object
 #' edbSqliteFile <- system.file(
 #'   "extdata",
@@ -410,8 +431,8 @@ splitOnUtrAndAddFeature <- function(gr) {
 #'   filter = list(
 #'     AnnotationFilter::GeneIdFilter(
 #'       list(
-#'         partnerGeneEnsemblId(upstreamPartnerGene(fusion)),
-#'         partnerGeneEnsemblId(downstreamPartnerGene(fusion))))),
+#'         partner_gene_ensembl_id(upstream_partner_gene(fusion)),
+#'         partner_gene_ensembl_id(downstream_partner_gene(fusion))))),
 #'   columns = c(
 #'     "gene_id",
 #'     "gene_name",
@@ -422,17 +443,17 @@ splitOnUtrAndAddFeature <- function(gr) {
 #' # Extract one of the GRanges objects
 #' gr <- allTranscripts[[1]]
 #' # Check where in the transcript the fusion breakpoint hits
-#' decideTranscriptCategory(gr, fusion)
+#' decide_transcript_category(gr, fusion)
 #' # "exonBoundary"
 #' # Check another case
 #' gr <- allTranscripts[[3]]
-#' decideTranscriptCategory(gr, fusion)
+#' decide_transcript_category(gr, fusion)
 #' # "withinIntron"
 #'
 #' @importFrom S4Vectors mcols
 #'
 #' @export
-decideTranscriptCategory <- function(gr, fusion) {
+decide_transcript_category <- function(gr, fusion) {
 
   # Check if we got a valid GRanges object
   if (class(gr) != "GRanges") {
@@ -456,13 +477,20 @@ decideTranscriptCategory <- function(gr, fusion) {
   #    Exon boundary event if breakpointB equals an exon_end position
 
   # Helper variables
-  geneA <- S4Vectors::mcols(gr)$gene_id[[1]] == fusion@geneA@ensemblId
-  breakpoint <- if(all(S4Vectors::mcols(gr)$gene_id == fusion@geneA@ensemblId)) fusion@geneA@breakpoint else fusion@geneB@breakpoint
-  exonStartPositions <- GenomicRanges::start(gr)
-  exonEndPositions <- GenomicRanges::end(gr)
+  upstream_gene <-
+    S4Vectors::mcols(gr)$gene_id[[1]] == fusion@gene_upstream@ensembl_id
+  breakpoint <-
+    if (all(S4Vectors::mcols(gr)$gene_id == fusion@gene_upstream@ensembl_id)) {
+      fusion@gene_upstream@breakpoint
+    } else {
+      fusion@gene_downstream@breakpoint
+    }
+  exon_start_positions <- GenomicRanges::start(gr)
+  exon_end_positions <- GenomicRanges::end(gr)
 
   # Check whether or not the breakpoint is within the transcript
-  if (all(breakpoint < exonStartPositions) || all(exonEndPositions < breakpoint)) {
+  if (all(breakpoint < exon_start_positions) ||
+      all(exon_end_positions < breakpoint)) {
     return("intergenic")
   }
 
@@ -472,15 +500,15 @@ decideTranscriptCategory <- function(gr, fusion) {
     # To decide whether or not the breakpoint occurs at an exon boundary, we
     # have to be vary careful about both whether this is the upstream/downstrem
     # fusion partner gene
-    if (geneA) {
+    if (upstream_gene) {
       # GeneA
-      if (any(exonEndPositions == breakpoint)) {
+      if (any(exon_end_positions == breakpoint)) {
         # exon boundary
         return("exonBoundary")
       }
     } else {
       # GeneB
-      if (any(exonStartPositions == breakpoint)) {
+      if (any(exon_start_positions == breakpoint)) {
         # exon boundary
         return("exonBoundary")
       }
@@ -491,15 +519,15 @@ decideTranscriptCategory <- function(gr, fusion) {
     # To decide whether or not the breakpoint occurs at an exon boundary, we
     # have to be vary careful about both whether this is the upstream/downstrem
     # fusion partner gene
-    if (all(geneA)) {
+    if (all(upstream_gene)) {
       # GeneA
-      if (any(exonStartPositions == breakpoint)) {
+      if (any(exon_start_positions == breakpoint)) {
         # exon boundary
         return("exonBoundary")
       }
     } else {
       # GeneB
-      if (any(exonEndPositions == breakpoint)) {
+      if (any(exon_end_positions == breakpoint)) {
         # exon boundary
         return("exonBoundary")
       }
@@ -522,7 +550,7 @@ decideTranscriptCategory <- function(gr, fusion) {
 #' happens at 1) an exon boundary, 2) within an exon, or 3) within an intron.
 #' This is done because fusions happening at exon boundaries are more likely to
 #' produce biologically interesting gene products. The function returns an
-#' updated Fusion object, where the fusion@geneA@transcriptsX slots are set with
+#' updated Fusion object, where the fusion@gene_upstream@transcriptsX slots are set with
 #' transcript information.
 #'
 #' @param fusion The fusion object to find transcripts for.
@@ -536,8 +564,8 @@ decideTranscriptCategory <- function(gr, fusion) {
 #'   "extdata",
 #'   "defuse_833ke_results.filtered.tsv",
 #'   package="chimeraviz")
-#' fusions <- importDefuse(defuseData, "hg19", 1)
-#' fusion <- getFusionById(fusions, 5267)
+#' fusions <- import_defuse(defuseData, "hg19", 1)
+#' fusion <- get_fusion_by_id(fusions, 5267)
 #' # Create edb object
 #' edbSqliteFile <- system.file(
 #'   "extdata",
@@ -545,16 +573,16 @@ decideTranscriptCategory <- function(gr, fusion) {
 #'   package="chimeraviz")
 #' edb <- ensembldb::EnsDb(edbSqliteFile)
 #' # Add transcripts data to fusion object
-#' fusion <- getTranscriptsEnsembldb(fusion, edb)
-#' # The transcripts are now accessible through fusion@geneA@transcripts and
-#' # fusion@geneB@transcripts .
+#' fusion <- get_transcripts_ensembl_db(fusion, edb)
+#' # The transcripts are now accessible through fusion@gene_upstream@transcripts and
+#' # fusion@gene_downstream@transcripts .
 #'
 #' @importFrom S4Vectors mcols
 #' @importFrom ensembldb exonsBy
 #' @importFrom AnnotationFilter GeneIdFilter
 #'
 #' @export
-getTranscriptsEnsembldb <- function(fusion, edb) {
+get_transcripts_ensembl_db <- function(fusion, edb) {
 
   # Check if we got a fusion object
   if (class(fusion) != "Fusion") {
@@ -567,18 +595,21 @@ getTranscriptsEnsembldb <- function(fusion, edb) {
   }
 
   # Fetch ensembl gene ids if we don't already have them
-  if (is.na(fusion@geneA@ensemblId) || is.na(fusion@geneB@ensemblId)) {
-    fusion <- getEnsemblIds(fusion)
+  if (
+    is.na(fusion@gene_upstream@ensembl_id) ||
+    is.na(fusion@gene_downstream@ensembl_id)
+  ) {
+    fusion <- get_ensembl_ids(fusion)
   }
 
   # Get all exon information
-  allTranscripts <- ensembldb::exonsBy(
+  all_transcripts <- ensembldb::exonsBy(
     edb,
     filter = list(
       AnnotationFilter::GeneIdFilter(
         list(
-          fusion@geneA@ensemblId,
-          fusion@geneB@ensemblId))),
+          fusion@gene_upstream@ensembl_id,
+          fusion@gene_downstream@ensembl_id))),
     columns = c(
       "gene_id",
       "gene_name",
@@ -588,38 +619,38 @@ getTranscriptsEnsembldb <- function(fusion, edb) {
       "exon_id"))
 
   # Fail if no transcripts were found
-  if (length(allTranscripts) == 0) {
+  if (length(all_transcripts) == 0) {
     stop(paste(
       "No transcripts available for the genes ",
-      fusion@geneA@name,
+      fusion@gene_upstream@name,
       " and ",
-      fusion@geneB@name,
+      fusion@gene_downstream@name,
       ".",
       sep = ""))
   }
 
   # Go through each transcript in the GRangesList and
-  grlA <- GRangesList()
-  grlB <- GRangesList()
-  for(i in 1:length(allTranscripts)) {
+  grangeslist_upstream <- GRangesList()
+  grangeslist_downstream <- GRangesList()
+  for (i in 1:length(all_transcripts)) {
 
     # Extract the GRanges object
-    gr <- allTranscripts[[i]]
+    gr <- all_transcripts[[i]]
 
     # Add $transcript as a metadata column
-    S4Vectors::mcols(gr)$transcript <- names(allTranscripts[i])
+    S4Vectors::mcols(gr)$transcript <- names(all_transcripts[i])
     # Add $symbol as a metadata column
-    S4Vectors::mcols(gr)$symbol <- names(allTranscripts[i])
+    S4Vectors::mcols(gr)$symbol <- names(all_transcripts[i])
 
     # Add utr/coding S4Vectors::mcols$feature data for each region
-    if(is.na(S4Vectors::mcols(gr)$tx_cds_seq_start[[1]])) {
+    if (is.na(S4Vectors::mcols(gr)$tx_cds_seq_start[[1]])) {
       # The transcript is not coding. Set all to "utr"
       S4Vectors::mcols(gr)$feature <- "utr"
     }else {
       # The transcript is coding. The function below will set
       # S4Vectors::mcols(gr)$feature = "utr5"/"protein_coding"/"utr3" for each
       # region
-      gr <- splitOnUtrAndAddFeature(gr)
+      gr <- split_on_utr_and_add_feature(gr)
     }
 
     # Create new GRangesList
@@ -628,13 +659,13 @@ getTranscriptsEnsembldb <- function(fusion, edb) {
     # Tag each transcript with either "exonBoundary", "withinExon",
     # "withinIntron", or "intergenic", depending on where in the transcript the
     # fusion breakpoint hits
-    S4Vectors::mcols(grl)$transcriptCategory <- decideTranscriptCategory(
+    S4Vectors::mcols(grl)$transcript_category <- decide_transcript_category(
       gr,
       fusion)
 
     # Set S4Vectors::mcols$transcript and name for the grl
-    S4Vectors::mcols(grl)$transcript <- names(allTranscripts[i])
-    names(grl) <- names(allTranscripts[i])
+    S4Vectors::mcols(grl)$transcript <- names(all_transcripts[i])
+    names(grl) <- names(all_transcripts[i])
 
     # Add S4Vectors::mcols$coding to signify whether it is a coding transcript
     # at all
@@ -642,38 +673,42 @@ getTranscriptsEnsembldb <- function(fusion, edb) {
       !all(is.na(S4Vectors::mcols(gr)$tx_cds_seq_start))
 
     # Append the GRanges object to the correct GRangesList
-    if (S4Vectors::mcols(gr)$gene_id[[1]] == fusion@geneA@ensemblId) {
-      grlA <- append(grlA, grl)
+    if (S4Vectors::mcols(gr)$gene_id[[1]] == fusion@gene_upstream@ensembl_id) {
+      grangeslist_upstream <- append(grangeslist_upstream, grl)
     } else {
-      grlB <- append(grlB, grl)
+      grangeslist_downstream <- append(grangeslist_downstream, grl)
     }
   }
 
   # Add transcripts to fusion object
-  fusion@geneA@transcripts <- grlA
-  fusion@geneB@transcripts <- grlB
+  fusion@gene_upstream@transcripts <- grangeslist_upstream
+  fusion@gene_downstream@transcripts <- grangeslist_downstream
 
   # Warn if no transcripts were found for one of the genes
-  if (length(fusion@geneA@transcripts) == 0) {
+  if (length(fusion@gene_upstream@transcripts) == 0) {
     warning(paste(
       "No transcripts available for the upstream gene ",
-      fusion@geneA@name,
+      fusion@gene_upstream@name,
       " available.",
       sep = ""))
   }
-  if (length(fusion@geneA@transcripts) == 0) {
+  if (length(fusion@gene_upstream@transcripts) == 0) {
     warning(paste(
       "No transcripts available for the downstream gene ",
-      fusion@geneB@name,
+      fusion@gene_downstream@name,
       " available.",
       sep = ""))
   }
 
   # In case the fusion object doesn't have the strands set (as is the case for
   # JAFFA), set the strands now:
-  if (fusion@geneA@strand == "*" || fusion@geneB@strand == "*") {
-    fusion@geneA@strand = as.character(strand(fusion@geneA@transcripts[[1]][1]))
-    fusion@geneB@strand = as.character(strand(fusion@geneB@transcripts[[1]][1]))
+  if (
+    fusion@gene_upstream@strand == "*" || fusion@gene_downstream@strand == "*"
+  ) {
+    fusion@gene_upstream@strand <- as.character(
+      strand(fusion@gene_upstream@transcripts[[1]][1]))
+    fusion@gene_downstream@strand <- as.character(
+      strand(fusion@gene_downstream@transcripts[[1]][1]))
   }
 
   # Return fusion object
@@ -692,7 +727,7 @@ getTranscriptsEnsembldb <- function(fusion, edb) {
 #' @param bamfile The bam file containing the fusion reads plotted to the fusion
 #' sequence.
 #'
-#' @return An updated fusion object with fusion@fusionReadsAlignment set.
+#' @return An updated fusion object with fusion@fusion_reads_alignment set.
 #'
 #' @examples
 #' # Load data
@@ -700,49 +735,49 @@ getTranscriptsEnsembldb <- function(fusion, edb) {
 #'   "extdata",
 #'   "defuse_833ke_results.filtered.tsv",
 #'   package="chimeraviz")
-#' fusions <- importDefuse(defuse833ke, "hg19", 1)
+#' fusions <- import_defuse(defuse833ke, "hg19", 1)
 #' # Find the specific fusion we have aligned reads for
-#' fusion <- getFusionById(fusions, 5267)
+#' fusion <- get_fusion_by_id(fusions, 5267)
 #' # Get reference to the bamfile with the alignment data
 #' bamfile5267 <- system.file(
 #'   "extdata",
 #'   "5267readsAligned.bam",
 #'   package="chimeraviz")
 #' # Add the bam file of aligned fusion reads to the fusion object
-#' fusion <- addFusionReadsAlignment(fusion, bamfile5267)
+#' fusion <- add_fusion_reads_alignment(fusion, bamfile5267)
 #'
 #' @export
-addFusionReadsAlignment <- function(fusion, bamfile) {
+add_fusion_reads_alignment <- function(fusion, bamfile) {
 
   # Check if we got a fusion object
   if (class(fusion) != "Fusion") {
     stop("fusion argument must be an object of type Fusion")
   }
 
-  fusionReadsAlignment <- Gviz::AlignmentsTrack(
+  fusion_reads_alignment <- Gviz::AlignmentsTrack(
     bamfile,
     isPaired = TRUE,
     # Setting chromosome to chrNA because this is a fusion sequence not found in
     # any reference genome.
     chromosome = "chrNA",
-    name="Fusion Reads",
-    genome = fusion@genomeVersion)
+    name = "Fusion Reads",
+    genome = fusion@genome_version)
 
   # Return new fusion object, now with the fusion read alignment
-  fusion@fusionReadsAlignment = fusionReadsAlignment
+  fusion@fusion_reads_alignment <- fusion_reads_alignment
   fusion
 }
 
 #' Coerce Fusion object to data.frame
 #'
-#' This function is used in createFusionReport() to convert Fusion objects to a
+#' This function is used in create_fusion_report() to convert Fusion objects to a
 #' data.frame-format.
 #'
 #' @param fusion The Fusion object to coerce.
 #'
 #' @return A data.frame with the fusion object.
 #'
-#' @seealso createFusionReport
+#' @seealso create_fusion_report
 #'
 #' @examples
 #' # Load data
@@ -750,14 +785,14 @@ addFusionReadsAlignment <- function(fusion, bamfile) {
 #'   "extdata",
 #'   "defuse_833ke_results.filtered.tsv",
 #'   package="chimeraviz")
-#' fusions <- importDefuse(defuse833ke, "hg19", 1)
+#' fusions <- import_defuse(defuse833ke, "hg19", 1)
 #' # Find the fusion object to create a data frame from
-#' fusion <- getFusionById(fusions, 5267)
+#' fusion <- get_fusion_by_id(fusions, 5267)
 #' # Create the data frame
-#' dfFusion <- fusionToDataFrame(fusion)
+#' dfFusion <- fusion_to_data_frame(fusion)
 #'
 #' @export
-fusionToDataFrame <- function(fusion) {
+fusion_to_data_frame <- function(fusion) {
 
   # Check if we got a list of fusion objects
   if (class(fusion) != "Fusion") {
@@ -766,22 +801,22 @@ fusionToDataFrame <- function(fusion) {
 
   df <- data.frame(
     fusion@id,
-    fusion@geneA@name,
-    fusion@geneA@ensemblId,
-    fusion@geneA@breakpoint,
-    fusion@geneB@name,
-    fusion@geneB@ensemblId,
-    fusion@geneB@breakpoint,
-    fusion@splitReadsCount,
-    fusion@spanningReadsCount)
+    fusion@gene_upstream@name,
+    fusion@gene_upstream@ensembl_id,
+    fusion@gene_upstream@breakpoint,
+    fusion@gene_downstream@name,
+    fusion@gene_downstream@ensembl_id,
+    fusion@gene_downstream@breakpoint,
+    fusion@split_reads_count,
+    fusion@spanning_reads_count)
   names(df) <- c(
     "id",
-    "geneA",
-    "ensemblA",
-    "breakpointA",
-    "geneB",
-    "ensemblB",
-    "breakpointB",
+    "gene_upstream",
+    "ensembl_upstream",
+    "breakpoint_upstrea,",
+    "gene_downstream",
+    "ensembl_downstream",
+    "breakpoint_downstream",
     "Split Reads",
     "Spanning Reads")
   df
@@ -791,17 +826,17 @@ fusionToDataFrame <- function(fusion) {
 #'
 #' This function takes a GenePartner object and creates a transcript data.frame
 #' with transcript information, including only the transcripts given by the
-#' parameter whichTranscripts.
+#' parameter which_transcripts
 #'
-#' selectTranscript() selects which transcript to create by this prioritization:
+#' select_transcript() selects which transcript to create by this prioritization:
 #'
 #' 1. Exon boundary transcripts.
 #' 2. Within exon transcripts.
 #' 3. Within intron transcripts.
 #' 4. Intergenic transcripts.
 #'
-#' @param genePartner The GenePartner object to select a transcript for.
-#' @param whichTranscripts This character vector decides which transcripts are
+#' @param gene_partner The GenePartner object to select a transcript for.
+#' @param which_transcripts This character vector decides which transcripts are
 #' to be plotted. Can be "exonBoundary", "withinExon", "withinIntron",
 #' "intergenic", or a character vector with specific transcript ids. Default
 #' value is "exonBoundary".
@@ -814,8 +849,8 @@ fusionToDataFrame <- function(fusion) {
 #'   "extdata",
 #'   "defuse_833ke_results.filtered.tsv",
 #'   package="chimeraviz")
-#' fusions <- importDefuse(defuse833ke, "hg19", 1)
-#' fusion <- getFusionById(fusions, 5267)
+#' fusions <- import_defuse(defuse833ke, "hg19", 1)
+#' fusion <- get_fusion_by_id(fusions, 5267)
 #' # Load edb
 #' edbSqliteFile <- system.file(
 #'   "extdata",
@@ -823,23 +858,23 @@ fusionToDataFrame <- function(fusion) {
 #'   package="chimeraviz")
 #' edb <- ensembldb::EnsDb(edbSqliteFile)
 #' # Get transcripts
-#' fusion <- getTranscriptsEnsembldb(fusion, edb)
+#' fusion <- get_transcripts_ensembl_db(fusion, edb)
 #' # Select transcript
-#' transcriptsA <- selectTranscript(upstreamPartnerGene(fusion))
+#' transcriptsA <- select_transcript(upstream_partner_gene(fusion))
 #'
 #' @export
-selectTranscript <- function(
-  genePartner,
-  whichTranscripts = "exonBoundary") {
+select_transcript <- function(
+  gene_partner,
+  which_transcripts = "exonBoundary") {
 
   # Check if we got a PartnerGene object
-  if (class(genePartner) != "PartnerGene") {
+  if (class(gene_partner) != "PartnerGene") {
     stop("genePartner argument must be an object of type PartnerGene")
   }
 
   # Does the PartnerGene have any transcripts?
-  if (isEmpty(genePartner@transcripts)) {
-    stop("genePartner has no transcripts. See getTranscriptsEnsembldb()")
+  if (isEmpty(gene_partner@transcripts)) {
+    stop("genePartner has no transcripts. See get_transcripts_ensembl_db()")
   }
 
   # Either select from one of these four categories
@@ -848,26 +883,43 @@ selectTranscript <- function(
   # 3. Within intron transcripts.
   # 4. Intergenic transcripts.
   #
-  # or select the specific transcripts given by whichTranscripts.
+  # or select the specific transcripts given by which_transcripts.
 
-  transcriptCategories <- c("exonBoundary", "withinExon", "withinIntron", "intergenic")
+  transcript_categories <- c(
+    "exonBoundary",
+    "withinExon",
+    "withinIntron",
+    "intergenic")
 
-  if (whichTranscripts[[1]] %in% transcriptCategories) {
+  if (which_transcripts[[1]] %in% transcript_categories) {
 
-    message(paste0("Selecting transcripts for ", genePartner@name, ".."))
+    message(paste0("Selecting transcripts for ", gene_partner@name, ".."))
 
-    # If the user has chosen one of the four transcript categories, then we want to check whether or not such
-    # transcripts exist. If they exist, simply return them. If they don't exist, go on to try the other categories. Try
-    # the wanted category first:
-    if (length(genePartner@transcripts[mcols(genePartner@transcripts)$transcriptCategory == whichTranscripts[[1]] ]) > 0) {
-      message(paste0("..found transcripts of type ", whichTranscripts[[1]]))
-      return(genePartner@transcripts[mcols(genePartner@transcripts)$transcriptCategory == whichTranscripts[[1]] ])
+    # If the user has chosen one of the four transcript categories, then we
+    # want to check whether or not such transcripts exist. If they exist,
+    # simply return them. If they don't exist, go on to try the other
+    # categories. Try the wanted category first:
+    transcripts_of_wanted_category <-
+      gene_partner@transcripts[
+        mcols(gene_partner@transcripts)$
+          transcript_category == which_transcripts[[1]]
+      ]
+    if (length(transcripts_of_wanted_category) > 0) {
+      message(paste0("..found transcripts of type ", which_transcripts[[1]]))
+      return(transcripts_of_wanted_category)
     }
     # Check the remaining categories
-    for(transcriptCategory in transcriptCategories[transcriptCategories != whichTranscripts[[1]]]) {
-      if (length(genePartner@transcripts[mcols(genePartner@transcripts)$transcriptCategory == transcriptCategory ]) > 0) {
-        message(paste0("..found transcripts of type ", transcriptCategory))
-        return(genePartner@transcripts[mcols(genePartner@transcripts)$transcriptCategory == transcriptCategory ])
+    remaining_categories <- transcript_categories[
+      transcript_categories != which_transcripts[[1]]
+    ]
+    for (transcript_category in remaining_categories) {
+      transcripts_in_this_category <- gene_partner@transcripts[
+        mcols(gene_partner@transcripts)$
+          transcript_category == transcript_category
+      ]
+      if (length(transcripts_in_this_category) > 0) {
+        message(paste0("..found transcripts of type ", transcript_category))
+        return(transcripts_in_this_category)
       }
     }
   }
@@ -875,8 +927,10 @@ selectTranscript <- function(
   # At this point the user wants specific transcripts. Get the transcripts that
   # we have for this genePartner.
 
-  if (length(genePartner@transcripts[names(genePartner@transcripts) %in% whichTranscripts]) > 0) {
-    return(genePartner@transcripts[names(genePartner@transcripts) %in% whichTranscripts])
+  specific_transcripts <- gene_partner@transcripts[
+    names(gene_partner@transcripts) %in% which_transcripts]
+  if (length(specific_transcripts) > 0) {
+    return(specific_transcripts)
   }
 
   stop("The specific transcripts could not be found")
@@ -884,18 +938,18 @@ selectTranscript <- function(
 
 # Check that there's at least one transcript that has the fusion breakpoint
 # within the transcript.
-.checkThatBreakpointsAreWithinTranscripts <- function(
+.check_that_breakpoints_are_within_transcripts <- function(
   fusion,
-  transcriptsA,
-  transcriptsB) {
-  if (!any(start(transcriptsA) < fusion@geneA@breakpoint) &&
-      any(fusion@geneA@breakpoint < end(transcriptsA))) {
+  transcripts_upstream,
+  transcripts_downstream) {
+  if (!any(start(transcripts_upstream) < fusion@gene_upstream@breakpoint) &&
+      any(fusion@gene_upstream@breakpoint < end(transcripts_upstream))) {
     stop(paste0(
       "None of the transcripts given for gene A has the fusion breakpoint ",
       "within them. This plot cannot be created with the given transcripts."))
   }
-  if (!any(start(transcriptsB) < fusion@geneB@breakpoint) &&
-      any(fusion@geneB@breakpoint < end(transcriptsB))) {
+  if (!any(start(transcripts_downstream) < fusion@gene_downstream@breakpoint) &&
+      any(fusion@gene_downstream@breakpoint < end(transcripts_downstream))) {
     stop(paste0(
       "None of the transcripts given for gene B has the fusion breakpoint ",
       "within them. This plot cannot be created with the given transcripts."))
@@ -903,32 +957,58 @@ selectTranscript <- function(
 }
 
 # Check that the transcripts have a breakpoint exon
-.checkThatTranscriptsHaveBreakpointExons <- function(
+.check_that_transcripts_have_breakpoint_exons <- function(
   fusion,
-  transcriptA,
-  transcriptB) {
+  transcript_upstream,
+  transcript_downstream) {
 
-  if (fusion@geneA@strand == "+") {
-    if (length(transcriptA[end(ranges(transcriptA)) == fusion@geneA@breakpoint]) == 0) {
+  if (fusion@gene_upstream@strand == "+") {
+    if (
+      length(
+        transcript_upstream[
+          end(ranges(transcript_upstream)) == fusion@gene_upstream@breakpoint
+        ]
+      ) == 0
+    ) {
       stop(paste(
         "The transcript for gene A doesn't have an exon boundary matching the",
         "fusion breakpoint. The plot cannot be created."))
     }
   } else {
-    if (length(transcriptA[start(ranges(transcriptA)) == fusion@geneA@breakpoint]) == 0) {
+    if (
+      length(
+        transcript_upstream[
+          start(ranges(transcript_upstream)) == fusion@gene_upstream@breakpoint
+        ]
+      ) == 0
+    ) {
       stop(paste(
         "The transcript for gene A doesn't have an exon boundary matching the",
         "fusion breakpoint. The plot cannot be created."))
     }
   }
-  if (fusion@geneB@strand == "+") {
-    if (length(transcriptB[start(ranges(transcriptB)) == fusion@geneB@breakpoint]) == 0) {
+  if (fusion@gene_downstream@strand == "+") {
+    if (
+      length(
+        transcript_downstream[
+          start(ranges(transcript_downstream)) ==
+          fusion@gene_downstream@breakpoint
+        ]
+      ) == 0
+    ) {
       stop(paste(
         "The transcript for gene B doesn't have an exon boundary matching the",
         "fusion breakpoint. The plot cannot be created."))
     }
   } else {
-    if (length(transcriptB[end(ranges(transcriptB)) == fusion@geneB@breakpoint]) == 0) {
+    if (
+      length(
+        transcript_downstream[
+          end(ranges(transcript_downstream)) ==
+          fusion@gene_downstream@breakpoint
+        ]
+      ) == 0
+    ) {
       stop(paste(
         "The transcript for gene B doesn't have an exon boundary matching the",
         "fusion breakpoint. The plot cannot be created."))
@@ -952,10 +1032,10 @@ selectTranscript <- function(
 #'   start = c(13, 40, 100),
 #'   end = c(20, 53, 110))
 #' # Downshift it and see the introns are removed:
-#' downShift(gr)
+#' down_shift(gr)
 #'
 #' @export
-downShift <- function(transcript) {
+down_shift <- function(transcript) {
 
   # Check if we got a GRanges object
   if (!class(transcript) %in% c("GRanges", "IRanges")) {
@@ -964,10 +1044,16 @@ downShift <- function(transcript) {
 
   for (i in 1:length(transcript)) {
     if (i == 1) {
-      transcript[i] <- IRanges::shift(transcript[i], shift = 1-start(transcript[i]))
+      transcript[i] <- IRanges::shift(
+        transcript[i],
+        shift = 1 - start(transcript[i])
+      )
     } else {
-      shiftDownBy <- -(start(transcript[i])-end(transcript[i-1]))+1
-      transcript[i] <- IRanges::shift(transcript[i], shift = shiftDownBy)
+      shift_down_by <- - (start(transcript[i]) - end(transcript[i - 1])) + 1
+      transcript[i] <- IRanges::shift(
+        transcript[i],
+        shift = shift_down_by
+      )
     }
   }
 
@@ -977,7 +1063,7 @@ downShift <- function(transcript) {
 # -----------------------------------------------------------------------------
 # Functions that validate parameters passed to functions in chimeraviz
 
-.is.fusion.valid <- function(argument_checker, fusion) {
+.is_fusion_valid <- function(argument_checker, fusion) {
   # Check if we got a fusion object
   if (class(fusion) != "Fusion") {
     ArgumentCheck::addError(
@@ -988,7 +1074,7 @@ downShift <- function(transcript) {
   argument_checker
 }
 
-.is.edb.valid <- function(argument_checker, edb, fusion) {
+.is_edb_valid <- function(argument_checker, edb, fusion) {
   if (!is.null(edb)) {
     # If we got an edb object, check its validity
     if (class(edb) != "EnsDb") {
@@ -999,18 +1085,18 @@ downShift <- function(transcript) {
     }
   } else {
     # If edb is not given then the fusion should have transcripts for both genes
-    if (isEmpty(fusion@geneA@transcripts)) {
+    if (isEmpty(fusion@gene_upstream@transcripts)) {
       ArgumentCheck::addError(
         msg = paste0("There are no transcipts for gene A. Please provide an ",
                      "EnsDb object to the edb parameter, or see",
-                     "getTranscriptsEnsembldb()."),
+                     "get_transcripts_ensembl_db()."),
         argcheck = argument_checker
       )
-    } else if (isEmpty(fusion@geneB@transcripts)) {
+    } else if (isEmpty(fusion@gene_downstream@transcripts)) {
       ArgumentCheck::addError(
         msg = paste0("There are no transcipts for gene B. Please provide an ",
                      "EnsDb object to the edb parameter, or see",
-                     "getTranscriptsEnsembldb()."),
+                     "get_transcripts_ensembl_db()."),
         argcheck = argument_checker
       )
     }
@@ -1018,7 +1104,7 @@ downShift <- function(transcript) {
   argument_checker
 }
 
-.is.bamfile.valid <- function(argument_checker, bamfile) {
+.is_bamfile_valid <- function(argument_checker, bamfile) {
   # Check that the argument is given
   if (is.null(bamfile) || bamfile == "") {
     ArgumentCheck::addError(
@@ -1036,7 +1122,7 @@ downShift <- function(transcript) {
   argument_checker
 }
 
-.is.bedfile.valid <- function(argument_checker, bedfile) {
+.is_bedfile_valid <- function(argument_checker, bedfile) {
   # Check that the argument is given
   if (is.null(bedfile) || bedfile == "") {
     ArgumentCheck::addError(
@@ -1054,7 +1140,7 @@ downShift <- function(transcript) {
   argument_checker
 }
 
-.is.bedgraphfile.valid <- function(argument_checker, bedgraphfile) {
+.is_bedgraphfile_valid <- function(argument_checker, bedgraphfile) {
   # Check that the argument is given
   if (is.null(bedgraphfile) || bedgraphfile == "") {
     ArgumentCheck::addError(
@@ -1072,54 +1158,61 @@ downShift <- function(transcript) {
   argument_checker
 }
 
-.is.either.bamfile.or.bedgraphfile.valid <- function(argument_checker, bamfile, bedgraphfile) {
+.is_either_bamfile_or_bedgraphfile_valid <- function(
+  argument_checker,
+  bamfile,
+  bedgraphfile) {
   # Either bamfile or bedgraphfile can be given, not both
-  bamfileGiven <- !is.null(bamfile)
-  bedgraphfileGiven <- !is.null(bedgraphfile)
-  if (bamfileGiven && bedgraphfileGiven) {
+  bamfile_given <- !is.null(bamfile)
+  bedgraphfile_given <- !is.null(bedgraphfile)
+  if (bamfile_given && bedgraphfile_given) {
     ArgumentCheck::addError(
       msg = "Either 'bamfile' or 'bedgraphfile' must be given, not both.",
       argcheck = argument_checker
     )
-  } else if (!bamfileGiven && !bedgraphfileGiven) {
+  } else if (!bamfile_given && !bedgraphfile_given) {
     ArgumentCheck::addError(
       msg = "Either 'bamfile' or 'bedgraphfile' must be given",
       argcheck = argument_checker
     )
-  } else if (bamfileGiven) {
-    argument_checker <- .is.bamfile.valid(argument_checker, bamfile)
+  } else if (bamfile_given) {
+    argument_checker <- .is_bamfile_valid(argument_checker, bamfile)
   } else {
-    argument_checker <- .is.bedgraphfile.valid(argument_checker, bedgraphfile)
+    argument_checker <- .is_bedgraphfile_valid(argument_checker, bedgraphfile)
   }
   argument_checker
 }
 
-.is.whichTranscripts.valid <- function(argument_checker, whichTranscripts, fusion) {
-  if (class(whichTranscripts) != "character") {
+.is_which_transcripts_valid <- function(
+  argument_checker,
+  which_transcripts,
+  fusion
+) {
+  if (class(which_transcripts) != "character") {
     ArgumentCheck::addError(
-      msg = paste0("'whichTranscripts' must be a character (or a character ",
+      msg = paste0("'which_transcripts' must be a character (or a character ",
                    "vector) holding the desired transcript category or the ",
                    "names of specific transcripts."),
       argcheck = argument_checker
     )
   }
-  # Is whichTranscripts valid?
-  transcriptCategories <- c(
+  # Is which_transcripts valid?
+  transcript_categories <- c(
     "exonBoundary",
     "withinExon",
     "withinIntron",
     "intergenic"
   )
   # Check if the transcript(s) given actually exist, either in
-  # transcriptCategories, in geneA, or in geneB
-  for (i in 1:length(whichTranscripts)) {
+  # transcript_categories, in geneA, or in geneB
+  for (i in 1:length(which_transcripts)) {
     if (
-      !whichTranscripts[[i]] %in% transcriptCategories &&
-      !whichTranscripts[[i]] %in% names(fusion@geneA@transcripts) &&
-      !whichTranscripts[[i]] %in% names(fusion@geneB@transcripts)
+      !which_transcripts[[i]] %in% transcript_categories &&
+      !which_transcripts[[i]] %in% names(fusion@gene_upstream@transcripts) &&
+      !which_transcripts[[i]] %in% names(fusion@gene_downstream@transcripts)
     ) {
       ArgumentCheck::addError(
-        msg = paste0("No transcript with name ", whichTranscripts[[i]],
+        msg = paste0("No transcript with name ", which_transcripts[[i]],
                      " was found."),
         argcheck = argument_checker
       )
@@ -1128,7 +1221,7 @@ downShift <- function(transcript) {
   argument_checker
 }
 
-.is.ylim.valid <- function(argument_checker, ylim) {
+.is_ylim_valid <- function(argument_checker, ylim) {
   if (class(ylim) != "numeric" || length(ylim) != 2) {
     ArgumentCheck::addError(
       msg = "'ylim' must be a numeric vector of length 2",
@@ -1138,20 +1231,28 @@ downShift <- function(transcript) {
   argument_checker
 }
 
-.is.parameter.boolean <- function(argument_checker, parameter, parameterName) {
+.is_parameter_boolean <- function(
+  argument_checker,
+  parameter,
+  parameter_name
+) {
   if (class(parameter) != "logical") {
     ArgumentCheck::addError(
-      msg = paste0("'", parameterName, "'", " must be a boolean."),
+      msg = paste0("'", parameter_name, "'", " must be a boolean."),
       argcheck = argument_checker
     )
   }
   argument_checker
 }
 
-.is.character.parameter.valid <- function(argument_checker, parameter, parameterName) {
+.is_character_parameter_valid <- function(
+  argument_checker,
+  parameter,
+  parameter_name
+) {
   if (class(parameter) != "character") {
     ArgumentCheck::addError(
-      msg = paste0("'", parameterName, "'", " must be a character vector of ",
+      msg = paste0("'", parameter_name, "'", " must be a character vector of ",
                    "length 1 (meaning that it's just a single string)."),
       argcheck = argument_checker
     )
@@ -1159,19 +1260,25 @@ downShift <- function(transcript) {
   argument_checker
 }
 
-is.nucleotideAmount.valid <- function(argument_checker, nucleotideAmount, fusion) {
+.is_nucleotide_amount_valid <- function(
+  argument_checker,
+  nucleotide_amount,
+  fusion
+) {
 
-  fusionJunctionSequenceLength <-
-    length(fusion@geneA@junctionSequence) +
-    length(fusion@geneB@junctionSequence)
+  fusion_junction_sequence_length <-
+    length(fusion@gene_upstream@junction_sequence) +
+    length(fusion@gene_downstream@junction_sequence)
 
-  if (class(nucleotideAmount) != "numeric" ||
-      nucleotideAmount <= 0 ||
-      nucleotideAmount > fusionJunctionSequenceLength) {
+  if (class(nucleotide_amount) != "numeric" ||
+      nucleotide_amount <= 0 ||
+      nucleotide_amount > fusion_junction_sequence_length) {
     ArgumentCheck::addError(
-      msg = paste0("'nucleotideAmount' must be a numeric bigger than or equal ",
-                   "to 0 and less than or equal to the fusion junction ",
-                   "sequence length."),
+      msg = paste0(
+        "'nucleotide_amount' must be a numeric bigger than or equal ",
+        "to 0 and less than or equal to the fusion junction ",
+        "sequence length."
+      ),
       argcheck = argument_checker
     )
   }
@@ -1182,18 +1289,21 @@ is.nucleotideAmount.valid <- function(argument_checker, nucleotideAmount, fusion
 # End of functions that validate parameters passed to functions in chimeraviz
 # -----------------------------------------------------------------------------
 
-.getTranscriptsIfNotThere <- function(fusion, edb) {
+.get_transcripts_if_not_there <- function(fusion, edb) {
   # Establish a new 'ArgCheck' object
   argument_checker <- ArgumentCheck::newArgCheck()
   # Check parameters
-  argument_checker <- .is.fusion.valid(argument_checker, fusion)
-  argument_checker <- .is.edb.valid(argument_checker, edb, fusion)
+  argument_checker <- .is_fusion_valid(argument_checker, fusion)
+  argument_checker <- .is_edb_valid(argument_checker, edb, fusion)
   # Return errors and warnings (if any)
   ArgumentCheck::finishArgCheck(argument_checker)
 
-  if (isEmpty(fusion@geneA@transcripts) || isEmpty(fusion@geneB@transcripts)) {
+  if (
+    isEmpty(fusion@gene_upstream@transcripts) ||
+    isEmpty(fusion@gene_downstream@transcripts)
+  ) {
     message("Fetching transcripts for gene partners..")
-    fusion <- getTranscriptsEnsembldb(fusion, edb)
+    fusion <- get_transcripts_ensembl_db(fusion, edb)
     message("..transcripts fetched.")
   }
   fusion
