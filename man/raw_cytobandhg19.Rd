@@ -10,6 +10,6 @@ http://hgdownload.cse.ucsc.edu/goldenpath/hg19/database/
 \section{UCSC.HG19.Human.CytoBandIdeogram.txt}{
 
 
-This data is used with RCircos in plotCircle().
+This data is used with RCircos in plot_circle().
 }
 

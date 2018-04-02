@@ -13,6 +13,6 @@ All _alt or _random entries has been manually removed, as has the chrM entry.
 \section{UCSC.HG38.Human.CytoBandIdeogram.txt}{
 
 
-This data is used with RCircos in plotCircle().
+This data is used with RCircos in plot_circle().
 }
 

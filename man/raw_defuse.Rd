@@ -30,6 +30,6 @@ fusion event with cluster_id 5267.
 
 The bamfile 5267readsAligned.bam and the 5267readsAligned.bam.bai index file
 contains the reads supporting the fusion event with cluster_id 5267 aligned
-to the fusion sequence. It is used with plotFusionReads().
+to the fusion sequence. It is used with plot_fusion_reads().
 }
 

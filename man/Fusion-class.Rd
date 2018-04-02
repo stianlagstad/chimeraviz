@@ -15,30 +15,31 @@ fusion tool.
 \item{\code{id}}{A unique id representing a fusion event. For deFuse data this will
 be the cluster id.}
 
-\item{\code{fusionTool}}{Name of the fusion tool.}
+\item{\code{fusion_tool}}{Name of the fusion tool.}
 
-\item{\code{genomeVersion}}{Name of the genome used to map reads.}
+\item{\code{genome_version}}{Name of the genome used to map reads.}
 
-\item{\code{spanningReadsCount}}{The number of spanning reads supporting the fusion.}
+\item{\code{spanning_reads_count}}{The number of spanning reads supporting the
+fusion.}
 
-\item{\code{splitReadsCount}}{The number of split reads supporting the fusion.}
+\item{\code{split_reads_count}}{The number of split reads supporting the fusion.}
 
-\item{\code{fusionReadsAlignment}}{A Gviz::AlignmentsTrack object holding the fusion
-reads aligned to the fusion sequence.}
+\item{\code{fusion_reads_alignment}}{A Gviz::AlignmentsTrack object holding the
+fusion reads aligned to the fusion sequence.}
 
-\item{\code{geneA}}{A PartnerGene object holding information of the upstream fusion
-partner gene.}
+\item{\code{gene_upstream}}{A PartnerGene object holding information of the upstream
+fusion partner gene.}
 
-\item{\code{geneB}}{A PartnerGene object holding information of the downstream fusion
-partner gene.}
+\item{\code{gene_downstream}}{A PartnerGene object holding information of the
+downstream fusion partner gene.}
 
-\item{\code{inframe}}{A logical value indicating whether or not the downstream fusion
-partner gene is inframe or not. Not all fusion-finders report this.}
+\item{\code{inframe}}{A logical value indicating whether or not the downstream
+fusion partner gene is inframe or not. Not all fusion-finders report this.}
 
-\item{\code{fusionToolSpecificData}}{A list that will hold fields of importance for a
-specific fusion finder. This field is used because many fusion-finders report
-important values that are hard to fit into a standardized format. Examples of
-values that are added to this list is probability from deFuse and EricScore
-from EricScript.}
+\item{\code{fusion_tool_specific_data}}{A list that will hold fields of importance
+for a specific fusion finder. This field is used because many fusion-finders
+report important values that are hard to fit into a standardized format.
+Examples of values that are added to this list is probability from deFuse
+and EricScore from EricScript.}
 }}
 

@@ -23,10 +23,10 @@ defuse833ke <- system.file(
 package="chimeraviz")
 
 # Load the results file into a list of fusion objects
-fusions <- importDefuse(defuse833ke, "hg19")
+fusions <- import_defuse(defuse833ke, "hg19")
 ```
 
-Import functions for the other supported fusion-finders are similarly named (for example `importEriscript` or `importInfusion`).
+Import functions for the other supported fusion-finders are similarly named (for example `import_eriscript` or `import_infusion`).
 
 A list of Fusion objects, objects that represent each fusion transcript, is now available in the list `fusions`.
 
@@ -39,7 +39,7 @@ As you can see, this list has 17 fusion objects. It is straightforward to find a
 
 ```
 # Find a specific fusion event
-fusion <- getFusionById(fusions, 5267)
+fusion <- get_fusion_by_id(fusions, 5267)
 
 # Show information about this fusion event
 fusion
@@ -53,7 +53,7 @@ fusion
 ## [1] "In-frame?: FALSE"
 
 # Show information about the upstream fusion partner
-upstreamPartnerGene(fusion)
+upstream_partner_gene(fusion)
 ## [1] "PartnerGene object"
 ## [1] "Name: RCC1"
 ## [1] "ensemblId: ENSG00000180198"
@@ -62,7 +62,7 @@ upstreamPartnerGene(fusion)
 ## [1] "Breakpoint: 28834672"
 
 # Show information about the downstream fusion partner
-downstreamPartnerGene(fusion)
+downstream_partner_gene(fusion)
 ## [1] "PartnerGene object"
 ## [1] "Name: HENMT1"
 ## [1] "ensemblId: ENSG00000162639"
@@ -84,13 +84,13 @@ In this plot, you can see the following:
 - All chromosomes with cytoband information
 - Fusion events as links between locations in chromosomes (with gene names, if there is enough space in the plot)
 - Red links indicate intrachromosomal fusions, while blue links indicate interchromosomal fusions
-- The widths of each link varies according to how many reads support the fusion event. See the `plotCircle()` documentation for more detail on how this is computed
+- The widths of each link varies according to how many reads support the fusion event. See the `plot_circle()` documentation for more detail on how this is computed
 
 See how to build this plot in the package vignette: [Building the overview plot](https://bioconductor.org/packages/release/bioc/vignettes/chimeraviz/inst/doc/chimeraviz-vignette.html#building-the-overview-plot).
 
 ### Fusion reads plot
 
-The fusion reads plot is a way to visualize the reads supporting a fusion event mapped to the putative fusion sequence. Many fusion finders report a putative fusion sequence, and by mapping reads to this sequence visualize how well the fusion event is supported. The function `plotFusionReads()` will, given enough data, produce a plot like this one:
+The fusion reads plot is a way to visualize the reads supporting a fusion event mapped to the putative fusion sequence. Many fusion finders report a putative fusion sequence, and by mapping reads to this sequence visualize how well the fusion event is supported. The function `plot_fusion_reads()` will, given enough data, produce a plot like this one:
 
 ![fusion reads plot](https://raw.githubusercontent.com/stianlagstad/chimeraviz/master/fusion-reads-plot.png)
 
@@ -100,7 +100,7 @@ See how to build this plot in the package vignette: [Building the fusion reads p
 
 ### Fusion plot
 
-The fusion plot is the main product of `chimeraviz`, created with the `plotFusion` function. It will create a plot like this one:
+The fusion plot is the main product of `chimeraviz`, created with the `plot_fusion` function. It will create a plot like this one:
 
 ![fusion plot](https://raw.githubusercontent.com/stianlagstad/chimeraviz/master/fusion-plot.png)
 
