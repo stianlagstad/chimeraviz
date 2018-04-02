@@ -1,7 +1,7 @@
 Package: chimeraviz
 Type: Package
 Title: Visualization tools for gene fusions
-Version: 1.5.5
+Version: 1.5.6
 Authors@R: c(
   person(
     given = "Stian",

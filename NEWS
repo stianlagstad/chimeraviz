@@ -1,3 +1,11 @@
+CHANGES IN VERSION 1.5.6
+-------------------------
+
+CHANGES
+
+    o The interface for working with chimeraviz has changed to comply with https://github.com/jimhester/lintr. chimeraviz is the same as before, but methods have new names.
+
+
 CHANGES IN VERSION 1.5.1
 -------------------------
 
