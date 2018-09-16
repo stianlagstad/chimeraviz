@@ -353,18 +353,19 @@ plot_fusion_transcript_with_protein_domain <- function(
 
   # Load protein domain data
   # Specify which columns from the bedfile we're going to read
-  col_types_protein_data <- readr::cols_only(
-    "Transcript_id" = readr::col_character(),
-    "Pfam_id" = readr::col_character(),
-    "Start" = readr::col_integer(),
-    "End" = readr::col_integer(),
-    "Domain_name_abbreviation" = readr::col_character(),
-    "Domain_name_full" = readr::col_character()
+  col_types_protein_data <- c(
+    "Transcript_id" = "character",
+    "Pfam_id" = "character",
+    "Start" = "integer",
+    "End" = "integer",
+    "Domain_name_abbreviation" = "character",
+    "Domain_name_full" = "character"
   )
   # Read the bedfile
-  protein_data <- readr::read_tsv(
-    file = bedfile,
-    col_types = col_types_protein_data
+  protein_data <- data.table::fread(
+    input = bedfile,
+    colClasses = col_types_protein_data,
+    showProgress = FALSE
   )
   # Validate that the transcript ids are found in the bedfile
   if (

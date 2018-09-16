@@ -36,46 +36,34 @@ import_fusionmap <- function (filename, genome_version, limit) {
 
   # Try to read the fusion report
   report <- withCallingHandlers({
-      col_types_fusionmap <- readr::cols_only(
-        "FusionID" = col_character(),
-        "DatasetP2_SimulatedReads.UniqueCuttingPositionCount" = col_skip(),
-        "DatasetP2_SimulatedReads.SeedCount" = col_skip(),
-        "DatasetP2_SimulatedReads.RescuedCount" = col_integer(),
-        "Strand" = col_character(),
-        "Chromosome1" = col_character(),
-        "Position1" = col_integer(),
-        "Chromosome2" = col_character(),
-        "Position2" = col_integer(),
-        "KnownGene1" = col_character(),
-        "KnownTranscript1" = col_skip(),
-        "KnownExonNumber1" = col_skip(),
-        "KnownTranscriptStrand1" = col_skip(),
-        "KnownGene2" = col_character(),
-        "KnownTranscript2" = col_skip(),
-        "KnownExonNumber2" = col_skip(),
-        "KnownTranscriptStrand2" = col_skip(),
-        "FusionJunctionSequence" = col_character(),
-        "FusionGene" = col_skip(),
-        "SplicePattern" = col_skip(),
-        "SplicePatternClass" = col_skip(),
-        "FrameShift" = col_character(),
-        "FrameShiftClass" = col_character(),
-        "Distance" = col_skip(),
-        "OnExonBoundary" = col_skip(),
-        "Filter" = col_skip()
+      col_types <- c(
+        "FusionID" = "character",
+        "DatasetP2_SimulatedReads.RescuedCount" = "integer",
+        "Strand" = "character",
+        "Chromosome1" = "character",
+        "Position1" = "integer",
+        "Chromosome2" = "character",
+        "Position2" = "integer",
+        "KnownGene1" = "character",
+        "KnownGene2" = "character",
+        "FusionJunctionSequence" = "character",
+        "FrameShift" = "character",
+        "FrameShiftClass" = "character"
       )
       if (missing(limit)) {
         # Read all lines
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_fusionmap
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE
         )
       } else {
         # Only read up to the limit
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_fusionmap,
-          n_max = limit
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE,
+          nrows = limit
         )
       }
     },
@@ -85,7 +73,7 @@ import_fusionmap <- function (filename, genome_version, limit) {
     },
     warning = function(cond) {
       # Begin Exclude Linting
-      #message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
+      message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
       # End Exclude Linting
     }
   )

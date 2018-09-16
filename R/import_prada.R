@@ -35,39 +35,28 @@ import_prada <- function (filename, genome_version, limit) {
 
   # Try to read the fusion report
   report <- withCallingHandlers({
-      col_types_prada <- readr::cols_only(
-        "sample" = col_character(),
-        "Gene_A" = col_skip(),
-        "Gene_B" = col_skip(),
-        "A_chr" = col_skip(),
-        "B_chr" = col_skip(),
-        "A_strand" = col_integer(),
-        "B_strand" = col_integer(),
-        "Discordant_n" = col_integer(),
-        "JSR_n" = col_integer(),
-        "perfectJSR_n" = col_skip(),
-        "Junc_n" = col_skip(),
-        "Position_Consist" = col_skip(),
-        "Junction" = col_character(),
-        "Identity" = col_skip(),
-        "Align_Len" = col_skip(),
-        "Evalue" = col_skip(),
-        "BitScore" = col_skip(),
-        "TAF_info" = col_skip(),
-        "max_TAF" = col_skip()
+      col_types <- c(
+        "sample" = "character",
+        "A_strand" = "integer",
+        "B_strand" = "integer",
+        "Discordant_n" = "integer",
+        "JSR_n" = "character",
+        "Junction" = "character"
       )
       if (missing(limit)) {
         # Read all lines
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_prada
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE
         )
       } else {
         # Only read up to the limit
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_prada,
-          n_max = limit
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE,
+          nrows = limit
         )
       }
     },

@@ -35,32 +35,31 @@ import_infusion <- function (filename, genome_version, limit) {
 
   # Try to read the fusion report
   report <- withCallingHandlers({
-      col_types_infusion <- readr::cols_only(
-        "#id" = col_integer(),
-        "ref1" = col_character(),
-        "break_pos1" = col_integer(),
-        "region1" = col_skip(),
-        "ref2" = col_character(),
-        "break_pos2" = col_integer(),
-        "region2" = col_skip(),
-        "num_span" = col_integer(),
-        "num_paired" = col_integer(),
-        "genes_1" = col_character(),
-        "genes_2" = col_character(),
-        "fusion_class" = col_skip()
+      col_types <- c(
+        "#id" = "integer",
+        "ref1" = "character",
+        "break_pos1" = "integer",
+        "ref2" = "character",
+        "break_pos2" = "integer",
+        "num_span" = "integer",
+        "num_paired" = "integer",
+        "genes_1" = "character",
+        "genes_2" = "character"
       )
       if (missing(limit)) {
         # Read all lines
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_infusion
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE
         )
       } else {
         # Only read up to the limit
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_infusion,
-          n_max = limit
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE,
+          nrows = limit
         )
       }
     },
@@ -70,7 +69,7 @@ import_infusion <- function (filename, genome_version, limit) {
     },
     warning = function(cond) {
       # Begin Exclude Linting
-      #message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
+      message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
       # End Exclude Linting
     }
   )

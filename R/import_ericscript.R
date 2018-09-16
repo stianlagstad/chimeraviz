@@ -35,46 +35,36 @@ import_ericscript <- function (filename, genome_version, limit) {
 
   # Try to read the fusion report
   report <- withCallingHandlers({
-      col_types_ericscript <- readr::cols_only(
-        "GeneName1" = col_character(),
-        "GeneName2" = col_character(),
-        "chr1" = col_character(),
-        "Breakpoint1" = col_character(),
-        "strand1" = col_character(),
-        "chr2" = col_character(),
-        "Breakpoint2" = col_character(),
-        "strand2" = col_character(),
-        "EnsemblGene1" = col_character(),
-        "EnsemblGene2" = col_character(),
-        "crossingreads" = col_integer(),
-        "spanningreads" = col_integer(),
-        "mean.insertsize" = col_skip(),
-        "homology" = col_skip(),
-        "fusiontype" = col_skip(),
-        "Blacklist" = col_skip(),
-        "InfoGene1" = col_skip(),
-        "InfoGene2" = col_skip(),
-        "JunctionSequence" = col_character(),
-        "GeneExpr1" = col_skip(),
-        "GeneExpr2" = col_skip(),
-        "GeneExpr_Fused" = col_skip(),
-        "ES" = col_skip(),
-        "GJS" = col_skip(),
-        "US" = col_skip(),
-        "EricScore" = col_number()
+      col_types <- c(
+        "GeneName1" = "character",
+        "GeneName2" = "character",
+        "chr1" = "character",
+        "Breakpoint1" = "character",
+        "strand1" = "character",
+        "chr2" = "character",
+        "Breakpoint2" = "character",
+        "strand2" = "character",
+        "EnsemblGene1" = "character",
+        "EnsemblGene2" = "character",
+        "crossingreads" = "integer",
+        "spanningreads" = "integer",
+        "JunctionSequence" = "character",
+        "EricScore" = "numeric"
       )
       if (missing(limit)) {
         # Read all lines
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_ericscript
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE
         )
       } else {
         # Only read up to the limit
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_ericscript,
-          n_max = limit
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE,
+          nrows = limit
         )
       }
     },
@@ -84,7 +74,7 @@ import_ericscript <- function (filename, genome_version, limit) {
     },
     warning = function(cond) {
       # Begin Exclude Linting
-      #message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
+      message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
       # End Exclude Linting
     }
   )

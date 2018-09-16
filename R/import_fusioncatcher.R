@@ -36,30 +36,32 @@ import_fusioncatcher <- function (filename, genome_version, limit) {
 
   # Try to read the fusion report
   report <- withCallingHandlers({
-      col_types_fusioncatcher <- readr::cols_only(
-        "Gene_1_symbol(5end_fusion_partner)" = readr::col_character(),
-        "Gene_2_symbol(3end_fusion_partner)" = readr::col_character(),
-        "Spanning_pairs" = readr::col_integer(),
-        "Spanning_unique_reads" = readr::col_integer(),
-        "Fusion_point_for_gene_1(5end_fusion_partner)" = readr::col_character(),
-        "Fusion_point_for_gene_2(3end_fusion_partner)" = readr::col_character(),
-        "Gene_1_id(5end_fusion_partner)" = readr::col_character(),
-        "Gene_2_id(3end_fusion_partner)" = readr::col_character(),
-        "Fusion_sequence" = readr::col_character(),
-        "Predicted_effect" = readr::col_character()
+      col_types <- c(
+        "Gene_1_symbol(5end_fusion_partner)" = "character",
+        "Gene_2_symbol(3end_fusion_partner)" = "character",
+        "Spanning_pairs" = "integer",
+        "Spanning_unique_reads" = "integer",
+        "Fusion_point_for_gene_1(5end_fusion_partner)" = "character",
+        "Fusion_point_for_gene_2(3end_fusion_partner)" = "character",
+        "Gene_1_id(5end_fusion_partner)" = "character",
+        "Gene_2_id(3end_fusion_partner)" = "character",
+        "Fusion_sequence" = "character",
+        "Predicted_effect" = "character"
       )
       if (missing(limit)) {
         # Read all lines
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_fusioncatcher
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE
         )
       } else {
         # Only read up to the limit
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_fusioncatcher,
-          n_max = limit
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE,
+          nrows = limit
         )
       }
     },
@@ -69,7 +71,7 @@ import_fusioncatcher <- function (filename, genome_version, limit) {
     },
     warning = function(cond) {
       # Begin Exclude Linting
-      #message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
+      message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
       # End Exclude Linting
     }
   )

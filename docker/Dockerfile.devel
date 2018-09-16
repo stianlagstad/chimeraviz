@@ -1,7 +1,7 @@
 from bioconductor/devel_core2
 
 RUN R -e 'install.packages("devtools")'
-RUN R -e 'install.packages("readr")'
+RUN R -e 'install.packages("data.table")'
 RUN R -e 'install.packages("roxygen2")'
 RUN R -e 'install.packages("RCircos")'
 RUN R -e 'install.packages("DT")'
