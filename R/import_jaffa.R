@@ -35,36 +35,32 @@ import_jaffa <- function (filename, genome_version, limit) {
 
   # Try to read the fusion report
   report <- withCallingHandlers({
-      col_types_jaffa <- readr::cols_only(
-        "sample" = col_character(),
-        "fusion genes" = col_character(),
-        "chrom1" = col_character(),
-        "base1" = col_integer(),
-        "chrom2" = col_character(),
-        "base2" = col_integer(),
-        "gap (kb)" = col_skip(),
-        "spanning pairs" = col_character(),
-        "spanning reads" = col_integer(),
-        "inframe" = col_character(),
-        "aligns" = col_skip(),
-        "rearrangement" = col_skip(),
-        "contig" = col_skip(),
-        "contig break" = col_skip(),
-        "classification" = col_character(),
-        "known" = col_skip()
+      col_types <- c(
+        "sample" = "character",
+        "fusion genes" = "character",
+        "chrom1" = "character",
+        "base1" = "integer",
+        "chrom2" = "character",
+        "base2" = "integer",
+        "spanning pairs" = "character",
+        "spanning reads" = "integer",
+        "inframe" = "character",
+        "classification" = "character"
       )
       if (missing(limit)) {
         # Read all lines
-        readr::read_csv(
-          file = filename,
-          col_types = col_types_jaffa
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE
         )
       } else {
         # Only read up to the limit
-        readr::read_csv(
-          file = filename,
-          col_types = col_types_jaffa,
-          n_max = limit
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE,
+          nrows = limit
         )
       }
     },
@@ -74,7 +70,7 @@ import_jaffa <- function (filename, genome_version, limit) {
     },
     warning = function(cond) {
       # Begin Exclude Linting
-      #message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
+      message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
       # End Exclude Linting
     }
   )

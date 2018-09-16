@@ -39,7 +39,7 @@ License: Artistic-2.0
 LazyData: TRUE
 Imports:
     methods,
-    readr,
+    data.table,
     grid,
     Rsamtools,
     GenomeInfoDb,

@@ -56,11 +56,11 @@ test_that("fetch_reads_from_fastq works as it should", {
     fastq_file_out_1,
     fastq_file_out_2)
 
-  # fastqFileOut1 and fastqFileOut2 should now contain the reads supporting
-  # fusion with cluster_id 5267 To test this, read the files.
+  # fastq_file_out_1 and fastq_file_out_2 should now contain the reads
+  # supporting fusion with cluster_id 5267. To test this, read the files.
 
-  new_fastq_content_1 <- readr::read_lines(fastq_file_out_1)
-  new_fastq_content_2 <- readr::read_lines(fastq_file_out_2)
+  new_fastq_content_1 <- readLines(fastq_file_out_1)
+  new_fastq_content_2 <- readLines(fastq_file_out_2)
 
   # We know for a fact that there are 6 reads supporting the fusion. Since each
   # read will have four lines in the file, check if the length matches

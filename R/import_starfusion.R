@@ -37,34 +37,34 @@ import_starfusion <- function (filename, genome_version, limit) {
 
   # Try to read the fusion report
   report <- withCallingHandlers({
-      col_types_starfusion <- readr::cols_only(
-        "#FusionName" = col_skip(),
-        "JunctionReadCount" = col_integer(),
-        "SpanningFragCount" = col_integer(),
-        "SpliceType" = col_skip(),
-        "LeftGene" = col_character(),
-        "LeftBreakpoint" = col_character(),
-        "RightGene" = col_character(),
-        "RightBreakpoint" = col_character(),
-        "LargeAnchorSupport" = col_character(),
-        "LeftBreakDinuc" = col_character(),
-        "LeftBreakEntropy" = col_number(),
-        "RightBreakDinuc" = col_character(),
-        "RightBreakEntropy" = col_number(),
-        "FFPM" = col_number()
+      col_types <- c(
+        "JunctionReadCount" = "integer",
+        "SpanningFragCount" = "integer",
+        "LeftGene" = "character",
+        "LeftBreakpoint" = "character",
+        "RightGene" = "character",
+        "RightBreakpoint" = "character",
+        "LargeAnchorSupport" = "character",
+        "LeftBreakDinuc" = "character",
+        "LeftBreakEntropy" = "numeric",
+        "RightBreakDinuc" = "character",
+        "RightBreakEntropy" = "numeric",
+        "FFPM" = "numeric"
       )
       if (missing(limit)) {
         # Read all lines
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_starfusion
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE
         )
       } else {
         # Only read up to the limit
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_starfusion,
-          n_max = limit
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE,
+          nrows = limit
         )
       }
     },
@@ -74,7 +74,7 @@ import_starfusion <- function (filename, genome_version, limit) {
     },
     warning = function(cond) {
       # Begin Exclude Linting
-      #message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
+      message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
       # End Exclude Linting
     }
   )
