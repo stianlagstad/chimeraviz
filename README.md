@@ -6,7 +6,7 @@
 
 # Citations
 
-If you wish to cite chimeraviz, please site [this application note](https://academic.oup.com/bioinformatics/article/33/18/2954/3835381).
+If you wish to cite chimeraviz, please cite [this application note](https://academic.oup.com/bioinformatics/article/33/18/2954/3835381).
 
 Previous citations:
 - [Alternative PDGFD rearrangements in dermatofibrosarcomas protuberans without PDGFB fusions](https://www.nature.com/articles/s41379-018-0089-4)
