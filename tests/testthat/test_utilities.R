@@ -56,8 +56,8 @@ test_that("fetch_reads_from_fastq works as it should", {
     fastq_file_out_1,
     fastq_file_out_2)
 
-  # fastq_file_out_1 and fastq_file_out_2 should now contain the reads supporting
-  # fusion with cluster_id 5267 To test this, read the files.
+  # fastq_file_out_1 and fastq_file_out_2 should now contain the reads
+  # supporting fusion with cluster_id 5267. To test this, read the files.
 
   new_fastq_content_1 <- readLines(fastq_file_out_1)
   new_fastq_content_2 <- readLines(fastq_file_out_2)

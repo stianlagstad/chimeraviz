@@ -72,7 +72,7 @@ import_soapfuse <- function (filename, genome_version, limit) {
     },
     warning = function(cond) {
       # Begin Exclude Linting
-      #message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
+      message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
       # End Exclude Linting
     }
   )
