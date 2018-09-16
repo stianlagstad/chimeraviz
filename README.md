@@ -4,6 +4,17 @@
 
 `chimeraviz` is an R package that automates the creation of chimeric RNA visualizations.
 
+# Citations
+
+If you wish to cite chimeraviz, please site [this application note](https://academic.oup.com/bioinformatics/article/33/18/2954/3835381).
+
+Previous citations:
+- [Alternative PDGFD rearrangements in dermatofibrosarcomas protuberans without PDGFB fusions](https://www.nature.com/articles/s41379-018-0089-4)
+- [Transcriptional-Readthrough RNAs Reflect the Phenomenon of “A Gene Contains Gene(s)” or “Gene(s) within a Gene” in the Human Genome, and Thus Are Not Chimeric RNAs](http://www.mdpi.com/2073-4425/9/1/40)
+- [FuSpot: a web-based tool for visual evaluation of fusion candidates](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-018-4486-3)
+- [Clinker: visualizing fusion genes detected in RNA-seq data](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6065480/)
+- [Integrative analysis of DNA and RNA sequencing data from cancer](https://www.duo.uio.no/handle/10852/63165)
+
 # Demo
 
 The following is an excerpt of the [package vignette](https://bioconductor.org/packages/release/bioc/vignettes/chimeraviz/inst/doc/chimeraviz-vignette.html).
