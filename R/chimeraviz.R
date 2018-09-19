@@ -6,6 +6,6 @@
 #' @docType package
 #' @name chimeraviz
 #'
-#' @import Biostrings GenomicRanges IRanges RCircos methods data.table Gviz graphics BiocStyle
+#' @import Biostrings GenomicRanges IRanges RCircos methods Gviz graphics BiocStyle
 NULL
 #> NULL

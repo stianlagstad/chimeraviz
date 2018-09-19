@@ -18,6 +18,8 @@
 #' fusions <- import_fusioncatcher(fusioncatcher833ke, "hg38", 3)
 #' # This should import a list of 3 fusions described in Fusion objects.
 #'
+#' @importFrom data.table fread
+#'
 #' @export
 import_fusioncatcher <- function (filename, genome_version, limit) {
 

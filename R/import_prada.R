@@ -17,6 +17,8 @@
 #' fusions <- import_prada(pradaData, "hg19", 3)
 #' # This should import a list of 3 fusions described in Fusion objects.
 #'
+#' @importFrom data.table fread
+#'
 #' @export
 import_prada <- function (filename, genome_version, limit) {
 
