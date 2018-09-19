@@ -16,6 +16,8 @@
 #'   package="chimeraviz")
 #' fusions <- import_defuse(defuse833ke, "hg19", 3)
 #' # This should import a list of 3 fusions described in Fusion objects.
+#' 
+#' @importFrom data.table fread
 #'
 #' @export
 import_defuse <- function (filename, genome_version, limit) {

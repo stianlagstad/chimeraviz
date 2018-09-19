@@ -39,7 +39,6 @@ License: Artistic-2.0
 LazyData: TRUE
 Imports:
     methods,
-    data.table,
     grid,
     Rsamtools,
     GenomeInfoDb,
@@ -65,7 +64,8 @@ Depends:
     Gviz,
     S4Vectors,
     ensembldb,
-    AnnotationFilter
+    AnnotationFilter,
+    data.table
 Suggests:
     testthat,
     roxygen2,

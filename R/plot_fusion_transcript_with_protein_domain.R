@@ -67,6 +67,8 @@
 #' # Close device
 #' dev.off()
 #'
+#' @importFrom data.table fread
+#'
 #' @export
 #'
 plot_fusion_transcript_with_protein_domain <- function(
