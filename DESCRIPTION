@@ -1,7 +1,7 @@
 Package: chimeraviz
 Type: Package
 Title: Visualization tools for gene fusions
-Version: 1.7.0
+Version: 1.7.3
 Authors@R: c(
   person(
     given = "Stian",
@@ -39,7 +39,6 @@ License: Artistic-2.0
 LazyData: TRUE
 Imports:
     methods,
-    readr,
     grid,
     Rsamtools,
     GenomeInfoDb,
@@ -65,7 +64,8 @@ Depends:
     Gviz,
     S4Vectors,
     ensembldb,
-    AnnotationFilter
+    AnnotationFilter,
+    data.table
 Suggests:
     testthat,
     roxygen2,

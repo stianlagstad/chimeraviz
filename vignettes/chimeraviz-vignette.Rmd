@@ -648,7 +648,10 @@ bedfile <- system.file(
   "extdata",
   "protein_domains_5267.bed",
   package="chimeraviz")
-bedfile_contents <- readr::read_tsv(bedfile)
+bedfile_contents <- data.table::fread(
+  input = bedfile,
+  showProgress = FALSE
+)
 knitr::kable(bedfile_contents)
 ```
 

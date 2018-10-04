@@ -17,6 +17,8 @@
 #'   package = "chimeraviz")
 #' fusions <- import_soapfuse(soapfuse833ke, "hg19", 3)
 #' # This should import a list of 3 fusions described in Fusion objects.
+#' 
+#' @importFrom data.table fread
 #'
 #' @export
 import_soapfuse <- function (filename, genome_version, limit) {
@@ -36,31 +38,33 @@ import_soapfuse <- function (filename, genome_version, limit) {
 
   # Try to read the fusion report
   report <- withCallingHandlers({
-      col_types_soapfuse <- readr::cols_only(
-        "up_gene" = readr::col_character(),
-        "up_chr" = readr::col_character(),
-        "up_strand" = readr::col_character(),
-        "up_Genome_pos" = readr::col_integer(),
-        "dw_gene" = readr::col_character(),
-        "dw_chr" = readr::col_character(),
-        "dw_strand" = readr::col_character(),
-        "dw_Genome_pos" = readr::col_integer(),
-        "Span_reads_num" = readr::col_integer(),
-        "Junc_reads_num" = readr::col_integer(),
-        "down_fusion_part_frame-shift_or_not" = readr::col_character()
+      col_types <- c(
+        "up_gene" = "character",
+        "up_chr" = "character",
+        "up_strand" = "character",
+        "up_Genome_pos" = "integer",
+        "dw_gene" = "character",
+        "dw_chr" = "character",
+        "dw_strand" = "character",
+        "dw_Genome_pos" = "integer",
+        "Span_reads_num" = "integer",
+        "Junc_reads_num" = "integer",
+        "down_fusion_part_frame-shift_or_not" = "character"
       )
       if (missing(limit)) {
         # Read all lines
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_soapfuse
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE
         )
       } else {
         # Only read up to the limit
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_soapfuse,
-          n_max = limit
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE,
+          nrows = limit
         )
       }
     },
@@ -70,7 +74,7 @@ import_soapfuse <- function (filename, genome_version, limit) {
     },
     warning = function(cond) {
       # Begin Exclude Linting
-      #message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
+      message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
       # End Exclude Linting
     }
   )

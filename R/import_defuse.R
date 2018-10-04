@@ -16,6 +16,8 @@
 #'   package="chimeraviz")
 #' fusions <- import_defuse(defuse833ke, "hg19", 3)
 #' # This should import a list of 3 fusions described in Fusion objects.
+#' 
+#' @importFrom data.table fread
 #'
 #' @export
 import_defuse <- function (filename, genome_version, limit) {
@@ -35,37 +37,39 @@ import_defuse <- function (filename, genome_version, limit) {
 
   # Try to read the fusion report
   report <- withCallingHandlers({
-      col_types_defuse <- readr::cols_only(
-        "cluster_id" = readr::col_character(),
-        "splitr_sequence" = readr::col_character(),
-        "splitr_count" = readr::col_integer(),
-        "gene1" = readr::col_character(),
-        "gene2" = readr::col_character(),
-        "gene_chromosome1" = readr::col_character(),
-        "gene_chromosome2" = readr::col_character(),
-        "gene_name1" = readr::col_character(),
-        "gene_name2" = readr::col_character(),
-        "gene_strand1" = readr::col_character(),
-        "gene_strand2" = readr::col_character(),
-        "genomic_break_pos1" = readr::col_integer(),
-        "genomic_break_pos2" = readr::col_integer(),
-        "span_count" = readr::col_integer(),
-        "orf" = readr::col_character(),
-        "probability" = readr::col_number()
+      col_types = c(
+        "cluster_id" = "character",
+        "splitr_sequence" = "character",
+        "splitr_count" = "integer",
+        "gene1" = "character",
+        "gene2" = "character",
+        "gene_chromosome1" = "character",
+        "gene_chromosome2" = "character",
+        "gene_name1" = "character",
+        "gene_name2" = "character",
+        "gene_strand1" = "character",
+        "gene_strand2" = "character",
+        "genomic_break_pos1" = "integer",
+        "genomic_break_pos2" = "integer",
+        "span_count" = "integer",
+        "orf" = "character",
+        "probability" = "numeric"
       )
       if (missing(limit)) {
         # Read all lines
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_defuse
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE
         )
       } else {
-        # Only read up to the limit
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_defuse,
-          n_max = limit
-        )
+          # Only read up to the limit
+          data.table::fread(
+            input = filename,
+            colClasses = col_types,
+            showProgress = FALSE,
+            nrows = limit
+          )
       }
     },
     error = function(cond) {
@@ -74,7 +78,7 @@ import_defuse <- function (filename, genome_version, limit) {
     },
     warning = function(cond) {
       # Begin Exclude Linting
-      #message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
+      message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
       # End Exclude Linting
     }
   )
