@@ -38,56 +38,30 @@ import_oncofuse <- function (filename, genome_version, limit) {
 
   # Try to read the fusion report
   report <- withCallingHandlers({
-      col_types_oncofuse <- readr::cols_only(
-	"SAMPLE_ID" = col_skip(),
-	"FUSION_ID" = readr::col_character(),
-	"TISSUE" = col_skip(),
-	"SPANNING_READS" = readr::col_integer(),
-	"ENCOMPASSING_READS" = readr::col_integer(),
-	"GENOMIC" = readr::col_character(),
-	"5_FPG_GENE_NAME" = readr::col_character(),
-	"5_IN_CDS" = col_skip(),
-	"5_SEGMENT_TYPE" = col_skip(),
-	"5_SEGMENT_ID" = col_skip(),
-	"5_COORD_IN_SEGMENT" = col_skip(),
-	"5_FULL_AA" = col_skip(),
-	"5_FRAME" = col_skip(),
-	"3_FPG_GENE_NAME" = readr::col_character(),
-	"3_IN_CDS" = col_skip(),
-	"3_SEGMENT_TYPE" = col_skip(),
-	"3_SEGMENT_ID" = col_skip(),
-	"3_COORD_IN_SEGMENT" = col_skip(),
-	"3_FULL_AA" = col_skip(),
-	"3_FRAME" = col_skip(),
-	"FPG_FRAME_DIFFERENCE" = readr::col_integer(),
-	"P_VAL_CORR" = col_skip(),
-	"DRIVER_PROB" = readr::col_double(),
-	"EXPRESSION_GAIN" = col_skip(),
-	"5_DOMAINS_RETAINED" = col_skip(),
-	"5_DOMAINS_RETAINED" = col_skip(),
-	"5_DOMAINS_BROKEN" = col_skip(),
-	"3_DOMAINS_BROKEN" = col_skip(),
-	"5_PII_RETAINED" = col_skip(),
-	"3_PII_RETAINED" = col_skip(),
-	"CTF" = col_skip(),
-	"G" = col_skip(),
-	"H" = col_skip(),
-	"K" = col_skip(),
-	"P" = col_skip(),
-	"TF" = col_skip()
+      col_types <- c(
+        "FUSION_ID" = "character",
+        "SPANNING_READS" = "integer",
+        "ENCOMPASSING_READS" = "integer",
+        "GENOMIC" = "character",
+        "5_FPG_GENE_NAME" = "character",
+        "3_FPG_GENE_NAME" = "character",
+        "FPG_FRAME_DIFFERENCE" = "integer",
+        "DRIVER_PROB" = "numeric"
       )
       if (missing(limit)) {
         # Read all lines
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_oncofuse
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE
         )
       } else {
         # Only read up to the limit
-        readr::read_tsv(
-          file = filename,
-          col_types = col_types_oncofuse,
-          n_max = limit
+        data.table::fread(
+          input = filename,
+          colClasses = col_types,
+          showProgress = FALSE,
+          nrows = limit
         )
       }
     },
@@ -97,7 +71,7 @@ import_oncofuse <- function (filename, genome_version, limit) {
     },
     warning = function(cond) {
       # Begin Exclude Linting
-      #message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
+      message(paste0("Reading ", filename, " caused a warning: ", cond[[1]]))
       # End Exclude Linting
     }
   )
@@ -109,9 +83,6 @@ import_oncofuse <- function (filename, genome_version, limit) {
   fusion_tool          <- "oncofuse"
   spanning_reads_count <- NA
   split_reads_count    <- NA
-  junction_sequence    <- NA
-  strand_upstream      <- "+"
-  strand_downstream    <- "+"
 
   # List to hold all Fusion objects
   fusion_list <- vector("list", dim(report)[1])
@@ -119,13 +90,12 @@ import_oncofuse <- function (filename, genome_version, limit) {
   # Iterate through each line in the .tsv file
   for (i in 1:dim(report)[1]) {
 
-#    # Import oncofuse-specific fields
+    # Import oncofuse-specific fields
     fusion_tool_specific_data <- list()
     fusion_tool_specific_data[["DRIVER_PROB"]] <- report[[i, "DRIVER_PROB"]]
 
     # Cluster id
     id <- report[[i, "FUSION_ID"]]
-   
 
     # Is the downstream fusion partner in-frame?
     if (report[[i, "FPG_FRAME_DIFFERENCE"]] == "0") {
@@ -134,21 +104,9 @@ import_oncofuse <- function (filename, genome_version, limit) {
       inframe <- FALSE
     }
 
-    # Strand
-    #strand_upstream <- report[[i, "gene_strand1"]]
-    #strand_downstream <- report[[i, "gene_strand2"]]
-
     # Number of supporting reads
     split_reads_count <- report[[i, "ENCOMPASSING_READS"]]
     spanning_reads_count <- report[[i, "SPANNING_READS"]]
-
-
-    # Get the fusion sequence. Split it into the part from gene1 and gene2
-    #junction_sequence <- strsplit(report[[i, "splitr_sequence"]], "\\|")
-    #junction_sequence_upstream <-
-    #  Biostrings::DNAString(junction_sequence[[1]][1])
-    #junction_sequence_downstream <-
-    #  Biostrings::DNAString(junction_sequence[[1]][2])
 
     # Breakpoints
     genomics <- report[[i, "GENOMIC"]]
@@ -162,42 +120,17 @@ import_oncofuse <- function (filename, genome_version, limit) {
     name_upstream <- report[[i, "5_FPG_GENE_NAME"]]
     name_downstream <- report[[i, "3_FPG_GENE_NAME"]]
 
-    # Ensembl REST API
     # Ensembl ids
+    ensembl_id_upstream <- NA_character_
+    ensembl_id_downstream <- NA_character_
 
-    library(httr)
-    library(jsonlite)
-    library(xml2)
-    server <- "https://grch37.rest.ensembl.org"
-    #ext <- paste("/lookup/symbol/homo_sapiens/", name_upstream, "?format=condensed;db_type=core", sep="")
-    ext <- paste("/lookup/symbol/homo_sapiens/", name_upstream, "?", sep="")
-    r <- GET(paste(server, ext, sep=""), content_type("application/json"))
-    stop_for_status(r)
-    #print(content(r))
+    # oncofuse doesn't provide the fusion sequence
+    junction_sequence_upstream <- Biostrings::DNAString()
+    junction_sequence_downstream <- Biostrings::DNAString()
 
-    ensemblObj <- content(r)
-    ensembl_id_upstream <- ensemblObj$id
-    
-    ext <- paste("/sequence/region/human/", chromosome_upstream, ":", ensemblObj$start, "..", breakpoint_upstream, "?", sep="")
-    r <- GET(paste(server, ext, sep=""), content_type("text/plain"))
-    stop_for_status(r)
-    #print(content(r))
-    #junction_sequence_upstream <- content(r)
-    junction_sequence_upstream <- Biostrings::DNAString(content(r))
-
-    #ext <- paste("/lookup/symbol/homo_sapiens/", name_downstream, "?format=condensed;db_type=core", sep="")
-    ext <- paste("/lookup/symbol/homo_sapiens/", name_downstream, "?", sep="")
-    r <- GET(paste(server, ext, sep=""), content_type("application/json"))
-    stop_for_status(r)
-    ensemblObj <- content(r)
-    ensembl_id_downstream <- ensemblObj$id
-
-    ext <- paste("/sequence/region/human/", chromosome_downstream, ":", ensemblObj$start, "..", breakpoint_downstream, "?", sep="")
-    r <- GET(paste(server, ext, sep=""), content_type("text/plain"))
-    stop_for_status(r)
-    #print(content(r))
-    #junction_sequence_downstream <- content(r)
-    junction_sequence_downstream <- Biostrings::DNAString(content(r))
+    # oncofuse doesn't provide the strands
+    strand_upstream <- NA_character_
+    strand_downstream <- NA_character_
 
     # PartnerGene objects
     gene_upstream <- new(
@@ -235,7 +168,6 @@ import_oncofuse <- function (filename, genome_version, limit) {
       fusion_tool_specific_data = fusion_tool_specific_data
     )
   }
-
 
   # Return the list of Fusion objects
   fusion_list
