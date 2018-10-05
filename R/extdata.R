@@ -1,3 +1,15 @@
+#' oncofuse data
+#'
+#' Documentation for the oncofuse example data.
+#'
+#' @name raw_oncofuse
+#'
+#' @section oncofuse.outfile:
+#'
+#' The example output from oncofuse was kindly provided by Lavinia G here:
+#' https://github.com/stianlagstad/chimeraviz/issues/47#issuecomment-409773158
+NULL
+
 #' Fusioncatcher data
 #'
 #' Documentation for the Fusioncatcher example data.
