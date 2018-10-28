@@ -5,8 +5,8 @@
 \title{Plot transcripts for each partner gene in a fusion event.}
 \usage{
 plot_transcripts(fusion, edb = NULL, bamfile = NULL,
-  which_transcripts = "exonBoundary", non_ucsc = TRUE, ylim = c(0, 1000),
-  reduce_transcripts = FALSE, bedgraphfile = NULL)
+  which_transcripts = "exonBoundary", non_ucsc = TRUE, ylim = c(0,
+  1000), reduce_transcripts = FALSE, bedgraphfile = NULL)
 }
 \arguments{
 \item{fusion}{The Fusion object to plot.}
