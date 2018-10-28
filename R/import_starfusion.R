@@ -144,8 +144,8 @@ import_starfusion <- function (filename, genome_version, limit) {
     name_downstream <- gene_names_2[1]
 
     # Ensembl ids
-    ensembl_id_upstream <- gene_names_1[2]
-    ensembl_id_downstream <- gene_names_2[2]
+    ensembl_id_upstream <- strsplit(gene_names_1[2], "\\.")[[1]][[1]]
+    ensembl_id_downstream <- strsplit(gene_names_2[2], "\\.")[[1]][[1]]
 
     # PartnerGene objects
     gene_upstream <- new(
