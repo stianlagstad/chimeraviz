@@ -3,7 +3,7 @@ CHANGES IN VERSION 1.7.6
 
 CHANGES
 
-    o Fixed a bug in plot_circle where link widths where off. Ref https://github.com/stianlagstad/chimeraviz/issues/52
+    o Fixed a bug in plot_circle where link widths were off. Ref https://github.com/stianlagstad/chimeraviz/issues/52
 
 
 CHANGES IN VERSION 1.7.1
