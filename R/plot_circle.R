@@ -296,6 +296,34 @@ plot_circle <- function(fusion_list) {
 
   # Create link data in the format RCircos requires
   link_data <- .fusions_to_link_data(fusion_list)
+  # Make sure the ordering is correct. Ref https://github.com/stianlagstad/chimeraviz/issues/52
+  multi.mixedorder <- function(..., na.last = TRUE, decreasing = FALSE) {
+    do.call(
+      order,
+      c(
+        lapply(
+          list(...),
+          function(l) {
+            if(is.character(l)) {
+              factor(
+                l,
+                levels=gtools::mixedsort(unique(l))
+              )
+            } else {
+              l
+            }
+          }
+        ),
+        list(na.last = na.last, decreasing = decreasing)
+      )
+    )
+  }
+  ordered_link_width <- link_data[
+    multi.mixedorder(
+      as.character(link_data$chromosome),
+      link_data$chrom_start
+    ),
+    ]$link_width
 
   # Draw link data
   # Which track?
@@ -308,7 +336,7 @@ plot_circle <- function(fusion_list) {
     start.pos = NULL,
     genomic.columns = 3,
     is.sorted = FALSE,
-    lineWidth = link_data$link_width)
+    lineWidth = ordered_link_width)
 
   # When done, remove the RCircos.Env element from the global namespace
   remove("RCircos.Env", envir = .GlobalEnv)

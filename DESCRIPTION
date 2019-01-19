@@ -1,7 +1,7 @@
 Package: chimeraviz
 Type: Package
 Title: Visualization tools for gene fusions
-Version: 1.6.3
+Version: 1.6.4
 Authors@R: c(
   person(
     given = "Stian",
@@ -56,7 +56,8 @@ Imports:
     plyr,
     dplyr,
     BiocStyle,
-    ArgumentCheck
+    ArgumentCheck,
+    gtools
 Depends:
     Biostrings,
     GenomicRanges,
@@ -74,7 +75,7 @@ Suggests:
     lintr
 SystemRequirements: bowtie, samtools, and egrep are required for some
     functionalities
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 biocViews: Infrastructure, Alignment
 Encoding: UTF-8
