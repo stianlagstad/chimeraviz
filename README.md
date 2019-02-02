@@ -14,6 +14,7 @@ Previous citations:
 - [FuSpot: a web-based tool for visual evaluation of fusion candidates](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-018-4486-3)
 - [Clinker: visualizing fusion genes detected in RNA-seq data](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6065480/)
 - [Integrative analysis of DNA and RNA sequencing data from cancer](https://www.duo.uio.no/handle/10852/63165)
+- [Clinicopathologic Features of CIC-NUTM1 Sarcomas, a New Molecular Variant of the Family of CIC-Fused Sarcomas](https://journals.lww.com/ajsp/Fulltext/2019/02000/Clinicopathologic_Features_of_CIC_NUTM1_Sarcomas,.15.aspx)
 
 # Demo
 
