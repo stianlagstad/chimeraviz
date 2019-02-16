@@ -258,3 +258,18 @@ test_that("down_shift works as expected", {
   expect_is(gr_downshifted, "GRanges")
   expect_equal(IRanges::width(gr), IRanges::width(gr_downshifted))
 })
+
+test_that(".is_ylim_valid works as expected", {
+    # ylim invalid length
+    argument_checker <- ArgumentCheck::newArgCheck()
+    argument_checker <- .is_ylim_valid(argument_checker, c(1))
+    expect_error(
+      ArgumentCheck::finishArgCheck(argument_checker)
+    )
+
+    # ylim valid length
+    argument_checker <- ArgumentCheck::newArgCheck()
+    argument_checker <- .is_ylim_valid(argument_checker, c(1, 2))
+    ArgumentCheck::finishArgCheck(argument_checker)
+  }
+)
