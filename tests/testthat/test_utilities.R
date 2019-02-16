@@ -298,7 +298,11 @@ test_that(".is_bamfile_valid works as expected", {
   argument_checker <- ArgumentCheck::newArgCheck()
   argument_checker <- .is_bamfile_valid(
     argument_checker,
-    system.file("extdata", "fusion5267and11759reads.bam", package = "chimeraviz")
+    system.file(
+      "extdata",
+      "fusion5267and11759reads.bam",
+      package = "chimeraviz"
+    )
   )
   ArgumentCheck::finishArgCheck(argument_checker)
 
@@ -346,7 +350,11 @@ test_that(".is_bedgraphfile_valid works as expected", {
   argument_checker <- ArgumentCheck::newArgCheck()
   argument_checker <- .is_bedgraphfile_valid(
     argument_checker,
-    system.file("extdata", "fusion5267and11759reads.bedGraph", package = "chimeraviz")
+    system.file(
+      "extdata",
+      "fusion5267and11759reads.bedGraph",
+      package = "chimeraviz"
+    )
   )
   ArgumentCheck::finishArgCheck(argument_checker)
 
@@ -372,14 +380,22 @@ test_that(".is_either_bamfile_or_bedgraphfile_valid works as expected", {
   argument_checker <- .is_either_bamfile_or_bedgraphfile_valid(
     argument_checker,
     NULL,
-    system.file("extdata", "fusion5267and11759reads.bedGraph", package = "chimeraviz")
+    system.file(
+      "extdata",
+      "fusion5267and11759reads.bedGraph",
+      package = "chimeraviz"
+    )
   )
   ArgumentCheck::finishArgCheck(argument_checker)
 
   argument_checker <- ArgumentCheck::newArgCheck()
   argument_checker <- .is_either_bamfile_or_bedgraphfile_valid(
     argument_checker,
-    system.file("extdata", "fusion5267and11759reads.bam", package = "chimeraviz"),
+    system.file(
+      "extdata",
+      "fusion5267and11759reads.bam",
+      package = "chimeraviz"
+    ),
     NULL
   )
   ArgumentCheck::finishArgCheck(argument_checker)
@@ -389,8 +405,16 @@ test_that(".is_either_bamfile_or_bedgraphfile_valid works as expected", {
   argument_checker <- ArgumentCheck::newArgCheck()
   argument_checker <- .is_either_bamfile_or_bedgraphfile_valid(
     argument_checker,
-    system.file("extdata", "fusion5267and11759reads.bam", package = "chimeraviz"),
-    system.file("extdata", "fusion5267and11759reads.bedGraph", package = "chimeraviz")
+    system.file(
+      "extdata",
+      "fusion5267and11759reads.bam",
+      package = "chimeraviz"
+    ),
+    system.file(
+      "extdata",
+      "fusion5267and11759reads.bedGraph",
+      package = "chimeraviz"
+    )
   )
   expect_error(
     ArgumentCheck::finishArgCheck(argument_checker)
