@@ -377,7 +377,7 @@ test_that(".is_either_bamfile_or_bedgraphfile_valid works as expected", {
   # valid cases
 
   argument_checker <- ArgumentCheck::newArgCheck()
-  argument_checker <- .is_either_bamfile_or_bedgraphfile_valid(
+  argument_checker <- .is_either_bamfile_or_bedgraphfile_valid( # nolint
     argument_checker,
     NULL,
     system.file(
@@ -389,7 +389,7 @@ test_that(".is_either_bamfile_or_bedgraphfile_valid works as expected", {
   ArgumentCheck::finishArgCheck(argument_checker)
 
   argument_checker <- ArgumentCheck::newArgCheck()
-  argument_checker <- .is_either_bamfile_or_bedgraphfile_valid(
+  argument_checker <- .is_either_bamfile_or_bedgraphfile_valid( # nolint
     argument_checker,
     system.file(
       "extdata",
@@ -403,7 +403,7 @@ test_that(".is_either_bamfile_or_bedgraphfile_valid works as expected", {
   # error cases
 
   argument_checker <- ArgumentCheck::newArgCheck()
-  argument_checker <- .is_either_bamfile_or_bedgraphfile_valid(
+  argument_checker <- .is_either_bamfile_or_bedgraphfile_valid( # nolint
     argument_checker,
     system.file(
       "extdata",
@@ -421,7 +421,7 @@ test_that(".is_either_bamfile_or_bedgraphfile_valid works as expected", {
   )
 
   argument_checker <- ArgumentCheck::newArgCheck()
-  argument_checker <- .is_either_bamfile_or_bedgraphfile_valid(
+  argument_checker <- .is_either_bamfile_or_bedgraphfile_valid( # nolint
     argument_checker,
     NULL,
     NULL
