@@ -307,7 +307,7 @@ Or, alternatively:
 # Plot!
 plot_fusion(
  fusion = fusion,
- bamfile = bamfile5267,
+ bamfile = fusion5267and11759reads,
  edb = edb,
  non_ucsc = TRUE,
  reduce_transcripts = TRUE)
@@ -431,7 +431,7 @@ To collapse all transcripts into one, use the `reduce_transcripts` parameter:
 ```{r, message = FALSE, fig.height = 5, fig.width = 10, dev='png'}
 plot_fusion(
  fusion = fusion,
- bamfile = bamfile5267,
+ bamfile = fusion5267and11759reads,
  edb = edb,
  non_ucsc = TRUE,
  reduce_transcripts = TRUE)
