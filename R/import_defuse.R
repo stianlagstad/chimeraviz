@@ -37,7 +37,7 @@ import_defuse <- function (filename, genome_version, limit) {
 
   # Try to read the fusion report
   report <- withCallingHandlers({
-      col_types = c(
+      col_types <- c(
         "cluster_id" = "character",
         "splitr_sequence" = "character",
         "splitr_count" = "integer",
