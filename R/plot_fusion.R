@@ -397,7 +397,7 @@ plot_fusion_separate <- function(
       cex.title = .8,
       cex.axis = .6
     )
-  } else {
+  } else if (!is.null(bedgraphfile)) {
     # We're getting coverage data from a bedGraph file
     alignment_track <- DataTrack(
       range = bedgraphfile,
@@ -424,6 +424,8 @@ plot_fusion_separate <- function(
       lty.coverage = 1,
       lwd = 0.5
     )
+  } else {
+    # We're not going to plot coverage data
   }
 
   # Display parameters for highlight tracks
@@ -612,23 +614,27 @@ plot_fusion_separate <- function(
   Gviz::displayPars(gr_track_highlight_downstream) <-
     display_pars_highlight_tracks
 
-  # Highlight coverage tracks
+  if (exists("al_track")) {
 
-  al_track_highlight_upstream <- Gviz::HighlightTrack(
-    trackList = alignment_track,
-    start = highlight_start_upstream,
-    end = highlight_end_upstream,
-    chromosome = fusion@gene_upstream@chromosome)
-  Gviz::displayPars(al_track_highlight_upstream) <-
-    display_pars_highlight_tracks
+    # Highlight coverage tracks
 
-  al_track_highlight_downstream <- Gviz::HighlightTrack(
-    trackList = alignment_track,
-    start = highlight_start_downstream,
-    end = highlight_end_downstream,
-    chromosome = fusion@gene_downstream@chromosome)
-  Gviz::displayPars(al_track_highlight_downstream) <-
-    display_pars_highlight_tracks
+    al_track_highlight_upstream <- Gviz::HighlightTrack(
+      trackList = alignment_track,
+      start = highlight_start_upstream,
+      end = highlight_end_upstream,
+      chromosome = fusion@gene_upstream@chromosome)
+    Gviz::displayPars(al_track_highlight_upstream) <-
+      display_pars_highlight_tracks
+
+    al_track_highlight_downstream <- Gviz::HighlightTrack(
+      trackList = alignment_track,
+      start = highlight_start_downstream,
+      end = highlight_end_downstream,
+      chromosome = fusion@gene_downstream@chromosome)
+    Gviz::displayPars(al_track_highlight_downstream) <-
+      display_pars_highlight_tracks
+
+  }
 
   # Do some plotting
 
@@ -670,30 +676,59 @@ plot_fusion_separate <- function(
     offset <- 0
   }
 
-  # Open row 1, column 1
-  grid::pushViewport(grid::viewport(layout.pos.row = 1, layout.pos.col = 1))
-  # Plot transcriptsA and coverage with highlight
-  res1 <- Gviz::plotTracks(
-    # without this gviz create cluster_X entries in the GeneRegionTrack
-    collapse = FALSE,
-    c(
-      ideogram_track_downstream,
-      gr_track_highlight_upstream,
-      al_track_highlight_upstream,
-      axis_track
-    ),
-    # 10k added so that we can see all transcript names
-    from = min(start(tr_upstream_track)) - offset - 10000,
-    # 10k added so that we can see all transcript names
-    to = max(end(tr_upstream_track)) + offset + 10000,
-    sizes = c(1, transcripts_row_height, 2, .5),
-    add = TRUE,
-    background.title = "transparent",
-    chromosome = rep(fusion@gene_upstream@chromosome, 4),
-    # Plot reverse if gene is at minus strand
-    reverseStrand = gene_upstream_at_minus_strand)
-  # Close row 1, column 1
-  grid::popViewport(1)
+  if (!exists("al_track")) {
+
+    # Open row 1, column 1
+    grid::pushViewport(grid::viewport(layout.pos.row = 1, layout.pos.col = 1))
+    # Plot transcriptsA and coverage with highlight
+    res1 <- Gviz::plotTracks(
+      # without this gviz create cluster_X entries in the GeneRegionTrack
+      collapse = FALSE,
+      c(
+        ideogram_track_downstream,
+        gr_track_highlight_upstream
+      ),
+      # 10k added so that we can see all transcript names
+      from = min(start(tr_upstream_track)) - offset - 10000,
+      # 10k added so that we can see all transcript names
+      to = max(end(tr_upstream_track)) + offset + 10000,
+      sizes = c(1, transcripts_row_height),
+      add = TRUE,
+      background.title = "transparent",
+      chromosome = rep(fusion@gene_upstream@chromosome, 2),
+      # Plot reverse if gene is at minus strand
+      reverseStrand = gene_upstream_at_minus_strand)
+    # Close row 1, column 1
+    grid::popViewport(1)
+
+  } else {
+
+    # Open row 1, column 1
+    grid::pushViewport(grid::viewport(layout.pos.row = 1, layout.pos.col = 1))
+    # Plot transcriptsA and coverage with highlight
+    res1 <- Gviz::plotTracks(
+      # without this gviz create cluster_X entries in the GeneRegionTrack
+      collapse = FALSE,
+      c(
+        ideogram_track_downstream,
+        gr_track_highlight_upstream,
+        al_track_highlight_upstream,
+        axis_track
+      ),
+      # 10k added so that we can see all transcript names
+      from = min(start(tr_upstream_track)) - offset - 10000,
+      # 10k added so that we can see all transcript names
+      to = max(end(tr_upstream_track)) + offset + 10000,
+      sizes = c(1, transcripts_row_height, 2, .5),
+      add = TRUE,
+      background.title = "transparent",
+      chromosome = rep(fusion@gene_upstream@chromosome, 4),
+      # Plot reverse if gene is at minus strand
+      reverseStrand = gene_upstream_at_minus_strand)
+    # Close row 1, column 1
+    grid::popViewport(1)
+
+  }
 
   # If the range for the plot is too short, then GenomeAxisTrack will show
   # ticks too close to each other. This doesn't look nice. A way to solve it is
@@ -705,30 +740,59 @@ plot_fusion_separate <- function(
     offset <- 0
   }
 
-  # Open row 1, column 2
-  grid::pushViewport(grid::viewport(layout.pos.row = 1, layout.pos.col = 2))
-  # Plot transcriptsB and coverage with highlight
-  res2 <- Gviz::plotTracks(
-    # without this gviz create cluster_X entries in the GeneRegionTrack
-    collapse = FALSE,
-    c(
-      ideogram_track_downstream,
-      gr_track_highlight_downstream,
-      al_track_highlight_downstream,
-      axis_track
-    ),
-    # 10k added so that we can see all transcript names
-    from = min(start(tr_downstream_track)) - offset - 10000,
-    # 10k added so that we can see all transcript names
-    to = max(end(tr_downstream_track)) + offset + 10000,
-    sizes = c(1, transcripts_row_height, 2, .5),
-    add = TRUE,
-    background.title = "transparent",
-    chromosome = rep(fusion@gene_downstream@chromosome, 4),
-    # Plot reverse if gene is at minus strand
-    reverseStrand = gene_downstream_at_minus_strand)
-  # Close row 1, column 2
-  grid::popViewport(1)
+  if (!exists("al_track")) {
+
+    # Open row 1, column 2
+    grid::pushViewport(grid::viewport(layout.pos.row = 1, layout.pos.col = 2))
+    # Plot transcriptsB and coverage with highlight
+    res2 <- Gviz::plotTracks(
+      # without this gviz create cluster_X entries in the GeneRegionTrack
+      collapse = FALSE,
+      c(
+        ideogram_track_downstream,
+        gr_track_highlight_downstream
+      ),
+      # 10k added so that we can see all transcript names
+      from = min(start(tr_downstream_track)) - offset - 10000,
+      # 10k added so that we can see all transcript names
+      to = max(end(tr_downstream_track)) + offset + 10000,
+      sizes = c(1, transcripts_row_height),
+      add = TRUE,
+      background.title = "transparent",
+      chromosome = rep(fusion@gene_downstream@chromosome, 2),
+      # Plot reverse if gene is at minus strand
+      reverseStrand = gene_downstream_at_minus_strand)
+    # Close row 1, column 2
+    grid::popViewport(1)
+
+  } else {
+
+    # Open row 1, column 2
+    grid::pushViewport(grid::viewport(layout.pos.row = 1, layout.pos.col = 2))
+    # Plot transcriptsB and coverage with highlight
+    res2 <- Gviz::plotTracks(
+      # without this gviz create cluster_X entries in the GeneRegionTrack
+      collapse = FALSE,
+      c(
+        ideogram_track_downstream,
+        gr_track_highlight_downstream,
+        al_track_highlight_downstream,
+        axis_track
+      ),
+      # 10k added so that we can see all transcript names
+      from = min(start(tr_downstream_track)) - offset - 10000,
+      # 10k added so that we can see all transcript names
+      to = max(end(tr_downstream_track)) + offset + 10000,
+      sizes = c(1, transcripts_row_height, 2, .5),
+      add = TRUE,
+      background.title = "transparent",
+      chromosome = rep(fusion@gene_downstream@chromosome, 4),
+      # Plot reverse if gene is at minus strand
+      reverseStrand = gene_downstream_at_minus_strand)
+    # Close row 1, column 2
+    grid::popViewport(1)
+
+  }
 
   # Draw bezier curve if we're plotting exon boundary transcripts
 
@@ -1078,7 +1142,7 @@ plot_fusion_together <- function(
       cex.title = .8,
       cex.axis = .6
     )
-  } else {
+  } else if (!is.null(bedgraphfile)) {
     # We're getting coverage data from a bedGraph file
     al_track <- DataTrack(
       range = bedgraphfile,
@@ -1106,6 +1170,8 @@ plot_fusion_together <- function(
       lty.coverage = 1,
       lwd = 0.5
     )
+  } else {
+    # We're not going to plot coverage data
   }
 
 
@@ -1298,7 +1364,6 @@ plot_fusion_together <- function(
   Gviz::displayPars(tr_track_both) <- interestcolor
 
   # Highlight transcript track
-
   gr_track_highlight <- Gviz::HighlightTrack(
     trackList = tr_track_both,
     start = c(highlight_start_upstream, highlight_start_downstream),
@@ -1306,14 +1371,17 @@ plot_fusion_together <- function(
     chromosome = fusion@gene_upstream@chromosome)
   Gviz::displayPars(gr_track_highlight) <- display_pars_highlight_tracks
 
-  # Highlight coverage track
+  if (exists("al_track")) {
 
-  al_track_highlight <- Gviz::HighlightTrack(
-    trackList = al_track,
-    start = c(highlight_start_upstream, highlight_start_downstream),
-    end = c(highlight_end_upstream, highlight_end_downstream),
-    chromosome = fusion@gene_upstream@chromosome)
-  Gviz::displayPars(al_track_highlight) <- display_pars_highlight_tracks
+    # Highlight coverage track
+    al_track_highlight <- Gviz::HighlightTrack(
+      trackList = al_track,
+      start = c(highlight_start_upstream, highlight_start_downstream),
+      end = c(highlight_end_upstream, highlight_end_downstream),
+      chromosome = fusion@gene_upstream@chromosome)
+    Gviz::displayPars(al_track_highlight) <- display_pars_highlight_tracks
+
+  }
 
   # Do some plotting
 
@@ -1346,21 +1414,43 @@ plot_fusion_together <- function(
     offset <- 0
   }
 
-  # Plot transcripts and coverage with highlight
-  res <- Gviz::plotTracks(
-    # without this gviz create cluster_X entries in the GeneRegionTrack
-    collapse = FALSE,
-    c(ideogram_track, gr_track_highlight, al_track_highlight, axis_track),
-    # 10k added so that we can see all transcript names
-    from = min(start(tr_track_both)) - offset - 10000,
-    # 10k added so that we can see all transcript names
-    to = max(end(tr_track_both)) + offset + 10000,
-    sizes = c(1, transcripts_row_height, 2, 1),
-    add = TRUE,
-    background.title = "transparent",
-    chromosome = rep(fusion@gene_upstream@chromosome, 4),
-    # Plot reverse if gene is at minus strand
-    reverseStrand = gene_upstream_at_minus_strand)
+  if (!exists("al_track")) {
+
+    # Plot transcripts with highlight
+    res <- Gviz::plotTracks(
+      # without this gviz create cluster_X entries in the GeneRegionTrack
+      collapse = FALSE,
+      c(ideogram_track, gr_track_highlight),
+      # 10k added so that we can see all transcript names
+      from = min(start(tr_track_both)) - offset - 10000,
+      # 10k added so that we can see all transcript names
+      to = max(end(tr_track_both)) + offset + 10000,
+      sizes = c(1, transcripts_row_height, 2, 1),
+      add = TRUE,
+      background.title = "transparent",
+      chromosome = rep(fusion@gene_upstream@chromosome, 2),
+      # Plot reverse if gene is at minus strand
+      reverseStrand = gene_upstream_at_minus_strand)
+
+  } else {
+
+    # Plot transcripts and coverage with highlight
+    res <- Gviz::plotTracks(
+      # without this gviz create cluster_X entries in the GeneRegionTrack
+      collapse = FALSE,
+      c(ideogram_track, gr_track_highlight, axis_track),
+      # 10k added so that we can see all transcript names
+      from = min(start(tr_track_both)) - offset - 10000,
+      # 10k added so that we can see all transcript names
+      to = max(end(tr_track_both)) + offset + 10000,
+      sizes = c(1, transcripts_row_height, 1),
+      add = TRUE,
+      background.title = "transparent",
+      chromosome = rep(fusion@gene_upstream@chromosome, 4),
+      # Plot reverse if gene is at minus strand
+      reverseStrand = gene_upstream_at_minus_strand)
+
+  }
 
   # Draw bezier curve if we're plotting exon boundary transcripts
 
@@ -1661,7 +1751,7 @@ import_function_non_ucsc <- function (file, selection) {
   # Check parameters
   argument_checker <- .is_fusion_valid(argument_checker, fusion)
   argument_checker <- .is_edb_valid(argument_checker, edb, fusion)
-  argument_checker <- .is_either_bamfile_or_bedgraphfile_valid(
+  argument_checker <- .is_bamfile_bedgraphfile_valid(
     argument_checker,
     bamfile,
     bedgraphfile

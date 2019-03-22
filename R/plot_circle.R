@@ -296,7 +296,8 @@ plot_circle <- function(fusion_list) {
 
   # Create link data in the format RCircos requires
   link_data <- .fusions_to_link_data(fusion_list)
-  # Make sure the ordering is correct. Ref https://github.com/stianlagstad/chimeraviz/issues/52
+  # Make sure the ordering is correct.
+  # Ref https://github.com/stianlagstad/chimeraviz/issues/52
   multi.mixedorder <- function(..., na.last = TRUE, decreasing = FALSE) {
     do.call(
       order,
@@ -304,10 +305,10 @@ plot_circle <- function(fusion_list) {
         lapply(
           list(...),
           function(l) {
-            if(is.character(l)) {
+            if (is.character(l)) {
               factor(
                 l,
-                levels=gtools::mixedsort(unique(l))
+                levels = gtools::mixedsort(unique(l))
               )
             } else {
               l
