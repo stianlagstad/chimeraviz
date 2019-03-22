@@ -373,11 +373,11 @@ test_that(".is_bedgraphfile_valid works as expected", {
   )
 })
 
-test_that(".is_either_bamfile_or_bedgraphfile_valid works as expected", {
+test_that(".is_bamfile_bedgraphfile_valid works as expected", {
   # valid cases
 
   argument_checker <- ArgumentCheck::newArgCheck()
-  argument_checker <- .is_either_bamfile_or_bedgraphfile_valid( # nolint
+  argument_checker <- .is_bamfile_bedgraphfile_valid(
     argument_checker,
     NULL,
     system.file(
@@ -389,13 +389,21 @@ test_that(".is_either_bamfile_or_bedgraphfile_valid works as expected", {
   ArgumentCheck::finishArgCheck(argument_checker)
 
   argument_checker <- ArgumentCheck::newArgCheck()
-  argument_checker <- .is_either_bamfile_or_bedgraphfile_valid( # nolint
+  argument_checker <- .is_bamfile_bedgraphfile_valid(
     argument_checker,
     system.file(
       "extdata",
       "fusion5267and11759reads.bam",
       package = "chimeraviz"
     ),
+    NULL
+  )
+  ArgumentCheck::finishArgCheck(argument_checker)
+
+  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- .is_bamfile_bedgraphfile_valid(
+    argument_checker,
+    NULL,
     NULL
   )
   ArgumentCheck::finishArgCheck(argument_checker)
@@ -403,7 +411,7 @@ test_that(".is_either_bamfile_or_bedgraphfile_valid works as expected", {
   # error cases
 
   argument_checker <- ArgumentCheck::newArgCheck()
-  argument_checker <- .is_either_bamfile_or_bedgraphfile_valid( # nolint
+  argument_checker <- .is_bamfile_bedgraphfile_valid(
     argument_checker,
     system.file(
       "extdata",
@@ -415,16 +423,6 @@ test_that(".is_either_bamfile_or_bedgraphfile_valid works as expected", {
       "fusion5267and11759reads.bedGraph",
       package = "chimeraviz"
     )
-  )
-  expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
-  )
-
-  argument_checker <- ArgumentCheck::newArgCheck()
-  argument_checker <- .is_either_bamfile_or_bedgraphfile_valid( # nolint
-    argument_checker,
-    NULL,
-    NULL
   )
   expect_error(
     ArgumentCheck::finishArgCheck(argument_checker)

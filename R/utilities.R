@@ -1158,7 +1158,7 @@ down_shift <- function(transcript) {
   argument_checker
 }
 
-.is_either_bamfile_or_bedgraphfile_valid <- function(
+.is_bamfile_bedgraphfile_valid <- function(
   argument_checker,
   bamfile,
   bedgraphfile) {
@@ -1171,10 +1171,7 @@ down_shift <- function(transcript) {
       argcheck = argument_checker
     )
   } else if (!bamfile_given && !bedgraphfile_given) {
-    ArgumentCheck::addError(
-      msg = "Either 'bamfile' or 'bedgraphfile' must be given",
-      argcheck = argument_checker
-    )
+    # It is OK to not give any of them
   } else if (bamfile_given) {
     argument_checker <- .is_bamfile_valid(argument_checker, bamfile)
   } else {
