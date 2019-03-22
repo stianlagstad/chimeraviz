@@ -1,3 +1,10 @@
+CHANGES IN VERSION 1.9.5
+-------------------------
+
+CHANGES
+
+    o Allow calling plot_fusion without bam/bedfile. Ref https://github.com/stianlagstad/chimeraviz/issues/61
+
 CHANGES IN VERSION 1.9.1
 -------------------------
 
