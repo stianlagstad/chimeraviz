@@ -15,6 +15,7 @@ Previous citations:
 - [Clinker: visualizing fusion genes detected in RNA-seq data](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6065480/)
 - [Integrative analysis of DNA and RNA sequencing data from cancer](https://www.duo.uio.no/handle/10852/63165)
 - [Clinicopathologic Features of CIC-NUTM1 Sarcomas, a New Molecular Variant of the Family of CIC-Fused Sarcomas](https://journals.lww.com/ajsp/Fulltext/2019/02000/Clinicopathologic_Features_of_CIC_NUTM1_Sarcomas,.15.aspx)
+- [Clinicopathologic and Molecular Features of a Series of 41 Biphenotypic Sinonasal Sarcomas Expanding Their Molecular Spectrum](https://www.ingentaconnect.com/content/wk/ajsp/2019/00000043/00000006/art00003)
 
 # Demo
 
