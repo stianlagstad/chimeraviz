@@ -942,13 +942,13 @@ select_transcript <- function(
   fusion,
   transcripts_upstream,
   transcripts_downstream) {
-  if (!any(start(transcripts_upstream) < fusion@gene_upstream@breakpoint) &&
+  if (!any(start(transcripts_upstream) < fusion@gene_upstream@breakpoint) &
       any(fusion@gene_upstream@breakpoint < end(transcripts_upstream))) {
     stop(paste0(
       "None of the transcripts given for gene A has the fusion breakpoint ",
       "within them. This plot cannot be created with the given transcripts."))
   }
-  if (!any(start(transcripts_downstream) < fusion@gene_downstream@breakpoint) &&
+  if (!any(start(transcripts_downstream) < fusion@gene_downstream@breakpoint) &
       any(fusion@gene_downstream@breakpoint < end(transcripts_downstream))) {
     stop(paste0(
       "None of the transcripts given for gene B has the fusion breakpoint ",
