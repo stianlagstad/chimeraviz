@@ -942,17 +942,49 @@ select_transcript <- function(
   fusion,
   transcripts_upstream,
   transcripts_downstream) {
-  if (!any(start(transcripts_upstream) < fusion@gene_upstream@breakpoint) &
-      any(fusion@gene_upstream@breakpoint < end(transcripts_upstream))) {
+  if (class(transcripts_upstream) == "CompressedGRangesList") {
+    if (!any(start(transcripts_upstream)@unlistData <
+             fusion@gene_upstream@breakpoint) &
+        any(fusion@gene_upstream@breakpoint <
+            end(transcripts_upstream)@unlistData)) {
+      stop(paste0(
+        "None of the transcripts given for gene A has the fusion breakpoint ",
+        "within them. This plot cannot be created with the given transcripts."))
+    }
+  } else if (class(transcripts_upstream) == "GRanges") {
+    if (!any(start(transcripts_upstream) <
+             fusion@gene_upstream@breakpoint) &
+        any(fusion@gene_upstream@breakpoint <
+            end(transcripts_upstream))) {
+      stop(paste0(
+        "None of the transcripts given for gene A has the fusion breakpoint ",
+        "within them. This plot cannot be created with the given transcripts."))
+    }
+  } else {
     stop(paste0(
-      "None of the transcripts given for gene A has the fusion breakpoint ",
-      "within them. This plot cannot be created with the given transcripts."))
+      "Unknown input to .check_that_breakpoints_are_within_transcripts."))
   }
-  if (!any(start(transcripts_downstream) < fusion@gene_downstream@breakpoint) &
-      any(fusion@gene_downstream@breakpoint < end(transcripts_downstream))) {
+  if (class(transcripts_downstream) == "CompressedGRangesList") {
+    if (!any(start(transcripts_downstream)@unlistData <
+             fusion@gene_downstream@breakpoint) &
+        any(fusion@gene_downstream@breakpoint <
+            end(transcripts_downstream)@unlistData)) {
+      stop(paste0(
+        "None of the transcripts given for gene B has the fusion breakpoint ",
+        "within them. This plot cannot be created with the given transcripts."))
+    }
+  } else if (class(transcripts_downstream) == "GRanges") {
+    if (!any(start(transcripts_downstream) <
+             fusion@gene_downstream@breakpoint) &
+        any(fusion@gene_downstream@breakpoint <
+            end(transcripts_downstream))) {
+      stop(paste0(
+        "None of the transcripts given for gene B has the fusion breakpoint ",
+        "within them. This plot cannot be created with the given transcripts."))
+    }
+  } else {
     stop(paste0(
-      "None of the transcripts given for gene B has the fusion breakpoint ",
-      "within them. This plot cannot be created with the given transcripts."))
+      "Unknown input to .check_that_breakpoints_are_within_transcripts."))
   }
 }
 
