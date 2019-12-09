@@ -18,6 +18,7 @@ Previous citations:
 - [Clinicopathologic and Molecular Features of a Series of 41 Biphenotypic Sinonasal Sarcomas Expanding Their Molecular Spectrum](https://www.ingentaconnect.com/content/wk/ajsp/2019/00000043/00000006/art00003)
 - [Genomic Profiling Of Primary Histiocytic Sarcoma Reveals Two Molecular Subgroups](http://www.haematologica.org/content/early/2019/08/19/haematol.2019.230375.abstract)
 - [Using R and Bioconductor in Clinical Genomics and Transcriptomics](https://www.ncbi.nlm.nih.gov/pubmed/31605800)
+- [annoFuse: an R Package to annotate and prioritize putative oncogenic RNA fusions](https://www.biorxiv.org/content/10.1101/839738v1.abstract)
 
 # Demo
 
