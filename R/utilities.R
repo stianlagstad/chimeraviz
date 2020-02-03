@@ -289,7 +289,7 @@ get_ensembl_ids <- function(fusion) {
 #'   edb,
 #'   filter = list(
 #'     AnnotationFilter::GeneIdFilter(
-#'       list(
+#'       c(
 #'         partner_gene_ensembl_id(upstream_partner_gene(fusion)),
 #'         partner_gene_ensembl_id(downstream_partner_gene(fusion))))),
 #'   columns = c(
@@ -430,7 +430,7 @@ split_on_utr_and_add_feature <- function(gr) {
 #'   edb,
 #'   filter = list(
 #'     AnnotationFilter::GeneIdFilter(
-#'       list(
+#'       c(
 #'         partner_gene_ensembl_id(upstream_partner_gene(fusion)),
 #'         partner_gene_ensembl_id(downstream_partner_gene(fusion))))),
 #'   columns = c(
@@ -607,7 +607,7 @@ get_transcripts_ensembl_db <- function(fusion, edb) {
     edb,
     filter = list(
       AnnotationFilter::GeneIdFilter(
-        list(
+        c(
           fusion@gene_upstream@ensembl_id,
           fusion@gene_downstream@ensembl_id))),
     columns = c(
