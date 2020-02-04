@@ -3,6 +3,13 @@ language: r
 sudo: false
 cache: packages
 
+addons:
+  apt:
+    sources:
+    - sourceline: 'ppa:opencpu/imagemagick'
+    packages:
+    - libmagick++-dev
+
 r:
   - bioc-devel
 
