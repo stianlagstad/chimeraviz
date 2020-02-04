@@ -57,7 +57,8 @@ Imports:
     dplyr,
     BiocStyle,
     ArgumentCheck,
-    gtools
+    gtools,
+    magick
 Depends:
     Biostrings,
     GenomicRanges,
