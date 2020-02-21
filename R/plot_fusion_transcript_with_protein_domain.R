@@ -474,12 +474,12 @@ plot_fusion_transcript_with_protein_domain <- function(
 
   # Go through all protein domains to classify them.
   # First extend the proteinDataGeneA and proteinDataGeneB data frames:
-  protein_data_gene_upstream$protein_domain_location <- "none"
-  protein_data_gene_upstream$plot_start <- "-"
-  protein_data_gene_upstream$plot_end <- "-"
-  protein_data_gene_downstream$protein_domain_location <- "none"
-  protein_data_gene_downstream$plot_start <- "-"
-  protein_data_gene_downstream$plot_end <- "-"
+  protein_data_gene_upstream$protein_domain_location <- NA_character_
+  protein_data_gene_upstream$plot_start <- NA_integer_
+  protein_data_gene_upstream$plot_end <- NA_integer_
+  protein_data_gene_downstream$protein_domain_location <- NA_character_
+  protein_data_gene_downstream$plot_start <- NA_integer_
+  protein_data_gene_downstream$plot_end <- NA_integer_
   # a)
   for (i in 1:nrow(protein_data_gene_upstream)) {
     if (

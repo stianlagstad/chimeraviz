@@ -289,7 +289,7 @@ get_ensembl_ids <- function(fusion) {
 #'   edb,
 #'   filter = list(
 #'     AnnotationFilter::GeneIdFilter(
-#'       list(
+#'       c(
 #'         partner_gene_ensembl_id(upstream_partner_gene(fusion)),
 #'         partner_gene_ensembl_id(downstream_partner_gene(fusion))))),
 #'   columns = c(
@@ -430,7 +430,7 @@ split_on_utr_and_add_feature <- function(gr) {
 #'   edb,
 #'   filter = list(
 #'     AnnotationFilter::GeneIdFilter(
-#'       list(
+#'       c(
 #'         partner_gene_ensembl_id(upstream_partner_gene(fusion)),
 #'         partner_gene_ensembl_id(downstream_partner_gene(fusion))))),
 #'   columns = c(
@@ -607,7 +607,7 @@ get_transcripts_ensembl_db <- function(fusion, edb) {
     edb,
     filter = list(
       AnnotationFilter::GeneIdFilter(
-        list(
+        c(
           fusion@gene_upstream@ensembl_id,
           fusion@gene_downstream@ensembl_id))),
     columns = c(
@@ -942,17 +942,49 @@ select_transcript <- function(
   fusion,
   transcripts_upstream,
   transcripts_downstream) {
-  if (!any(start(transcripts_upstream) < fusion@gene_upstream@breakpoint) &&
-      any(fusion@gene_upstream@breakpoint < end(transcripts_upstream))) {
+  if (class(transcripts_upstream) == "CompressedGRangesList") {
+    if (!any(start(transcripts_upstream)@unlistData <
+             fusion@gene_upstream@breakpoint) &
+        any(fusion@gene_upstream@breakpoint <
+            end(transcripts_upstream)@unlistData)) {
+      stop(paste0(
+        "None of the transcripts given for gene A has the fusion breakpoint ",
+        "within them. This plot cannot be created with the given transcripts."))
+    }
+  } else if (class(transcripts_upstream) == "GRanges") {
+    if (!any(start(transcripts_upstream) <
+             fusion@gene_upstream@breakpoint) &
+        any(fusion@gene_upstream@breakpoint <
+            end(transcripts_upstream))) {
+      stop(paste0(
+        "None of the transcripts given for gene A has the fusion breakpoint ",
+        "within them. This plot cannot be created with the given transcripts."))
+    }
+  } else {
     stop(paste0(
-      "None of the transcripts given for gene A has the fusion breakpoint ",
-      "within them. This plot cannot be created with the given transcripts."))
+      "Unknown input to .check_that_breakpoints_are_within_transcripts."))
   }
-  if (!any(start(transcripts_downstream) < fusion@gene_downstream@breakpoint) &&
-      any(fusion@gene_downstream@breakpoint < end(transcripts_downstream))) {
+  if (class(transcripts_downstream) == "CompressedGRangesList") {
+    if (!any(start(transcripts_downstream)@unlistData <
+             fusion@gene_downstream@breakpoint) &
+        any(fusion@gene_downstream@breakpoint <
+            end(transcripts_downstream)@unlistData)) {
+      stop(paste0(
+        "None of the transcripts given for gene B has the fusion breakpoint ",
+        "within them. This plot cannot be created with the given transcripts."))
+    }
+  } else if (class(transcripts_downstream) == "GRanges") {
+    if (!any(start(transcripts_downstream) <
+             fusion@gene_downstream@breakpoint) &
+        any(fusion@gene_downstream@breakpoint <
+            end(transcripts_downstream))) {
+      stop(paste0(
+        "None of the transcripts given for gene B has the fusion breakpoint ",
+        "within them. This plot cannot be created with the given transcripts."))
+    }
+  } else {
     stop(paste0(
-      "None of the transcripts given for gene B has the fusion breakpoint ",
-      "within them. This plot cannot be created with the given transcripts."))
+      "Unknown input to .check_that_breakpoints_are_within_transcripts."))
   }
 }
 
@@ -1158,7 +1190,7 @@ down_shift <- function(transcript) {
   argument_checker
 }
 
-.is_either_bamfile_or_bedgraphfile_valid <- function(
+.is_bamfile_bedgraphfile_valid <- function(
   argument_checker,
   bamfile,
   bedgraphfile) {
@@ -1171,10 +1203,7 @@ down_shift <- function(transcript) {
       argcheck = argument_checker
     )
   } else if (!bamfile_given && !bedgraphfile_given) {
-    ArgumentCheck::addError(
-      msg = "Either 'bamfile' or 'bedgraphfile' must be given",
-      argcheck = argument_checker
-    )
+    # It is OK to not give any of them
   } else if (bamfile_given) {
     argument_checker <- .is_bamfile_valid(argument_checker, bamfile)
   } else {

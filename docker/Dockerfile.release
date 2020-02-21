@@ -11,6 +11,5 @@ RUN R -e 'install.packages("testthat")'
 RUN R -e 'install.packages("lintr")'
 RUN R -e 'install.packages("gtools")'
 
-RUN R -e 'source("https://bioconductor.org/biocLite.R");biocLite("org.Hs.eg.db")'
-RUN R -e 'source("https://bioconductor.org/biocLite.R");biocLite("org.Mm.eg.db")'
-
+RUN R -e 'BiocManager::install("org.Hs.eg.db")'
+RUN R -e 'BiocManager::install("org.Mm.eg.db")'

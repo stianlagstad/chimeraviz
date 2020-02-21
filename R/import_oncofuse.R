@@ -110,11 +110,13 @@ import_oncofuse <- function (filename, genome_version, limit) {
 
     # Breakpoints
     genomics <- report[[i, "GENOMIC"]]
-    genomicVals <- unlist(strsplit(genomics, ">"))
-    chromosome_upstream <- unlist(strsplit(genomicVals[1], ":"))[1]
-    breakpoint_upstream <- as.numeric(unlist(strsplit(genomicVals[1], ":"))[2])
-    chromosome_downstream <- unlist(strsplit(genomicVals[2], ":"))[1]
-    breakpoint_downstream <- as.numeric(unlist(strsplit(genomicVals[2], ":"))[2])
+    genomic_vals <- unlist(strsplit(genomics, ">"))
+    chromosome_upstream <- unlist(strsplit(genomic_vals[1], ":"))[1]
+    breakpoint_upstream <- as.numeric(unlist(strsplit(genomic_vals[1], ":"))[2])
+    chromosome_downstream <- unlist(strsplit(genomic_vals[2], ":"))[1]
+    breakpoint_downstream <- as.numeric(
+      unlist(strsplit(genomic_vals[2], ":"))[2]
+    )
 
     # Gene names
     name_upstream <- report[[i, "5_FPG_GENE_NAME"]]

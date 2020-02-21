@@ -127,8 +127,8 @@ import_ericscript <- function (filename, genome_version, limit) {
     strand_downstream <- report[[i, "strand2"]]
 
     # Number of supporting reads
-    split_reads_count <- report[[i, "crossingreads"]]
-    spanning_reads_count <- report[[i, "spanningreads"]]
+    split_reads_count <- report[[i, "spanningreads"]]
+    spanning_reads_count <- report[[i, "crossingreads"]]
 
     # Get the fusion sequence
     # EricScript outputs this as sequencebeforejunctionSEQUENCEAFTERJUNCTION, so
