@@ -109,6 +109,19 @@ import_starfusion <- function (filename, genome_version, limit) {
     fusion_tool_specific_data[["FFPM"]] <-
       report[[i, "FFPM"]]
 
+    # Optional extra fields:
+    if(!is.null(report[[i, "PROT_FUSION_TYPE"]])) {
+      fusion_tool_specific_data[["PROT_FUSION_TYPE"]] <- report[[i, "PROT_FUSION_TYPE"]]
+      if (report[[i, "PROT_FUSION_TYPE"]] == 'INFRAME') {
+        inframe <- TRUE
+      } else if (report[[i, "PROT_FUSION_TYPE"]] == 'FRAMESHIFT') {
+        inframe <- FALSE
+      }
+    }
+    if(!is.null(report[[i, "annots"]])) {
+      fusion_tool_specific_data[["annots"]] <- report[[i, "annots"]]
+    }
+
     # id for this fusion
     id <- as.character(i)
 
@@ -133,9 +146,18 @@ import_starfusion <- function (filename, genome_version, limit) {
     split_reads_count <- report[[i, "JunctionReadCount"]]
     spanning_reads_count <- report[[i, "SpanningFragCount"]]
 
-    # STAR-Fusion doesn't provide the fusion sequence
-    junction_sequence_upstream <- Biostrings::DNAString()
-    junction_sequence_downstream <- Biostrings::DNAString()
+    # Fusion sequence. Ref https://github.com/stianlagstad/chimeraviz/pull/23
+    if(!is.null(report[[i, "FUSION_CDS"]])) {
+      junction_sequence_upstream <- Biostrings::DNAString(
+        gsub("[A-Z]+$", "", report[[i, "FUSION_CDS"]])
+      )
+      junction_sequence_downstream <- Biostrings::DNAString(
+        gsub("^[a-z]+", "", report[[i, "FUSION_CDS"]])
+      )
+    } else {
+      junction_sequence_upstream <- Biostrings::DNAString()
+      junction_sequence_downstream <- Biostrings::DNAString()
+    }
 
     # Gene names
     gene_names_1 <- unlist(strsplit(report[[i, "LeftGene"]], split = "\\^"))
