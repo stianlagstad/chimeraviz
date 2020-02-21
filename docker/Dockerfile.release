@@ -1,15 +1,29 @@
-from bioconductor/release_core2
+FROM bioconductor/bioconductor_docker:RELEASE_3_10
+# Documentation: https://github.com/Bioconductor/bioconductor_docker
 
-RUN R -e 'install.packages("devtools")'
-RUN R -e 'install.packages("data.table")'
-RUN R -e 'install.packages("roxygen2")'
-RUN R -e 'install.packages("RCircos")'
-RUN R -e 'install.packages("DT")'
-RUN R -e 'install.packages("dplyr")'
+# Install dependencies
+## CRAN
 RUN R -e 'install.packages("ArgumentCheck")'
-RUN R -e 'install.packages("testthat")'
-RUN R -e 'install.packages("lintr")'
+RUN R -e 'install.packages("DT")'
+RUN R -e 'install.packages("RCircos")'
+RUN R -e 'install.packages("data.table")'
+RUN R -e 'install.packages("devtools")'
+RUN R -e 'install.packages("dplyr")'
 RUN R -e 'install.packages("gtools")'
-
+RUN R -e 'install.packages("lintr")'
+RUN R -e 'install.packages("magick")'
+RUN R -e 'install.packages("rmarkdown")'
+RUN R -e 'install.packages("roxygen2")'
+RUN R -e 'install.packages("testthat")'
+## BioConductor
+RUN R -e 'BiocManager::install("AnnotationFilter")'
+RUN R -e 'BiocManager::install("BiocStyle")'
+RUN R -e 'BiocManager::install("Biostrings")'
+RUN R -e 'BiocManager::install("ensembldb")'
+RUN R -e 'BiocManager::install("GenomicRanges")'
+RUN R -e 'BiocManager::install("graph")'
+RUN R -e 'BiocManager::install("Gviz")'
 RUN R -e 'BiocManager::install("org.Hs.eg.db")'
 RUN R -e 'BiocManager::install("org.Mm.eg.db")'
+RUN R -e 'BiocManager::install("Rgraphviz")'
+
