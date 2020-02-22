@@ -4,8 +4,13 @@
 \alias{plot_fusion_transcript}
 \title{Plot possible fusion transcripts based on annotation.}
 \usage{
-plot_fusion_transcript(fusion, edb = NULL, bamfile = NULL,
-  which_transcripts = "exonBoundary", bedgraphfile = NULL)
+plot_fusion_transcript(
+  fusion,
+  edb = NULL,
+  bamfile = NULL,
+  which_transcripts = "exonBoundary",
+  bedgraphfile = NULL
+)
 }
 \arguments{
 \item{fusion}{The Fusion object to plot.}

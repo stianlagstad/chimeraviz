@@ -4,8 +4,12 @@
 \alias{plot_fusion_transcripts_graph}
 \title{Graph plot of possible fusion transcripts.}
 \usage{
-plot_fusion_transcripts_graph(fusion, edb = NULL,
-  which_transcripts = "exonBoundary", rankdir = "TB")
+plot_fusion_transcripts_graph(
+  fusion,
+  edb = NULL,
+  which_transcripts = "exonBoundary",
+  rankdir = "TB"
+)
 }
 \arguments{
 \item{fusion}{The Fusion object to plot.}

@@ -4,8 +4,13 @@
 \alias{fetch_reads_from_fastq}
 \title{Fetch reads from fastq files}
 \usage{
-fetch_reads_from_fastq(reads, fastq_file_in1, fastq_file_in2,
-  fastq_file_out1, fastq_file_out2)
+fetch_reads_from_fastq(
+  reads,
+  fastq_file_in1,
+  fastq_file_in2,
+  fastq_file_out1,
+  fastq_file_out2
+)
 }
 \arguments{
 \item{reads}{List of read IDs that is to be fetched.}

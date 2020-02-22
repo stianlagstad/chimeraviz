@@ -6,17 +6,38 @@
 \alias{plot_fusion_together}
 \title{Plot a fusion event with transcripts, coverage and ideograms.}
 \usage{
-plot_fusion(fusion, edb = NULL, bamfile = NULL,
-  which_transcripts = "exonBoundary", ylim = c(0, 1000),
-  non_ucsc = TRUE, reduce_transcripts = FALSE, bedgraphfile = NULL)
+plot_fusion(
+  fusion,
+  edb = NULL,
+  bamfile = NULL,
+  which_transcripts = "exonBoundary",
+  ylim = c(0, 1000),
+  non_ucsc = TRUE,
+  reduce_transcripts = FALSE,
+  bedgraphfile = NULL
+)
 
-plot_fusion_separate(fusion, edb, bamfile = NULL,
-  which_transcripts = "exonBoundary", ylim = c(0, 1000),
-  non_ucsc = TRUE, reduce_transcripts = FALSE, bedgraphfile = NULL)
+plot_fusion_separate(
+  fusion,
+  edb,
+  bamfile = NULL,
+  which_transcripts = "exonBoundary",
+  ylim = c(0, 1000),
+  non_ucsc = TRUE,
+  reduce_transcripts = FALSE,
+  bedgraphfile = NULL
+)
 
-plot_fusion_together(fusion, edb, bamfile = NULL,
-  which_transcripts = "exonBoundary", ylim = c(0, 1000),
-  non_ucsc = TRUE, reduce_transcripts = FALSE, bedgraphfile = NULL)
+plot_fusion_together(
+  fusion,
+  edb,
+  bamfile = NULL,
+  which_transcripts = "exonBoundary",
+  ylim = c(0, 1000),
+  non_ucsc = TRUE,
+  reduce_transcripts = FALSE,
+  bedgraphfile = NULL
+)
 }
 \arguments{
 \item{fusion}{The Fusion object to plot.}

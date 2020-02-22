@@ -849,7 +849,7 @@ plot_fusion_transcript_with_protein_domain <- function(
   # Check parameters
   argument_checker <- .is_fusion_valid(argument_checker, fusion)
   argument_checker <- .is_edb_valid(argument_checker, edb, fusion)
-  argument_checker <- .is_bamfile_valid(argument_checker, bamfile)
+  argument_checker <- .is_bamfile_valid_allow_null(argument_checker, bamfile)
   argument_checker <- .is_bedfile_valid(argument_checker, bedfile)
   argument_checker <- .is_character_parameter_valid(
     argument_checker,
