@@ -5,8 +5,7 @@
 \alias{.fusions_to_link_data}
 \title{Create link data for RCircos from the given fusions.}
 \usage{
-.fusions_to_link_data(fusion_list, min_link_width = 1,
-  max_link_widt = 10)
+.fusions_to_link_data(fusion_list, min_link_width = 1, max_link_widt = 10)
 }
 \arguments{
 \item{fusion_list}{A list of Fusion objects.}

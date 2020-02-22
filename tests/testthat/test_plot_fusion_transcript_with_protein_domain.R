@@ -32,7 +32,7 @@ png_filename <- tempfile(
   fileext = ".png",
   tmpdir = tempdir())
 
-test_that("plot_fusion_transcript_with_protein_domain produces a png file", {
+test_that("plot_fusion_transcript_with_protein_domain produces a png file when bamfile is not given", {
   # Open device
   png(png_filename, width = 500, height = 500)
   # Plot and expect certain message output
@@ -40,7 +40,7 @@ test_that("plot_fusion_transcript_with_protein_domain produces a png file", {
     plot_fusion_transcript_with_protein_domain(
       fusion = fusion,
       edb = edb,
-      bamfile = bamfile5267,
+      bamfile = NULL,
       bedfile = bedfile,
       gene_upstream_transcript = gene_upstream_transcript,
       gene_downstream_transcript = gene_downstream_transcript,

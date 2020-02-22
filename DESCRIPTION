@@ -76,7 +76,7 @@ Suggests:
     lintr
 SystemRequirements: bowtie, samtools, and egrep are required for some
     functionalities
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 VignetteBuilder: knitr
 biocViews: Infrastructure, Alignment
 Encoding: UTF-8

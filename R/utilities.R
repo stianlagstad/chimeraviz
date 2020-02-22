@@ -1136,9 +1136,23 @@ down_shift <- function(transcript) {
   argument_checker
 }
 
+.is_bamfile_valid_allow_null <- function(argument_checker, bamfile) {
+  # Check that the argument is given
+  if (!is.null(bamfile)) {
+    # Check that the file exists
+    if (!file.exists(bamfile)) {
+      ArgumentCheck::addError(
+        msg = "The given 'bamfile' does not exist.",
+        argcheck = argument_checker
+      )
+    }
+  }
+  argument_checker
+}
+
 .is_bamfile_valid <- function(argument_checker, bamfile) {
   # Check that the argument is given
-  if (is.null(bamfile) || bamfile == "") {
+  if (is.null(bamfile)) {
     ArgumentCheck::addError(
       msg = "'bamfile' must be the path to a .BAM file.",
       argcheck = argument_checker
@@ -1156,7 +1170,7 @@ down_shift <- function(transcript) {
 
 .is_bedfile_valid <- function(argument_checker, bedfile) {
   # Check that the argument is given
-  if (is.null(bedfile) || bedfile == "") {
+  if (is.null(bedfile)) {
     ArgumentCheck::addError(
       msg = "'bedfile' must be the path to a .BED file.",
       argcheck = argument_checker
@@ -1174,7 +1188,7 @@ down_shift <- function(transcript) {
 
 .is_bedgraphfile_valid <- function(argument_checker, bedgraphfile) {
   # Check that the argument is given
-  if (is.null(bedgraphfile) || bedgraphfile == "") {
+  if (is.null(bedgraphfile)) {
     ArgumentCheck::addError(
       msg = "'bedgraphfile' must be the path to a .bedGraph file.",
       argcheck = argument_checker

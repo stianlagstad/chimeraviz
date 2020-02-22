@@ -3,7 +3,6 @@
 \docType{package}
 \name{chimeraviz}
 \alias{chimeraviz}
-\alias{chimeraviz-package}
 \title{chimeraviz: A package for working with and visualizing fusion genes.}
 \description{
 chimeraviz manages data from fusion gene finders and provides useful

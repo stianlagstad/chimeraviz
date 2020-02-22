@@ -4,8 +4,7 @@
 \alias{plot_fusion_reads}
 \title{Create a plot of the reads supporting the given fusion.}
 \usage{
-plot_fusion_reads(fusion, show_all_nucleotides = TRUE,
-  nucleotide_amount = 10)
+plot_fusion_reads(fusion, show_all_nucleotides = TRUE, nucleotide_amount = 10)
 }
 \arguments{
 \item{fusion}{The Fusion object to plot.}

@@ -4,10 +4,15 @@
 \alias{plot_fusion_transcript_with_protein_domain}
 \title{Plot a specific fusion transcript with protein domain annotations}
 \usage{
-plot_fusion_transcript_with_protein_domain(fusion, edb = NULL,
-  bamfile = NULL, bedfile = NULL, gene_upstream_transcript = "",
+plot_fusion_transcript_with_protein_domain(
+  fusion,
+  edb = NULL,
+  bamfile = NULL,
+  bedfile = NULL,
+  gene_upstream_transcript = "",
   gene_downstream_transcript = "",
-  plot_downstream_protein_domains_if_fusion_is_out_of_frame = FALSE)
+  plot_downstream_protein_domains_if_fusion_is_out_of_frame = FALSE
+)
 }
 \arguments{
 \item{fusion}{The Fusion object to plot.}
