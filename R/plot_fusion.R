@@ -614,7 +614,7 @@ plot_fusion_separate <- function(
   Gviz::displayPars(gr_track_highlight_downstream) <-
     display_pars_highlight_tracks
 
-  if (exists("al_track")) {
+  if (exists("alignment_track")) {
 
     # Highlight coverage tracks
 
@@ -676,7 +676,7 @@ plot_fusion_separate <- function(
     offset <- 0
   }
 
-  if (!exists("al_track")) {
+  if (!exists("alignment_track")) {
 
     # Open row 1, column 1
     grid::pushViewport(grid::viewport(layout.pos.row = 1, layout.pos.col = 1))
@@ -740,7 +740,7 @@ plot_fusion_separate <- function(
     offset <- 0
   }
 
-  if (!exists("al_track")) {
+  if (!exists("alignment_track")) {
 
     # Open row 1, column 2
     grid::pushViewport(grid::viewport(layout.pos.row = 1, layout.pos.col = 2))
@@ -1112,7 +1112,7 @@ plot_fusion_together <- function(
       # "chr1", then we need to use a custom import function that adds "chr" to
       # the chromosome names, to keep Gviz happy. Gviz strongly prefers having
       # the "chr" prefix.
-      al_track <- Gviz::AlignmentsTrack(
+      alignment_track <- Gviz::AlignmentsTrack(
         bamfile,
         isPaired = TRUE,
         genome = fusion@genome_version,
@@ -1120,7 +1120,7 @@ plot_fusion_together <- function(
         ylim = ylim,
         importFunction = import_function_non_ucsc)
     } else {
-      al_track <- Gviz::AlignmentsTrack(
+      alignment_track <- Gviz::AlignmentsTrack(
         bamfile,
         isPaired = TRUE,
         genome = fusion@genome_version,
@@ -1128,7 +1128,7 @@ plot_fusion_together <- function(
         ylim = ylim)
     }
     # Set display paramters
-    Gviz::displayPars(al_track) <- list(
+    Gviz::displayPars(alignment_track) <- list(
       showTitle = FALSE, # hide name of track
       background.panel = "transparent", # background color of the content panel
       background.title = "transparent", # background color for the title panels
@@ -1144,7 +1144,7 @@ plot_fusion_together <- function(
     )
   } else if (!is.null(bedgraphfile)) {
     # We're getting coverage data from a bedGraph file
-    al_track <- DataTrack(
+    alignment_track <- DataTrack(
       range = bedgraphfile,
       ylim = ylim,
       genome = "hg19",
@@ -1154,7 +1154,7 @@ plot_fusion_together <- function(
       col = "orange",
       fill = "orange")
     # Set display parameters
-    Gviz::displayPars(al_track) <- list(
+    Gviz::displayPars(alignment_track) <- list(
       showTitle = FALSE, # hide name of track
       background.panel = "transparent", # background color of the content panel
       background.title = "transparent", # background color for the title panels
@@ -1371,11 +1371,11 @@ plot_fusion_together <- function(
     chromosome = fusion@gene_upstream@chromosome)
   Gviz::displayPars(gr_track_highlight) <- display_pars_highlight_tracks
 
-  if (exists("al_track")) {
+  if (exists("alignment_track")) {
 
     # Highlight coverage track
     al_track_highlight <- Gviz::HighlightTrack(
-      trackList = al_track,
+      trackList = alignment_track,
       start = c(highlight_start_upstream, highlight_start_downstream),
       end = c(highlight_end_upstream, highlight_end_downstream),
       chromosome = fusion@gene_upstream@chromosome)
@@ -1414,7 +1414,7 @@ plot_fusion_together <- function(
     offset <- 0
   }
 
-  if (!exists("al_track")) {
+  if (!exists("alignment_track")) {
 
     # Plot transcripts with highlight
     res <- Gviz::plotTracks(
