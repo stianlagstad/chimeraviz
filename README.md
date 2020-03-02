@@ -19,6 +19,7 @@ Previous citations:
 - [Genomic Profiling Of Primary Histiocytic Sarcoma Reveals Two Molecular Subgroups](http://www.haematologica.org/content/early/2019/08/19/haematol.2019.230375.abstract)
 - [Using R and Bioconductor in Clinical Genomics and Transcriptomics](https://www.ncbi.nlm.nih.gov/pubmed/31605800)
 - [annoFuse: an R Package to annotate and prioritize putative oncogenic RNA fusions](https://www.biorxiv.org/content/10.1101/839738v1.abstract)
+- [CRTC1-TRIM11 fusion defined melanocytic tumors: A series of four cases](https://www.ncbi.nlm.nih.gov/pubmed/31237704)
 
 # Demo
 
