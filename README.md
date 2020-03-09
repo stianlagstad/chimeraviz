@@ -174,8 +174,20 @@ See how to build this plot in the package vignette: [Building the fusion transcr
 
 # Installing chimeraviz
 
+## From Bioconductor
 `chimeraviz` is a Bioconductor package, and is most easily installed via Bioconductor. Please follow the installation instructions [here](https://bioconductor.org/packages/release/bioc/html/chimeraviz.html).
 
+## From BioConda
+Since BioConductor packages are also available as [BioConda](https://anaconda.org/bioconda) packages, `chimeraviz` is also available there: <https://anaconda.org/bioconda/bioconductor-chimeraviz>.
+
+NOTE: You will likely not get the latest version of `chimeraviz` if you use the BioConda package. For the latest and greatest, please install from BioConductor.
+
+## From BioContainers
+BioConda packages are also available as [BioContainers](https://biocontainers.pro/), so `chimeraviz` is available as a Docker container. See <https://quay.io/repository/biocontainers/bioconductor-chimeraviz?tab=tags>.
+
+NOTE: You will likely not get the latest version of `chimeraviz` if you use the BioContainers Docker image. For the latest and greatest, please install from BioConductor.
+
+## From the GitHub repository
 If you want to build the package yourself you can follow these instructions:
 1. Install the dependencies listed under `Imports`, `Depends`, and `Suggests` in the [package DESCRIPTION file](https://github.com/stianlagstad/chimeraviz/blob/master/DESCRIPTION).
 1. Run this command to install the package:
