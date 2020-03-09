@@ -16,7 +16,7 @@ r:
 warnings_are_errors: true
 
 script:
-  - Rscript -e "sessionInfo(); library(devtools); devtools::check()"
+  - Rscript -e "sessionInfo(); options(error=traceback); library(devtools); devtools::check()"
 
 r_github_packages:
   - r-lib/covr
