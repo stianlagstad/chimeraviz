@@ -33,3 +33,44 @@ test_that("plot_fusion_transcript produces a png file", {
   # See if we actually produced a file with size > 0
   expect_equal(file.info(png_filename)$size > 0, TRUE)
 })
+
+test_that("plot_fusion_transcript with bamfile produces a png file", {
+  bamfile5267 <- system.file(
+    "extdata",
+    "fusion5267and11759reads.bam",
+    package = "chimeraviz")
+  # Open device
+  png(png_filename, width = 500, height = 500)
+  # Plot and expect certain message output
+  expect_message(
+    plot_fusion_transcript(
+      fusion = fusion,
+      bamfile = bamfile5267,
+      edb = edb),
+    "Fetching transcripts for gene partners..")
+  # Close device
+  dev.off()
+  # See if we actually produced a file with size > 0
+  expect_equal(file.info(png_filename)$size > 0, TRUE)
+})
+
+test_that("plot_fusion_transcript with bedgraphfile produces a png file", {
+  bedgraphfile <- system.file(
+    "extdata",
+    "fusion5267and11759reads.bedGraph",
+    package = "chimeraviz"
+  )
+  # Open device
+  png(png_filename, width = 500, height = 500)
+  # Plot and expect certain message output
+  expect_message(
+    plot_fusion_transcript(
+      fusion = fusion,
+      bedgraphfile = bedgraphfile,
+      edb = edb),
+    "Fetching transcripts for gene partners..")
+  # Close device
+  dev.off()
+  # See if we actually produced a file with size > 0
+  expect_equal(file.info(png_filename)$size > 0, TRUE)
+})
