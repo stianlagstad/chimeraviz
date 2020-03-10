@@ -1,0 +1,47 @@
+# This file specifies a conda environment with all the dependencies needed to develop chimeraviz locally.
+# See the `README.md` file for more information.
+
+name: chimeraviz_release
+channels:
+  - bioconda
+  - conda-forge 
+  - defaults
+dependencies:
+  # R
+  - r-base=3.6.1
+  # CRAN
+  - r-gridbase
+  - r-rcolorbrewer
+  - r-RCircos
+  - r-rmarkdown
+  - r-DT
+  - r-plyr
+  - r-dplyr
+  - r-ArgumentCheck
+  - r-gtools
+  - r-magick
+  - r-data.table
+  - r-testthat
+  - r-roxygen2
+  - r-devtools
+  - r-knitr
+  - r-lintr
+  # BioConductor
+  - bioconductor-rsamtools
+  - bioconductor-gviz
+  - bioconductor-genomeinfodb
+  - bioconductor-genomicalignments
+  - bioconductor-AnnotationDbi
+  - bioconductor-org.Hs.eg.db
+  - bioconductor-org.Mm.eg.db
+  - bioconductor-graph
+  - bioconductor-Rgraphviz
+  - bioconductor-BiocStyle
+  - bioconductor-Biostrings
+  - bioconductor-GenomicRanges
+  - bioconductor-IRanges
+  - bioconductor-Gviz
+  - bioconductor-S4Vectors
+  - bioconductor-ensembldb
+  - bioconductor-AnnotationFilter
+

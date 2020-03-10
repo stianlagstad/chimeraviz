@@ -16,9 +16,11 @@ downstream_partner_gene(object) <- value
 \S4method{downstream_partner_gene}{Fusion}(object) <- value
 }
 \arguments{
-\item{x}{The Fusion object you wish to retrieve the downstream PartnerGene object for.}
+\item{x}{The Fusion object you wish to retrieve the downstream PartnerGene
+object for.}
 
-\item{object}{The Fusion object you wish to set a new downstream PartnerGene object for.}
+\item{object}{The Fusion object you wish to set a new downstream
+PartnerGene object for.}
 
 \item{value}{The new PartnerGene object.}
 }
@@ -48,7 +50,8 @@ defuseData <- system.file(
   package="chimeraviz")
 fusions <- import_defuse(defuseData, "hg19", 1)
 fusion <- fusions[[1]]
-# Set the downstream PartnerGene object to be the same as the upstream PartnerGene object
+# Set the downstream PartnerGene object to be the same as the upstream
+# PartnerGene object
 downstream_partner_gene(fusion) <- upstream_partner_gene(fusion)
 
 }

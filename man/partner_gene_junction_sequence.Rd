@@ -10,7 +10,8 @@ partner_gene_junction_sequence(x)
 \S4method{partner_gene_junction_sequence}{PartnerGene}(x)
 }
 \arguments{
-\item{x}{The PartnerGene object you wish to retrieve the junction sequence for.}
+\item{x}{The PartnerGene object you wish to retrieve the junction sequence
+for.}
 }
 \value{
 The upstream fusion partner gene junction sequence.

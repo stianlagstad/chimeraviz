@@ -48,7 +48,8 @@ defuseData <- system.file(
   package="chimeraviz")
 fusions <- import_defuse(defuseData, "hg19", 1)
 fusion <- fusions[[1]]
-# Set the downstream PartnerGene object to be the same as the upstream PartnerGene object
+# Set the downstream PartnerGene object to be the same as the upstream
+# PartnerGene object
 partner_gene_ensembl_id(upstream_partner_gene(fusion)) <- "test"
 
 }

@@ -150,7 +150,8 @@ setMethod(
 #'
 #' This getter retrieves the upstream PartnerGene object.
 #'
-#' @param x The Fusion object you wish to retrieve the upstream PartnerGene object for.
+#' @param x The Fusion object you wish to retrieve the upstream PartnerGene
+#' object for.
 #'
 #' @return The upstream PartnerGene object.
 #'
@@ -185,7 +186,8 @@ setMethod(
 #'
 #' This getter retrieves the downstream PartnerGene object.
 #'
-#' @param x The Fusion object you wish to retrieve the downstream PartnerGene object for.
+#' @param x The Fusion object you wish to retrieve the downstream PartnerGene
+#' object for.
 #'
 #' @return The downstream PartnerGene object.
 #'
@@ -220,7 +222,8 @@ setMethod(
 #'
 #' This sets the upstream PartnerGene object of a Fusion object
 #'
-#' @param object The Fusion object you wish to set a new upstream PartnerGene object for.
+#' @param object The Fusion object you wish to set a new upstream PartnerGene
+#' object for.
 #' @param value The new PartnerGene object.
 #'
 #' @rdname upstream_partner_gene
@@ -233,7 +236,8 @@ setMethod(
 #'   package="chimeraviz")
 #' fusions <- import_defuse(defuseData, "hg19", 1)
 #' fusion <- fusions[[1]]
-#' # Set the upstream PartnerGene object to be the same as the downstream PartnerGene object
+#' # Set the upstream PartnerGene object to be the same as the downstream
+#' # PartnerGene object
 #' upstream_partner_gene(fusion) <- downstream_partner_gene(fusion)
 #'
 #' @export
@@ -249,7 +253,7 @@ setReplaceMethod(
   signature = "Fusion",
   definition = function(object, value) {
     object@gene_upstream <- value
-    return (object)
+    return(object)
   }
 )
 
@@ -257,7 +261,8 @@ setReplaceMethod(
 #'
 #' This sets the downstream PartnerGene object of a Fusion object
 #'
-#' @param object The Fusion object you wish to set a new downstream PartnerGene object for.
+#' @param object The Fusion object you wish to set a new downstream
+#' PartnerGene object for.
 #' @param value The new PartnerGene object.
 #'
 #' @rdname downstream_partner_gene
@@ -270,7 +275,8 @@ setReplaceMethod(
 #'   package="chimeraviz")
 #' fusions <- import_defuse(defuseData, "hg19", 1)
 #' fusion <- fusions[[1]]
-#' # Set the downstream PartnerGene object to be the same as the upstream PartnerGene object
+#' # Set the downstream PartnerGene object to be the same as the upstream
+#' # PartnerGene object
 #' downstream_partner_gene(fusion) <- upstream_partner_gene(fusion)
 #'
 #' @export
@@ -286,7 +292,7 @@ setReplaceMethod(
   signature = "Fusion",
   definition = function(object, value) {
     object@gene_downstream <- value
-    return (object)
+    return(object)
   }
 )
 
@@ -342,7 +348,8 @@ setMethod(
 #'   package="chimeraviz")
 #' fusions <- import_defuse(defuseData, "hg19", 1)
 #' fusion <- fusions[[1]]
-#' # Set the downstream PartnerGene object to be the same as the upstream PartnerGene object
+#' # Set the downstream PartnerGene object to be the same as the upstream
+#' # PartnerGene object
 #' partner_gene_ensembl_id(upstream_partner_gene(fusion)) <- "test"
 #'
 #' @export
@@ -358,7 +365,7 @@ setReplaceMethod(
   signature = "PartnerGene",
   definition = function(object, value) {
     object@ensembl_id <- value
-    return (object)
+    return(object)
   }
 )
 
@@ -366,7 +373,8 @@ setReplaceMethod(
 #'
 #' This getter retrieves the junction sequence from a PartnerGene object
 #'
-#' @param x The PartnerGene object you wish to retrieve the junction sequence for.
+#' @param x The PartnerGene object you wish to retrieve the junction sequence
+#' for.
 #'
 #' @return The upstream fusion partner gene junction sequence.
 #'

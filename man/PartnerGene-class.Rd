@@ -21,8 +21,13 @@ The PartnerGene class represents one of the genes in a fusion event.
 
 \item{\code{strand}}{Character containing gene strand.}
 
-\item{\code{junction_sequence}}{Biostrings::DNAString containing the sequence right before/after the fusion breakpoint.}
+\item{\code{junction_sequence}}{Biostrings::DNAString containing the sequence right
+before/after the fusion breakpoint.}
 
-\item{\code{transcripts}}{GenomicRanges::GRangesList containing three GenomicRanges::Granges() objects, one for each "transcript type". The transcript types are: 1) Transcripts where the fusion breakpoint hits an exon boundary, 2) transcripts where the fusion breakpoint is within an exon, 3) transcripts where the fusion breakpoint is within an intron.}
+\item{\code{transcripts}}{GenomicRanges::GRangesList containing three
+GenomicRanges::Granges() objects, one for each "transcript type". The
+transcript types are: 1) Transcripts where the fusion breakpoint hits an
+exon boundary, 2) transcripts where the fusion breakpoint is within an
+exon, 3) transcripts where the fusion breakpoint is within an intron.}
 }}
 
