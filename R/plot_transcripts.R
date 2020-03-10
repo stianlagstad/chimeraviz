@@ -116,6 +116,7 @@ plot_transcripts <- function(
     ylim,
     reduce_transcripts,
     bedgraphfile)
+
   fusion <- .get_transcripts_if_not_there(fusion, edb)
 
   # Select which transcripts to use

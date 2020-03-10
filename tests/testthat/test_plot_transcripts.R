@@ -19,13 +19,70 @@ png_filename <- tempfile(
   fileext = ".png",
   tmpdir = tempdir())
 
-test_that("plotTranscripts produces a png file", {
+test_that("plot_transcripts produces a png file", {
   # Open device
   png(png_filename, width = 500, height = 500)
   # Plot and expect certain message output
   expect_message(
     plot_transcripts(
       fusion = fusion,
+      edb = edb),
+    "Fetching transcripts for gene partners..")
+  # Close device
+  dev.off()
+  # See if we actually produced a file with size > 0
+  expect_equal(file.info(png_filename)$size > 0, TRUE)
+})
+
+test_that("plot_transcripts with a bamfile produces a png file", {
+  bamfile5267 <- system.file(
+    "extdata",
+    "fusion5267and11759reads.bam",
+    package = "chimeraviz")
+  # Open device
+  png(png_filename, width = 500, height = 500)
+  # Plot and expect certain message output
+  expect_message(
+    plot_transcripts(
+      fusion = fusion,
+      bamfile = bamfile5267,
+      edb = edb),
+    "Fetching transcripts for gene partners..")
+  # Close device
+  dev.off()
+  # See if we actually produced a file with size > 0
+  expect_equal(file.info(png_filename)$size > 0, TRUE)
+})
+
+test_that("plot_transcripts with a bedgraphfile produces a png file", {
+  bedgraphfile <- system.file(
+    "extdata",
+    "fusion5267and11759reads.bedGraph",
+    package = "chimeraviz"
+  )
+  # Open device
+  png(png_filename, width = 500, height = 500)
+  # Plot and expect certain message output
+  expect_message(
+    plot_transcripts(
+      fusion = fusion,
+      bedgraphfile = bedgraphfile,
+      edb = edb),
+    "Fetching transcripts for gene partners..")
+  # Close device
+  dev.off()
+  # See if we actually produced a file with size > 0
+  expect_equal(file.info(png_filename)$size > 0, TRUE)
+})
+
+test_that("plot_transcripts with reduce_transcripts produces a png file", {
+  # Open device
+  png(png_filename, width = 500, height = 500)
+  # Plot and expect certain message output
+  expect_message(
+    plot_transcripts(
+      fusion = fusion,
+      reduce_transcripts = TRUE,
       edb = edb),
     "Fetching transcripts for gene partners..")
   # Close device
