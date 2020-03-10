@@ -57,7 +57,7 @@ if (length(the_list) <= 1) {
 
   link_width <- vector(mode = "numeric", length = length(fusion_list))
 
-  for (i in 1:length(fusion_list)) {
+  for (i in seq_along(fusion_list)) {
     fusion <- fusion_list[[i]]
 
     chromosome[[i]] <- fusion@gene_upstream@chromosome
@@ -117,7 +117,7 @@ if (length(the_list) <= 1) {
   chrom_end <- vector(mode = "numeric", length = new_length)
   gene <- vector(mode = "character", length = new_length)
 
-  for (i in 1:length(fusion_list)) {
+  for (i in seq_along(fusion_list)) {
     fusion <- fusion_list[[i]]
 
     # We are building the list of gene names for both partner genes at once, so

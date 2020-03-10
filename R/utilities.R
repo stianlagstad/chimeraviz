@@ -632,7 +632,7 @@ get_transcripts_ensembl_db <- function(fusion, edb) {
   # Go through each transcript in the GRangesList and
   grangeslist_upstream <- GRangesList()
   grangeslist_downstream <- GRangesList()
-  for (i in 1:length(all_transcripts)) {
+  for (i in seq_along(all_transcripts)) {
 
     # Extract the GRanges object
     gr <- all_transcripts[[i]]
@@ -1074,7 +1074,7 @@ down_shift <- function(transcript) {
     stop("transcript argument must be an object of type GRanges")
   }
 
-  for (i in 1:length(transcript)) {
+  for (i in seq_along(transcript)) {
     if (i == 1) {
       transcript[i] <- IRanges::shift(
         transcript[i],
@@ -1248,7 +1248,7 @@ down_shift <- function(transcript) {
   )
   # Check if the transcript(s) given actually exist, either in
   # transcript_categories, in geneA, or in geneB
-  for (i in 1:length(which_transcripts)) {
+  for (i in seq_along(which_transcripts)) {
     if (
       !which_transcripts[[i]] %in% transcript_categories &&
       !which_transcripts[[i]] %in% names(fusion@gene_upstream@transcripts) &&

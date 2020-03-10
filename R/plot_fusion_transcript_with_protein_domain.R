@@ -647,7 +647,7 @@ plot_fusion_transcript_with_protein_domain <- function(
 
     # Create coverage track
     d_track <- DataTrack(
-      start = 1:length(cov),
+      start = seq_along(cov),
       width = 1,
       chromosome = "chrNA",
       genome = "hg19",

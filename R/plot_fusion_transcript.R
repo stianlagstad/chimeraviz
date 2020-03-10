@@ -205,7 +205,7 @@ plot_fusion_transcript <- function(
 
     # Create coverage track
     d_track <- DataTrack(
-      start = 1:length(cov),
+      start = seq_along(cov),
       width = 1,
       chromosome = "chrNA",
       genome = "hg19",
@@ -262,7 +262,7 @@ plot_fusion_transcript <- function(
 
   # Move the first exon down to position 1, and then remove the spaces between
   # all the others. Effecticely pushing all exons to the leftmost edge.
-  for (i in 1:length(fusion_transcript)) {
+  for (i in seq_along(fusion_transcript)) {
     if (i == 1) {
       fusion_transcript[i] <-
         IRanges::shift(

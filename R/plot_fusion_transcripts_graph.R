@@ -132,9 +132,9 @@ plot_fusion_transcripts_graph <- function(
   transcript_names_downstream <-
     unique(unlist(mcols(fusion_exons_downstream)$transcript))
   fusion_transcripts <- GRangesList()
-  for (i in 1:length(transcript_names_upstream)) {
+  for (i in seq_along(transcript_names_upstream)) {
     tr_name_upstream <- transcript_names_upstream[[i]]
-    for (j in 1:length(transcript_names_downstream)) {
+    for (j in seq_along(transcript_names_downstream)) {
       tr_name_downstream <- transcript_names_downstream[[j]]
 
       exons_upstream <- fusion_exons_upstream[
@@ -188,7 +188,7 @@ plot_fusion_transcripts_graph <- function(
   to <- c()
 
   transcript_names <- sort(unique(mcols(fusion_transcripts)$transcript))
-  for (i in 1:length(transcript_names)) {
+  for (i in seq_along(transcript_names)) {
     exons_in_transcript <-
       fusion_transcripts[
         mcols(fusion_transcripts)$transcript == transcript_names[i]
