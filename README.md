@@ -201,7 +201,17 @@ Please [create an issue on Github](https://github.com/stianlagstad/chimeraviz/is
 
 # Development
 
-If you wish to make changes to chimeraviz, I recommend you use Docker. See the `README.md` file in the `docker` folder for more information.
+## Docker
+
+The easiest way to get started working on `chimeraviz` is by using [Docker](https://www.docker.com/). See the `README.md` file in the `docker/` folder in this repository for more information.
+
+## Conda
+
+You can also work on `chimeraviz` within a Conda environment. Here are the steps to follow:
+
+1. Install `conda`: Following instructions [here](https://docs.conda.io/en/latest/miniconda.html).
+1. Run the command `conda env create -n chimeraviz_release -f environment.yml` from the root of this repository.
+1. Run the command `conda activate chimeraviz_release` to activate the conda environment.
 
 # Tests
 
