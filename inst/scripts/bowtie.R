@@ -16,7 +16,8 @@
 #' @seealso bowtie_align
 #'
 #' @param bowtie_build_location The path to bowtie-build on your system.
-#' @param reference_fasta The path to the reference sequence to build index from.
+#' @param reference_fasta The path to the reference sequence to build index
+#' from.
 #'
 #' @examples
 #' \dontrun{

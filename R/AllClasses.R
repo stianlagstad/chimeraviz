@@ -7,8 +7,13 @@
 #' @slot chromosome Character containing chromosome name.
 #' @slot breakpoint Numeric containing the fusion breakpoint.
 #' @slot strand Character containing gene strand.
-#' @slot junction_sequence Biostrings::DNAString containing the sequence right before/after the fusion breakpoint.
-#' @slot transcripts GenomicRanges::GRangesList containing three GenomicRanges::Granges() objects, one for each "transcript type". The transcript types are: 1) Transcripts where the fusion breakpoint hits an exon boundary, 2) transcripts where the fusion breakpoint is within an exon, 3) transcripts where the fusion breakpoint is within an intron.
+#' @slot junction_sequence Biostrings::DNAString containing the sequence right
+#' before/after the fusion breakpoint.
+#' @slot transcripts GenomicRanges::GRangesList containing three
+#' GenomicRanges::Granges() objects, one for each "transcript type". The
+#' transcript types are: 1) Transcripts where the fusion breakpoint hits an
+#' exon boundary, 2) transcripts where the fusion breakpoint is within an
+#' exon, 3) transcripts where the fusion breakpoint is within an intron.
 #'
 #' @export
 PartnerGene <- setClass(
