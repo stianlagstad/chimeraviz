@@ -26,6 +26,11 @@ test_that("plot_circle produces a png file", {
 test_that("plot_circle() fails with invalid input", {
   # List without fusion objects?
   expect_error(plot_circle(list()))
+  # List with fusion objects and something else?
+  expect_error(plot_circle(c(fusions, "test")))
+  # List with fusion objects where the genomes differ
+  fusions[[1]]@genome_version <- "test"
+  expect_error(plot_circle(fusions))
   # Inputs that are not lists?
   expect_error(plot_circle(42))
   expect_error(plot_circle("hey this should fail"))

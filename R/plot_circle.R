@@ -18,7 +18,7 @@
 .scale_list_to_interval <- function(the_list, new_min, new_max) {
 if (length(the_list) <= 1) {
     stop(paste("Invalid list. Using this function with less than two values",
-                "makes to sense."))
+                "makes no sense."))
   }
   (new_max - new_min) * (the_list - min(the_list)) /
     (max(the_list) - min(the_list)) + new_min
@@ -182,18 +182,33 @@ plot_circle <- function(fusion_list) {
     stop("Input must be a list of fusion objects")
   }
 
-  # Check that first item in input list is a fusion object
-  if (class(fusion_list[[1]]) != "Fusion") {
-    stop("items in fusion_list must be an object of type Fusion")
+  # Check that all the items in the input list are fusion objects
+  for (i in seq_along(fusion_list)) {
+    if (class(fusion_list[[i]]) != "Fusion") {
+      stop("items in fusion_list must be an object of type Fusion")
+    }
   }
 
-  if (!fusion_list[[1]]@genome_version %in% list("hg19", "hg38", "mm10")) {
+  # Validate that the first fusion object has a valid genome
+  genome_of_first_fusion <- fusion_list[[1]]@genome_version
+  if (!genome_of_first_fusion %in% list("hg19", "hg38", "mm10")) {
     stop(
       paste0(
         "Invalid input. genomeVersion must be either \"hg19\", \"hg38\" or ",
         "\"mm10\"."
       )
     )
+  }
+  # Validate that all the fusions have the same genome
+  for (i in seq_along(fusion_list)) {
+    if (!fusion_list[[i]]@genome_version == genome_of_first_fusion) {
+      stop(
+        paste0(
+          "Invalid input. genomeVersion must be either \"hg19\", \"hg38\" or ",
+          "\"mm10\"."
+        )
+      )
+    }
   }
 
   if (
