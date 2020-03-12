@@ -18,12 +18,14 @@
 #'   package="chimeraviz")
 #' fusions <- import_defuse(defuse833ke, "hg19", 3)
 #' # Temporary file to store the report
-#' output_filename <- tempfile(
-#'   pattern = "fusionReport",
-#'   fileext = ".html",
-#'   tmpdir = tempdir())
+#' random_filename <- paste0(
+#'   paste0(sample(LETTERS, 5, replace = TRUE), collapse=''),
+#'   ".png"
+#' )
 #' # Create report
-#' create_fusion_report(fusions, output_filename)
+#' create_fusion_report(fusions, random_filename)
+#' # Delete the file
+#' file.remove(random_filename)
 #'
 #' @importFrom DT datatable
 #' @importFrom plyr ldply
@@ -40,6 +42,9 @@ create_fusion_report <- function(
     stop("fusions argument must be a list of Fusion objects")
   }
 
+  # Full path to the output file
+  output_path = paste0(getwd(), "/", output_filename)
+
   # Get reference to the fusion list report file
   fusion_report_rmd <- system.file(
     "reports",
@@ -49,7 +54,7 @@ create_fusion_report <- function(
   # Render the report
   rmarkdown::render(
     fusion_report_rmd,
-    output_file = output_filename,
+    output_file = output_path,
     params = list(fusions = fusions),
     quiet = quiet)
 }
