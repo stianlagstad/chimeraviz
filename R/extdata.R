@@ -247,3 +247,16 @@ NULL
 #'
 #' This data is used with RCircos in plot_circle().
 NULL
+
+#' ChimPipe data
+#'
+#' Documentation for the ChimPipe example data.
+#'
+#' @name raw_chimpipe
+#'
+#' @section chimericJunctions_MCF-7.txt:
+#'
+#' This is example data from the ChimPipe tutorial all-in-one package located at
+#' https://chimpipe.readthedocs.io/en/latest/tutorial.html#download-all-in-one-package
+#' It was downloaded March 10th 2020
+NULL
