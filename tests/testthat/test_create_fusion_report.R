@@ -1,21 +1,22 @@
 context("Test creating Fusion reports")
 
-# Load data
-defuse833ke <- system.file(
-  "extdata",
-  "defuse_833ke_results.filtered.tsv",
-  package = "chimeraviz")
-fusions <- import_defuse(defuse833ke, "hg19", 5)
-# Temporary file to store the report
-output_filename <- tempfile(
-  pattern = "fusionReport",
-  fileext = ".html",
-  tmpdir = tempdir())
-
 test_that("create_fusion_report() produces a html file", {
-  create_fusion_report(fusions, output_filename)
+  # Load data
+  defuse833ke <- system.file(
+    "extdata",
+    "defuse_833ke_results.filtered.tsv",
+    package = "chimeraviz")
+  fusions <- import_defuse(defuse833ke, "hg19", 5)
+  # Temporary file to store the report
+  random_filename <- paste0(
+    paste0(sample(LETTERS, 5, replace = TRUE), collapse=''),
+    ".png"
+  )
+  create_fusion_report(fusions, random_filename)
   # See if we actually produced a file with size > 0
-  expect_equal(file.info(output_filename)$size > 0, TRUE)
+  expect_equal(file.info(random_filename)$size > 0, TRUE)
+  # Delete the temporary file
+  file.remove(random_filename)
 })
 
 test_that("create_fusion_report() fails with invalid input", {

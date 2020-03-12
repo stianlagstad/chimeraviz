@@ -29,11 +29,13 @@ defuse833ke <- system.file(
   package="chimeraviz")
 fusions <- import_defuse(defuse833ke, "hg19", 3)
 # Temporary file to store the report
-output_filename <- tempfile(
-  pattern = "fusionReport",
-  fileext = ".html",
-  tmpdir = tempdir())
+random_filename <- paste0(
+  paste0(sample(LETTERS, 5, replace = TRUE), collapse=''),
+  ".png"
+)
 # Create report
-create_fusion_report(fusions, output_filename)
+create_fusion_report(fusions, random_filename)
+# Delete the file
+file.remove(random_filename)
 
 }
