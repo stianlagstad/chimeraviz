@@ -1,3 +1,11 @@
+CHANGES IN VERSION 1.13.5
+
+-------------------------
+
+CHANGES
+
+    o Change in create_fusion_report: Create the report in the current working directory. Ref https://github.com/stianlagstad/chimeraviz/issues/66
+
 CHANGES IN VERSION 1.13.4
 -------------------------
 
