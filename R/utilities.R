@@ -1326,6 +1326,15 @@ down_shift <- function(transcript) {
     )
   }
 
+  if (fusion_junction_sequence_length == 0) {
+    ArgumentCheck::addError(
+      msg = paste0(
+        "length of junction sequence is 0, have they been determined?"
+      ),
+      argcheck = argument_checker
+    )
+  }
+
   argument_checker
 }
 

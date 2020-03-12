@@ -516,4 +516,17 @@ test_that(".is_nucleotide_amount_valid works as expected", {
   expect_error(
     ArgumentCheck::finishArgCheck(argument_checker)
   )
+
+  # Expect error when the fusion junction sequence is empty
+  fusion@gene_upstream@junction_sequence <- Biostrings::DNAString()
+  fusion@gene_downstream@junction_sequence <- Biostrings::DNAString()
+  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- .is_nucleotide_amount_valid(
+    argument_checker,
+    1,
+    fusion
+  )
+  expect_error(
+    ArgumentCheck::finishArgCheck(argument_checker)
+  )
 })
