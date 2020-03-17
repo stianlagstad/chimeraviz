@@ -1,3 +1,11 @@
+CHANGES IN VERSION 1.13.7
+
+-------------------------
+
+CHANGES
+
+    o Support SQUID. Ref https://github.com/stianlagstad/chimeraviz/pull/79
+
 CHANGES IN VERSION 1.13.6
 
 -------------------------

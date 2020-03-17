@@ -5,6 +5,8 @@
 \title{ChimPipe data}
 \description{
 Documentation for the ChimPipe example data.
+
+Documentation for the SQUID example data.
 }
 \section{chimericJunctions_MCF-7.txt}{
 
@@ -12,5 +14,13 @@ Documentation for the ChimPipe example data.
 This is example data from the ChimPipe tutorial all-in-one package located at
 https://chimpipe.readthedocs.io/en/latest/tutorial.html#download-all-in-one-package
 It was downloaded March 10th 2020
+}
+
+\section{squid_hcc1954_sv.txt}{
+
+
+This is example data for SQUID provided on GitHub here:
+https://github.com/Kingsford-Group/squid/issues/20#issuecomment-598888472
+It was downloaded March 17th 2020
 }
 
