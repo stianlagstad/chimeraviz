@@ -27,7 +27,21 @@ The following is an excerpt of the [package vignette](https://bioconductor.org/p
 
 ## Basic features
 
-_chimeraviz_ allows you to import data from nine different fusion-finders: deFuse, EricScript, InFusion, JAFFA, FusionCatcher, FusionMap, PRADA, SOAPFuse, STAR-FUSION, and ChimPipe. Getting started is easy:
+_chimeraviz_ allows you to import data from these different fusion-finders:
+
+1. deFuse
+1. EricScript
+1. InFusion
+1. JAFFA
+1. FusionCatcher
+1. FusionMap
+1. PRADA
+1. SOAPFuse
+1. STAR-FUSION
+1. ChimPipe
+1. SQUID
+
+Getting started is easy:
 
 ```
 # Load chimeraviz
