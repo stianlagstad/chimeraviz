@@ -19,8 +19,7 @@ indicating which chromosomes the fusion genes in the list consists of.
 \details{
 Note that only a limited number of gene names can be shown in the circle plot
 due to the limited resolution of the plot. RCircos will automatically limit
-the number of gene names shown if there are too many. Also note that fusions
-involving mitochondrial DNA will not be shown in this plot.
+the number of gene names shown if there are too many.
 }
 \examples{
 defuse833ke <- system.file(

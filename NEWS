@@ -1,3 +1,11 @@
+CHANGES IN VERSION 1.13.6
+
+-------------------------
+
+CHANGES
+
+    o Change in plot_circle: Allow for mitochondria. Ref https://github.com/stianlagstad/chimeraviz/issues/80 and https://github.com/stianlagstad/chimeraviz/issues/18. Thank you to Philip Lijnzaad.
+
 CHANGES IN VERSION 1.13.5
 
 -------------------------

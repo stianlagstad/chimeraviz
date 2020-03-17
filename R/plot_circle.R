@@ -149,8 +149,7 @@ if (length(the_list) <= 1) {
 #'
 #' Note that only a limited number of gene names can be shown in the circle plot
 #' due to the limited resolution of the plot. RCircos will automatically limit
-#' the number of gene names shown if there are too many. Also note that fusions
-#' involving mitochondrial DNA will not be shown in this plot.
+#' the number of gene names shown if there are too many.
 #'
 #' @param fusion_list A list of Fusion objects.
 #'
@@ -178,32 +177,6 @@ if (length(the_list) <= 1) {
 plot_circle <- function(fusion_list) {
 
   .validate_plot_circle_params(fusion_list)
-
-  if (
-    any(
-      rapply(
-        fusion_list,
-        function(fusion) fusion@gene_upstream@chromosome == "chrM" ||
-          fusion@gene_downstream@chromosome == "chrM"
-      )
-    )
-  ) {
-    indexes_mitochondrial_genes <-
-      rapply(
-        fusion_list,
-        function(fusion) fusion@gene_upstream@chromosome == "chrM" ||
-          fusion@gene_downstream@chromosome == "chrM"
-      )
-    fusion_list <- fusion_list[!indexes_mitochondrial_genes]
-    message(
-      paste0(
-        "Removing ",
-        length(fusion_list[indexes_mitochondrial_genes]),
-        " fusions involving mitochondrial genes as they cannot be plotted in ",
-        "the circle plot."
-        )
-      )
-  }
 
   # Read cytoband information depending on genome version
   if (fusion_list[[1]]@genome_version == "hg19") {
