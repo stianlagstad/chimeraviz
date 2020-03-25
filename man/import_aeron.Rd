@@ -4,10 +4,19 @@
 \alias{import_aeron}
 \title{Import results from an Aeron run into a list of Fusion objects.}
 \usage{
-import_aeron(filename, genome_version, limit)
+import_aeron(
+  filename_fusion_support,
+  filename_fusion_transcript,
+  genome_version,
+  limit
+)
 }
 \arguments{
-\item{filename}{Filename for the Aeron results.}
+\item{filename_fusion_support}{Filename for the Aeron result file
+fusion_support..txt.}
+
+\item{filename_fusion_transcript}{Filename for the Aeron result file
+fusion_transcripts..txt.}
 
 \item{genome_version}{Which genome was used in mapping (hg19, hg38, etc.).}
 
@@ -20,11 +29,25 @@ A list of Fusion objects.
 A function that imports the results from an Aeron run into a list of Fusion
 objects.
 }
+\details{
+Note that the strands and breakpoint positions are not included in the
+result files from Aeron. These have to be retrieved manually, using the
+ensembl identifiers (which are included in the result files, and will be
+available in the Fusion objects after importing).
+}
 \examples{
-aeronfile <- system.file(
+aeronfusionsupportfile <- system.file(
   "extdata",
   "aeron_fusion_support.txt",
   package="chimeraviz")
-fusions <- import_aeron(aeronfile, "hg19", 3)
+aeronfusiontranscriptfile <- system.file(
+  "extdata",
+  "aeron_fusion_transcripts.fa",
+  package="chimeraviz")
+fusions <- import_aeron(
+  aeronfusionsupportfile,
+  aeronfusiontranscriptfile,
+  "hg19",
+  3)
 # This should import a list of 3 fusions described in Fusion objects.
 }

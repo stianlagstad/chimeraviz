@@ -40,6 +40,7 @@ _chimeraviz_ allows you to import data from these different fusion-finders:
 1. STAR-FUSION
 1. ChimPipe
 1. SQUID
+1. Aeron
 
 Getting started is easy:
 

@@ -276,9 +276,9 @@ NULL
 
 #' Aeron fusion data
 #'
-#' Documentation for the Aeron example data.
+#' Documentation for the Aeron fusion support example data.
 #'
-#' @name raw_aeron
+#' @name raw_aeron_fusion_support
 #'
 #' @section aeron_fusion_support.txt:
 #'
@@ -286,4 +286,18 @@ NULL
 #' https://github.com/SchulzLab/Aeron/issues/5#issuecomment-603447735
 #' It was downloaded March 25th 2020. The original filename was
 #' aeron_fusion_support_301018_K562_mRNA_PCS109_HumanTranscriptsReduced_HumanUpdated38V5.txt
+NULL
+
+#' Aeron transcript data
+#'
+#' Documentation for the Aeron fusion transcript example data.
+#'
+#' @name raw_aeron_fusion_transcript
+#'
+#' @section aeron_fusion_transcript.fa:
+#'
+#' This is example data for Aeron provided on GitHub here:
+#' https://github.com/SchulzLab/Aeron/issues/5#issuecomment-603447735
+#' It was downloaded March 25th 2020. The original filename was
+#' fusion_transcripts_301018_K562_mRNA_PCS109_HumanTranscriptsReduced_HumanUpdated38V5.fa
 NULL
