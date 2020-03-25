@@ -273,3 +273,17 @@ NULL
 #' https://github.com/Kingsford-Group/squid/issues/20#issuecomment-598888472
 #' It was downloaded March 17th 2020
 NULL
+
+#' Aeron fusion data
+#'
+#' Documentation for the Aeron example data.
+#'
+#' @name raw_aeron
+#'
+#' @section aeron_fusion_support.txt:
+#'
+#' This is example data for Aeron provided on GitHub here:
+#' https://github.com/SchulzLab/Aeron/issues/5#issuecomment-603447735
+#' It was downloaded March 25th 2020. The original filename was
+#' aeron_fusion_support_301018_K562_mRNA_PCS109_HumanTranscriptsReduced_HumanUpdated38V5.txt
+NULL
