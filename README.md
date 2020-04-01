@@ -20,6 +20,7 @@ Previous citations:
 - [Using R and Bioconductor in Clinical Genomics and Transcriptomics](https://www.ncbi.nlm.nih.gov/pubmed/31605800)
 - [annoFuse: an R Package to annotate and prioritize putative oncogenic RNA fusions](https://www.biorxiv.org/content/10.1101/839738v1.abstract)
 - [CRTC1-TRIM11 fusion defined melanocytic tumors: A series of four cases](https://www.ncbi.nlm.nih.gov/pubmed/31237704)
+- [Detailed Molecular and Immune Marker Profiling of Archival Prostate Cancer Samples Reveals an Inverse Association between TMPRSS2:ERG Fusion Status and Immune Cell Infiltration](https://doi.org/10.1016/j.jmoldx.2020.02.012)
 
 # Demo
 
