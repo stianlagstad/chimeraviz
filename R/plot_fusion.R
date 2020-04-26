@@ -342,7 +342,7 @@ plot_fusion_separate <- function(
   # Set names to what Gviz expects
   names(cytoband) <- c("chrom", "chromStart", "chromEnd", "name", "gieStain")
 
-  ideogram_track_downstream <- Gviz::IdeogramTrack(
+  ideogram_track_upstream <- Gviz::IdeogramTrack(
     genome = fusion@genome_version,
     chromosome = fusion@gene_upstream@chromosome,
     bands = cytoband)
@@ -356,7 +356,7 @@ plot_fusion_separate <- function(
     showId = TRUE,
     fontcolor = "black",
     cex = 1.5)
-  Gviz::displayPars(ideogram_track_downstream) <- ideogram_display_params
+  Gviz::displayPars(ideogram_track_upstream) <- ideogram_display_params
   Gviz::displayPars(ideogram_track_downstream) <- ideogram_display_params
 
   # Create alignment track
@@ -685,7 +685,7 @@ plot_fusion_separate <- function(
       # without this gviz create cluster_X entries in the GeneRegionTrack
       collapse = FALSE,
       c(
-        ideogram_track_downstream,
+        ideogram_track_upstream,
         gr_track_highlight_upstream
       ),
       # 10k added so that we can see all transcript names
@@ -710,7 +710,7 @@ plot_fusion_separate <- function(
       # without this gviz create cluster_X entries in the GeneRegionTrack
       collapse = FALSE,
       c(
-        ideogram_track_downstream,
+        ideogram_track_upstream,
         gr_track_highlight_upstream,
         al_track_highlight_upstream,
         axis_track
