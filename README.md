@@ -21,6 +21,7 @@ Previous citations:
 - [annoFuse: an R Package to annotate and prioritize putative oncogenic RNA fusions](https://www.biorxiv.org/content/10.1101/839738v1.abstract)
 - [CRTC1-TRIM11 fusion defined melanocytic tumors: A series of four cases](https://www.ncbi.nlm.nih.gov/pubmed/31237704)
 - [Detailed Molecular and Immune Marker Profiling of Archival Prostate Cancer Samples Reveals an Inverse Association between TMPRSS2:ERG Fusion Status and Immune Cell Infiltration](https://doi.org/10.1016/j.jmoldx.2020.02.012)
+- [FGviewer: an online visualization tool for functional features of human fusion genes](https://academic.oup.com/nar/advance-article/doi/10.1093/nar/gkaa364/5838863)
 
 # Demo
 
