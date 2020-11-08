@@ -9,21 +9,21 @@
 If you wish to cite chimeraviz, please cite [this application note](https://academic.oup.com/bioinformatics/article/33/18/2954/3835381).
 
 Previous citations:
-- [Alternative PDGFD rearrangements in dermatofibrosarcomas protuberans without PDGFB fusions](https://www.nature.com/articles/s41379-018-0089-4)
-- [Transcriptional-Readthrough RNAs Reflect the Phenomenon of “A Gene Contains Gene(s)” or “Gene(s) within a Gene” in the Human Genome, and Thus Are Not Chimeric RNAs](http://www.mdpi.com/2073-4425/9/1/40)
-- [FuSpot: a web-based tool for visual evaluation of fusion candidates](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-018-4486-3)
-- [Clinker: visualizing fusion genes detected in RNA-seq data](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6065480/)
-- [Integrative analysis of DNA and RNA sequencing data from cancer](https://www.duo.uio.no/handle/10852/63165)
-- [Clinicopathologic Features of CIC-NUTM1 Sarcomas, a New Molecular Variant of the Family of CIC-Fused Sarcomas](https://journals.lww.com/ajsp/Fulltext/2019/02000/Clinicopathologic_Features_of_CIC_NUTM1_Sarcomas,.15.aspx)
-- [Clinicopathologic and Molecular Features of a Series of 41 Biphenotypic Sinonasal Sarcomas Expanding Their Molecular Spectrum](https://www.ingentaconnect.com/content/wk/ajsp/2019/00000043/00000006/art00003)
-- [Genomic Profiling Of Primary Histiocytic Sarcoma Reveals Two Molecular Subgroups](http://www.haematologica.org/content/early/2019/08/19/haematol.2019.230375.abstract)
-- [Using R and Bioconductor in Clinical Genomics and Transcriptomics](https://www.ncbi.nlm.nih.gov/pubmed/31605800)
-- [annoFuse: an R Package to annotate and prioritize putative oncogenic RNA fusions](https://www.biorxiv.org/content/10.1101/839738v1.abstract)
-- [CRTC1-TRIM11 fusion defined melanocytic tumors: A series of four cases](https://www.ncbi.nlm.nih.gov/pubmed/31237704)
-- [Detailed Molecular and Immune Marker Profiling of Archival Prostate Cancer Samples Reveals an Inverse Association between TMPRSS2:ERG Fusion Status and Immune Cell Infiltration](https://doi.org/10.1016/j.jmoldx.2020.02.012)
-- [FGviewer: an online visualization tool for functional features of human fusion genes](https://academic.oup.com/nar/advance-article/doi/10.1093/nar/gkaa364/5838863)
-- [Molecular characterization of organoids derived from pancreatic intraductal papillary mucinous neoplasms](https://onlinelibrary.wiley.com/doi/abs/10.1002/path.5515)
-- [RNA-sequencing of IDH-wild-type glioblastoma with chromothripsis identifies novel gene fusions with potential oncogenic properties](https://www.sciencedirect.com/science/article/pii/S1936523320303764)
+1. [Alternative PDGFD rearrangements in dermatofibrosarcomas protuberans without PDGFB fusions](https://www.nature.com/articles/s41379-018-0089-4)
+2. [Transcriptional-Readthrough RNAs Reflect the Phenomenon of “A Gene Contains Gene(s)” or “Gene(s) within a Gene” in the Human Genome, and Thus Are Not Chimeric RNAs](http://www.mdpi.com/2073-4425/9/1/40)
+3. [FuSpot: a web-based tool for visual evaluation of fusion candidates](https://bmcgenomics.biomedcentral.com/articles/10.1186/s12864-018-4486-3)
+4. [Clinker: visualizing fusion genes detected in RNA-seq data](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6065480/)
+5. [Integrative analysis of DNA and RNA sequencing data from cancer](https://www.duo.uio.no/handle/10852/63165)
+6. [Clinicopathologic Features of CIC-NUTM1 Sarcomas, a New Molecular Variant of the Family of CIC-Fused Sarcomas](https://journals.lww.com/ajsp/Fulltext/2019/02000/Clinicopathologic_Features_of_CIC_NUTM1_Sarcomas,.15.aspx)
+7. [Clinicopathologic and Molecular Features of a Series of 41 Biphenotypic Sinonasal Sarcomas Expanding Their Molecular Spectrum](https://www.ingentaconnect.com/content/wk/ajsp/2019/00000043/00000006/art00003)
+8. [Genomic Profiling Of Primary Histiocytic Sarcoma Reveals Two Molecular Subgroups](http://www.haematologica.org/content/early/2019/08/19/haematol.2019.230375.abstract)
+9. [Using R and Bioconductor in Clinical Genomics and Transcriptomics](https://www.ncbi.nlm.nih.gov/pubmed/31605800)
+10. [annoFuse: an R Package to annotate and prioritize putative oncogenic RNA fusions](https://www.biorxiv.org/content/10.1101/839738v1.abstract)
+11. [CRTC1-TRIM11 fusion defined melanocytic tumors: A series of four cases](https://www.ncbi.nlm.nih.gov/pubmed/31237704)
+12. [Detailed Molecular and Immune Marker Profiling of Archival Prostate Cancer Samples Reveals an Inverse Association between TMPRSS2:ERG Fusion Status and Immune Cell Infiltration](https://doi.org/10.1016/j.jmoldx.2020.02.012)
+13. [FGviewer: an online visualization tool for functional features of human fusion genes](https://academic.oup.com/nar/advance-article/doi/10.1093/nar/gkaa364/5838863)
+14. [Molecular characterization of organoids derived from pancreatic intraductal papillary mucinous neoplasms](https://onlinelibrary.wiley.com/doi/abs/10.1002/path.5515)
+15. [RNA-sequencing of IDH-wild-type glioblastoma with chromothripsis identifies novel gene fusions with potential oncogenic properties](https://www.sciencedirect.com/science/article/pii/S1936523320303764)
 
 # Demo
 
