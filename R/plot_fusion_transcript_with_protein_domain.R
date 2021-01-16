@@ -775,7 +775,7 @@ plot_fusion_transcript_with_protein_domain <- function(
     dplyr::filter(
       protein_data_gene_upstream,
       protein_domain_location == "inside"
-    )$plot_start,
+    )$plot_end,
     dplyr::filter(
       protein_data_gene_downstream,
       protein_domain_location == "inside"
@@ -785,7 +785,7 @@ plot_fusion_transcript_with_protein_domain <- function(
     dplyr::filter(
       protein_data_gene_upstream,
       protein_domain_location == "inside"
-    )$plot_start,
+    )$Domain_name_abbreviation,
     dplyr::filter(
       protein_data_gene_downstream,
       protein_domain_location == "inside"
