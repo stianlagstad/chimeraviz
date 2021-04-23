@@ -843,27 +843,27 @@ plot_fusion_transcript_with_protein_domain <- function(
   gene_downstream_transcript,
   plot_downstream_protein_domains_if_fusion_is_out_of_frame
 ) {
-  # Establish a new 'ArgCheck' object
-  argument_checker <- ArgumentCheck::newArgCheck()
+  # Establish a new 'AssertCollection' object
+  argument_checker <- checkmate::makeAssertCollection()
 
   # Check parameters
-  argument_checker <- .is_fusion_valid(argument_checker, fusion)
-  argument_checker <- .is_edb_valid(argument_checker, edb, fusion)
-  argument_checker <- .is_bamfile_valid_allow_null(argument_checker, bamfile)
-  argument_checker <- .is_bedfile_valid(argument_checker, bedfile)
-  argument_checker <- .is_character_parameter_valid(
+  .is_fusion_valid(argument_checker, fusion)
+  .is_edb_valid(argument_checker, edb, fusion)
+  .is_bamfile_valid_allow_null(argument_checker, bamfile)
+  .is_bedfile_valid(argument_checker, bedfile)
+  .is_character_parameter_valid(
     argument_checker,
     gene_upstream_transcript,
     "gene_upstream_transcript")
-  argument_checker <- .is_character_parameter_valid(
+  .is_character_parameter_valid(
     argument_checker,
     gene_downstream_transcript,
     "gene_downstream_transcript")
-  argument_checker <- .is_parameter_boolean(
+  .is_parameter_boolean(
     argument_checker,
     plot_downstream_protein_domains_if_fusion_is_out_of_frame,
     "plot_downstream_protein_domains_if_fusion_is_out_of_frame")
 
   # Return errors and warnings (if any)
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(argument_checker)
 }

@@ -354,31 +354,30 @@ plot_fusion_transcript <- function(
   bedgraphfile
 ) {
   # Establish a new 'ArgCheck' object
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
 
   # Check parameters
-  argument_checker <- .is_fusion_valid(argument_checker, fusion)
-  argument_checker <- .is_edb_valid(argument_checker, edb, fusion)
+  .is_fusion_valid(argument_checker, fusion)
+  .is_edb_valid(argument_checker, edb, fusion)
   # Either bamfile or bedgraphfile can be given, not both
   bamfile_given <- !is.null(bamfile)
   bedgraphfile_given <- !is.null(bedgraphfile)
   if (bamfile_given && bedgraphfile_given) {
-    ArgumentCheck::addError(
-      msg = "Either 'bamfile' or 'bedgraphfile' must be given, not both.",
-      argcheck = argument_checker
+    argument_checker$push(
+      "Either 'bamfile' or 'bedgraphfile' must be given, not both."
     )
   }
   if (bamfile_given) {
-    argument_checker <- .is_bamfile_valid(argument_checker, bamfile)
+    .is_bamfile_valid(argument_checker, bamfile)
   }
   if (bedgraphfile_given) {
-    argument_checker <- .is_bedgraphfile_valid(argument_checker, bedgraphfile)
+    .is_bedgraphfile_valid(argument_checker, bedgraphfile)
   }
-  argument_checker <- .is_which_transcripts_valid(
+  .is_which_transcripts_valid(
     argument_checker,
     which_transcripts,
     fusion)
 
   # Return errors and warnings (if any)
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(argument_checker)
 }

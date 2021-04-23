@@ -247,34 +247,33 @@ plot_fusion_reads <- function(
   nucleotide_amount
 ) {
   # Establish a new 'ArgCheck' object
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
 
-  argument_checker <- .is_fusion_valid(argument_checker, fusion)
+  .is_fusion_valid(argument_checker, fusion)
 
   # Check if the Gviz::AlignmentsTrack object in
   # fusion@fusion_reads_alignment actually holds data, and is not just the empty
   # object it is after loading the initial fusion data. In other words, make
   # sure add_fusion_reads_alignment() has been run.
   if (class(fusion@fusion_reads_alignment) != "ReferenceAlignmentsTrack") {
-    ArgumentCheck::addError(
-      msg = paste("fusion@fusion_reads_alignment should hold a",
+    argument_checker$push(
+      paste("fusion@fusion_reads_alignment should hold a",
                   "Gviz::ReferenceAlignmentsTrack object.",
-                  "See add_fusion_reads_alignment()."),
-      argcheck = argument_checker
+                  "See add_fusion_reads_alignment().")
     )
   }
 
-  argument_checker <- .is_parameter_boolean(
+  .is_parameter_boolean(
     argument_checker,
     show_all_nucleotides,
     "show_all_nucleotides")
 
-  argument_checker <- .is_nucleotide_amount_valid(
+  .is_nucleotide_amount_valid(
     argument_checker,
     nucleotide_amount,
     fusion
   )
 
   # Return errors and warnings (if any)
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(argument_checker)
 }

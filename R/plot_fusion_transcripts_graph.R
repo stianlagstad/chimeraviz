@@ -252,13 +252,13 @@ plot_fusion_transcripts_graph <- function(
   which_transcripts,
   rankdir
 ) {
-  # Establish a new 'ArgCheck' object
-  argument_checker <- ArgumentCheck::newArgCheck()
+  # Establish a new 'AssertCollection' object
+  argument_checker <- checkmate::makeAssertCollection()
 
   # Check parameters
-  argument_checker <- .is_fusion_valid(argument_checker, fusion)
-  argument_checker <- .is_edb_valid(argument_checker, edb, fusion)
-  argument_checker <- .is_which_transcripts_valid(
+  .is_fusion_valid(argument_checker, fusion)
+  .is_edb_valid(argument_checker, edb, fusion)
+  .is_which_transcripts_valid(
     argument_checker,
     which_transcripts,
     fusion)
@@ -266,21 +266,19 @@ plot_fusion_transcripts_graph <- function(
   # The "withinExon" option for which_transcripts will not work for the fusion
   # transcripts graph plot. Check if that was the wanted option
   if (which_transcripts[[1]] == "withinExon") {
-    ArgumentCheck::addError(
-      msg = paste0("The \"withinExon\" option for which_transcripts will not ",
-                   "work for the fusion transcripts graph plot, as only ",
-                   "complete exons can be shown."),
-      argcheck = argument_checker
+    argument_checker$push(
+      paste0("The \"withinExon\" option for which_transcripts will not ",
+             "work for the fusion transcripts graph plot, as only ",
+             "complete exons can be shown.")
     )
   }
 
   if (class(rankdir) != "character" || !rankdir %in% c("LR", "TB")) {
-    ArgumentCheck::addError(
-      msg = "'rankdir' must be one of \"LR\" or \"TB\"",
-      argcheck = argument_checker
+    argument_checker$push(
+      "'rankdir' must be one of \"LR\" or \"TB\""
     )
   }
 
   # Return errors and warnings (if any)
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(argument_checker)
 }

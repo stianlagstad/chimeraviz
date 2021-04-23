@@ -56,7 +56,7 @@ Imports:
     plyr,
     dplyr,
     BiocStyle,
-    ArgumentCheck,
+    checkmate,
     gtools,
     magick
 Depends:

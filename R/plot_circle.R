@@ -304,53 +304,37 @@ plot_circle <- function(fusion_list) {
 .validate_plot_circle_params <- function(
   fusion_list
 ) {
-  # Establish a new 'ArgCheck' object
-  argument_checker <- ArgumentCheck::newArgCheck()
+  # Establish a new 'checkmate' object
+  coll <- checkmate::makeAssertCollection()
 
   # Check input type and length
-  if (
-    !is.list(fusion_list) ||
-      length(fusion_list) == 0
-  ) {
-    ArgumentCheck::addError(
-      msg = "'fusion_list' must be a list of fusion objects",
-      argcheck = argument_checker
-    )
-  }
-  # Check that all the items in the input list are fusion objects
-  for (i in seq_along(fusion_list)) {
-    if (class(fusion_list[[i]]) != "Fusion") {
-      ArgumentCheck::addError(
-        msg = "'fusionList' must be a list of fusion objects",
-        argcheck = argument_checker
-      )
-      break
-    }
-  }
+  # Cehck that all the items in the input list are fusion objects
+  checkmate::assert_list(x = fusion_list,
+                         min.len = 1,
+                         types = "Fusion")
 
   # Validate that the first fusion object has a valid genome
   genome_of_first_fusion <- fusion_list[[1]]@genome_version
   if (!genome_of_first_fusion %in% list("hg19", "hg38", "mm10")) {
-    ArgumentCheck::addError(
-      msg = paste0(
+    coll$push(
+      paste0(
         "Invalid input. genomeVersion must be either \"hg19\", \"hg38\" or ",
         "\"mm10\"."
-      ),
-      argcheck = argument_checker
+      )
     )
   }
+
   # Validate that all the fusions have the same genome
-  for (i in seq_along(fusion_list)) {
-    if (!fusion_list[[i]]@genome_version == genome_of_first_fusion) {
-      ArgumentCheck::addError(
-        msg = paste0(
-          "All Fusion objects in the fusion_list must have the same genome."
-        ),
-        argcheck = argument_checker
+  genome_version <- sapply(seq_along(fusion_list),
+                           function(fl) fusion_list[[fl]]@genome_version)
+  if (any(genome_version != genome_of_first_fusion)){
+    coll$push(
+      paste0(
+        "All Fusion objects in the fusion_list must have the same genome."
       )
-    }
+    )
   }
 
   # Return errors and warnings (if any)
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(coll)
 }
