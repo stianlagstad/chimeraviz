@@ -43,7 +43,7 @@ create_fusion_report <- function(
   }
 
   # Full path to the output file
-  output_path = paste0(getwd(), "/", output_filename)
+  output_path <- paste0(getwd(), "/", output_filename)
 
   # Get reference to the fusion list report file
   fusion_report_rmd <- system.file(

@@ -353,7 +353,7 @@ plot_fusion_transcript <- function(
   which_transcripts,
   bedgraphfile
 ) {
-  # Establish a new 'ArgCheck' object
+  # Establish a new 'checkmate' object
   argument_checker <- checkmate::makeAssertCollection()
 
   # Check parameters

@@ -80,7 +80,6 @@ import_chimpipe <- function(filename, genome_version, limit) {
   fusion_tool          <- "ChimPipe"
   spanning_reads_count <- NA
   split_reads_count    <- NA
-  junction_sequence    <- NA
 
   # List to hold all Fusion objects
   fusion_list <- vector("list", dim(report)[1])
@@ -200,7 +199,7 @@ import_chimpipe <- function(filename, genome_version, limit) {
 
   upstream <- unlist(strsplit(parts_gene_upstream, split = "_"))
   downstream <- unlist(strsplit(parts_gene_downstream, split = "_"))
-  
+
   if (length(upstream) != 3) {
     stop(paste0("Unable to parse 'junccoord':", junccoord))
   }

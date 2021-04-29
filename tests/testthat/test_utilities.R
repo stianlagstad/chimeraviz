@@ -128,15 +128,15 @@ test_that(
     "in the Fusion object"
   ), {
   # Create a Fusion object with no fusion junction sequences
-  fusion_no_Junc_seq <- fusion
-  fusion_no_Junc_seq@gene_upstream@junction_sequence <-
+  fusion_no_junc_seq <- fusion
+  fusion_no_junc_seq@gene_upstream@junction_sequence <-
     Biostrings::DNAString("")
-  fusion_no_Junc_seq@gene_downstream@junction_sequence <-
+  fusion_no_junc_seq@gene_downstream@junction_sequence <-
     Biostrings::DNAString("")
   # Create temporary file to hold the fusion sequence
   fasta_file_out <- tempfile(pattern = "fq1", tmpdir = tempdir())
   # Call the function
-  expect_error(write_fusion_reference(fusion_no_Junc_seq, fasta_file_out))
+  expect_error(write_fusion_reference(fusion_no_junc_seq, fasta_file_out))
 })
 
 test_that("add_fusion_reads_alignment works as expected", {
@@ -261,41 +261,41 @@ test_that("down_shift works as expected", {
 
 test_that(".is_fusion_valid works as expected", {
   # valid case
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_fusion_valid(argument_checker, fusion)
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(argument_checker)
   # error case
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_fusion_valid(argument_checker, "fusion")
   expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
+    checkmate::reportAssertions(argument_checker)
   )
 })
 
 test_that(".is_edb_valid works as expected", {
   # valid cases
 
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_edb_valid(argument_checker, edb)
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(argument_checker)
 
   fusion@gene_upstream@transcripts[[1]] <- GRanges(1, 2)
   fusion@gene_downstream@transcripts[[1]] <- GRanges(1, 2)
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_edb_valid(argument_checker, NULL, fusion)
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(argument_checker)
 
   # error case
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_edb_valid(argument_checker, "edb")
   expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
+    checkmate::reportAssertions(argument_checker)
   )
 })
 
 test_that(".is_bamfile_valid works as expected", {
   # valid case
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_bamfile_valid(
     argument_checker,
     system.file(
@@ -304,50 +304,50 @@ test_that(".is_bamfile_valid works as expected", {
       package = "chimeraviz"
     )
   )
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(argument_checker)
 
   # error cases
 
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_bamfile_valid(argument_checker, "edb")
   expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
+    checkmate::reportAssertions(argument_checker)
   )
 
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_bamfile_valid(argument_checker, "")
   expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
+    checkmate::reportAssertions(argument_checker)
   )
 })
 
 test_that(".is_bedfile_valid works as expected", {
   # valid case
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_bedfile_valid(
     argument_checker,
     system.file("extdata", "protein_domains_5267.bed", package = "chimeraviz")
   )
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(argument_checker)
 
   # error cases
 
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_bedfile_valid(argument_checker, "edb")
   expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
+    checkmate::reportAssertions(argument_checker)
   )
 
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_bedfile_valid(argument_checker, "")
   expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
+    checkmate::reportAssertions(argument_checker)
   )
 })
 
 test_that(".is_bedgraphfile_valid works as expected", {
   # valid case
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_bedgraphfile_valid(
     argument_checker,
     system.file(
@@ -356,27 +356,27 @@ test_that(".is_bedgraphfile_valid works as expected", {
       package = "chimeraviz"
     )
   )
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(argument_checker)
 
   # error cases
 
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_bedgraphfile_valid(argument_checker, "edb")
   expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
+    checkmate::reportAssertions(argument_checker)
   )
 
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_bedgraphfile_valid(argument_checker, "")
   expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
+    checkmate::reportAssertions(argument_checker)
   )
 })
 
 test_that(".is_bamfile_bedgraphfile_valid works as expected", {
   # valid cases
 
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_bamfile_bedgraphfile_valid(
     argument_checker,
     NULL,
@@ -386,9 +386,9 @@ test_that(".is_bamfile_bedgraphfile_valid works as expected", {
       package = "chimeraviz"
     )
   )
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(argument_checker)
 
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_bamfile_bedgraphfile_valid(
     argument_checker,
     system.file(
@@ -398,19 +398,19 @@ test_that(".is_bamfile_bedgraphfile_valid works as expected", {
     ),
     NULL
   )
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(argument_checker)
 
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_bamfile_bedgraphfile_valid(
     argument_checker,
     NULL,
     NULL
   )
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(argument_checker)
 
   # error cases
 
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_bamfile_bedgraphfile_valid(
     argument_checker,
     system.file(
@@ -425,88 +425,88 @@ test_that(".is_bamfile_bedgraphfile_valid works as expected", {
     )
   )
   expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
+    checkmate::reportAssertions(argument_checker)
   )
 })
 
 test_that(".is_which_transcripts_valid works as expected", {
   # error cases
 
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_which_transcripts_valid(
     argument_checker,
     42,
     fusion
   )
   expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
+    checkmate::reportAssertions(argument_checker)
   )
 
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_which_transcripts_valid(
     argument_checker,
     "yolo",
     fusion
   )
   expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
+    checkmate::reportAssertions(argument_checker)
   )
 })
 
 test_that(".is_ylim_valid works as expected", {
   # ylim invalid length
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_ylim_valid(argument_checker, c(1))
   expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
+    checkmate::reportAssertions(argument_checker)
   )
 
   # ylim valid length
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_ylim_valid(argument_checker, c(1, 2))
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(argument_checker)
 })
 
 test_that(".is_parameter_boolean is works as expected", {
   # error case
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_parameter_boolean(
     argument_checker,
     42,
     "the answer"
   )
   expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
+    checkmate::reportAssertions(argument_checker)
   )
 })
 
 test_that(".is_character_parameter_valid is works as expected", {
   # error case
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_character_parameter_valid(
     argument_checker,
     42,
     "the answer"
   )
   expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
+    checkmate::reportAssertions(argument_checker)
   )
 })
 
 test_that(".is_nucleotide_amount_valid works as expected", {
   # error cases
 
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_nucleotide_amount_valid(
     argument_checker,
     -1,
     fusion
   )
   expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
+    checkmate::reportAssertions(argument_checker)
   )
 
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_nucleotide_amount_valid(
     argument_checker,
     length(fusion@gene_upstream@junction_sequence) +
@@ -514,19 +514,19 @@ test_that(".is_nucleotide_amount_valid works as expected", {
     fusion
   )
   expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
+    checkmate::reportAssertions(argument_checker)
   )
 
   # Expect error when the fusion junction sequence is empty
   fusion@gene_upstream@junction_sequence <- Biostrings::DNAString()
   fusion@gene_downstream@junction_sequence <- Biostrings::DNAString()
-  argument_checker <- ArgumentCheck::newArgCheck()
+  argument_checker <- checkmate::makeAssertCollection()
   argument_checker <- .is_nucleotide_amount_valid(
     argument_checker,
     1,
     fusion
   )
   expect_error(
-    ArgumentCheck::finishArgCheck(argument_checker)
+    checkmate::reportAssertions(argument_checker)
   )
 })

@@ -84,7 +84,6 @@ import_squid <- function(filename, genome_version, limit) {
   fusion_tool          <- "SQUID"
   spanning_reads_count <- NA
   split_reads_count    <- NA
-  junction_sequence    <- NA
 
   # List to hold all Fusion objects
   fusion_list <- vector("list", dim(report)[1])
@@ -95,8 +94,10 @@ import_squid <- function(filename, genome_version, limit) {
     # Import defuse-specific fields
     fusion_tool_specific_data <- list()
     fusion_tool_specific_data[["score"]] <- report[[i, "score"]]
-    fusion_tool_specific_data[["score"]] <- report[[i, "num_concordantfrag_bp1"]]
-    fusion_tool_specific_data[["score"]] <- report[[i, "num_concordantfrag_bp2"]]
+    fusion_tool_specific_data[["score"]] <-
+      report[[i, "num_concordantfrag_bp1"]]
+    fusion_tool_specific_data[["score"]] <-
+      report[[i, "num_concordantfrag_bp2"]]
 
     # Fusion id
     id <- as.character(i)

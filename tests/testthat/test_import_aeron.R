@@ -3,11 +3,11 @@ context("Test importing Aeron data into a list of Fusion objects")
 aeronfusionsupportfile <- system.file(
  "extdata",
  "aeron_fusion_support.txt",
- package="chimeraviz")
+ package = "chimeraviz")
 aeronfusiontranscriptfile <- system.file(
  "extdata",
  "aeron_fusion_transcripts.fa",
- package="chimeraviz")
+ package = "chimeraviz")
 fusions <- import_aeron(
   aeronfusionsupportfile,
   aeronfusiontranscriptfile,

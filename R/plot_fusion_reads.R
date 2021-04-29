@@ -246,7 +246,7 @@ plot_fusion_reads <- function(
   show_all_nucleotides,
   nucleotide_amount
 ) {
-  # Establish a new 'ArgCheck' object
+  # Establish a new 'checkmate' object
   argument_checker <- checkmate::makeAssertCollection()
 
   .is_fusion_valid(argument_checker, fusion)

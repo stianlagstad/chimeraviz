@@ -1100,6 +1100,7 @@ down_shift <- function(transcript) {
   checkmate::assert_class(x = fusion,
                           classes = "Fusion",
                           add = argument_checker)
+  argument_checker
 }
 
 .is_edb_valid <- function(argument_checker, edb, fusion) {
@@ -1122,6 +1123,7 @@ down_shift <- function(transcript) {
       )
     }
   }
+  argument_checker
 }
 
 .is_bamfile_valid_allow_null <- function(argument_checker, bamfile) {
@@ -1129,6 +1131,7 @@ down_shift <- function(transcript) {
     checkmate::assert_file_exists(x = bamfile,
                                   add = argument_checker)
   }
+  argument_checker
 }
 
 .is_bamfile_valid <- function(argument_checker, bamfile) {
@@ -1143,6 +1146,7 @@ down_shift <- function(transcript) {
     checkmate::assert_file_exists(x = bamfile,
                                   add = argument_checker)
   }
+  argument_checker
 }
 
 .is_bedfile_valid <- function(argument_checker, bedfile) {
@@ -1155,6 +1159,7 @@ down_shift <- function(transcript) {
     checkmate::assert_file_exists(x = bedfile,
                                   add = argument_checker)
   }
+  argument_checker
 }
 
 .is_bedgraphfile_valid <- function(argument_checker, bedgraphfile) {
@@ -1167,6 +1172,7 @@ down_shift <- function(transcript) {
     checkmate::assert_file_exists(x = bedgraphfile,
                                   add = argument_checker)
   }
+  argument_checker
 }
 
 .is_bamfile_bedgraphfile_valid <- function(
@@ -1187,6 +1193,7 @@ down_shift <- function(transcript) {
   } else {
     .is_bedgraphfile_valid(argument_checker, bedgraphfile)
   }
+  argument_checker
 }
 
 .is_which_transcripts_valid <- function(
@@ -1222,6 +1229,7 @@ down_shift <- function(transcript) {
       )
     }
   }
+  argument_checker
 }
 
 .is_ylim_valid <- function(argument_checker, ylim) {
@@ -1230,6 +1238,7 @@ down_shift <- function(transcript) {
       "'ylim' must be a numeric vector of length 2"
     )
   }
+  argument_checker
 }
 
 .is_parameter_boolean <- function(
@@ -1240,6 +1249,7 @@ down_shift <- function(transcript) {
   checkmate::assert_logical(x = parameter,
                             .var.name = parameter_name,
                             add = argument_checker)
+  argument_checker
 }
 
 .is_character_parameter_valid <- function(
@@ -1250,6 +1260,7 @@ down_shift <- function(transcript) {
   checkmate::assert_character(x = parameter,
                               .var.name = parameter_name,
                               add = argument_checker)
+  argument_checker
 }
 
 .is_nucleotide_amount_valid <- function(
@@ -1281,13 +1292,14 @@ down_shift <- function(transcript) {
       )
     )
   }
+  argument_checker
 }
 
 # End of functions that validate parameters passed to functions in chimeraviz
 # -----------------------------------------------------------------------------
 
 .get_transcripts_if_not_there <- function(fusion, edb) {
-  # Establish a new 'ArgCheck' object
+  # Establish a new 'checkmate' object
   argument_checker <- checkmate::makeAssertCollection()
   # Check parameters
   argument_checker <- .is_fusion_valid(argument_checker, fusion)

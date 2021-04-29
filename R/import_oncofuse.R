@@ -2,7 +2,7 @@
 #'
 #' A function that imports the results from a oncofuse run, typically from a
 #' results.filtered.tsv file, into a list of Fusion objects.
-#' 
+#'
 #' This import function was contributed by Lavinia G, ref
 #' https://github.com/stianlagstad/chimeraviz/issues/47#issuecomment-409773158
 #'
@@ -21,7 +21,7 @@
 #' # This should import a list of 3 fusions described in Fusion objects.
 #'
 #' @export
-import_oncofuse <- function (filename, genome_version, limit) {
+import_oncofuse <- function(filename, genome_version, limit) {
 
   # Is the genome version valid?
   valid_genomes <- c("hg19", "hg38", "mm10")

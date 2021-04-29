@@ -1639,7 +1639,7 @@ plot_fusion_together <- function(
 #' @param selection Which regions to get from the bamfile.
 #'
 #' @return A GRanges object with coverage data for the selection.
-import_function_non_ucsc <- function (file, selection) {
+import_function_non_ucsc <- function(file, selection) {
 
   ind_names <- c(sub("\\.bam$", ".bai", file), paste(file,
                                                     "bai", sep = "."))
@@ -1745,9 +1745,8 @@ import_function_non_ucsc <- function (file, selection) {
   reduce_transcripts = FALSE,
   bedgraphfile
 ) {
-  # Establish a new 'ArgCheck' object
+  # Establish a new 'checkmate' object
   argument_checker <- checkmate::makeAssertCollection()
-  # argument_checker <- ArgumentCheck::newArgCheck()
 
   # Check parameters
   .is_fusion_valid(argument_checker, fusion)

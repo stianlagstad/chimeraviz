@@ -18,11 +18,11 @@
 #'   package = "chimeraviz")
 #' fusions <- import_starfusion(starfusionData, "hg19", 3)
 #' # This should import a list of 3 fusions described in Fusion objects.
-#' 
+#'
 #' @importFrom data.table fread
 #'
 #' @export
-import_starfusion <- function (filename, genome_version, limit) {
+import_starfusion <- function(filename, genome_version, limit) {
 
   # Is the genome version valid?
   valid_genomes <- c("hg19", "hg38", "mm10")
@@ -110,15 +110,16 @@ import_starfusion <- function (filename, genome_version, limit) {
       report[[i, "FFPM"]]
 
     # Optional extra fields:
-    if(!is.null(report[[i, "PROT_FUSION_TYPE"]])) {
-      fusion_tool_specific_data[["PROT_FUSION_TYPE"]] <- report[[i, "PROT_FUSION_TYPE"]]
-      if (report[[i, "PROT_FUSION_TYPE"]] == 'INFRAME') {
+    if (!is.null(report[[i, "PROT_FUSION_TYPE"]])) {
+      fusion_tool_specific_data[["PROT_FUSION_TYPE"]] <-
+        report[[i, "PROT_FUSION_TYPE"]]
+      if (report[[i, "PROT_FUSION_TYPE"]] == "INFRAME") {
         inframe <- TRUE
-      } else if (report[[i, "PROT_FUSION_TYPE"]] == 'FRAMESHIFT') {
+      } else if (report[[i, "PROT_FUSION_TYPE"]] == "FRAMESHIFT") {
         inframe <- FALSE
       }
     }
-    if(!is.null(report[[i, "annots"]])) {
+    if (!is.null(report[[i, "annots"]])) {
       fusion_tool_specific_data[["annots"]] <- report[[i, "annots"]]
     }
 
@@ -147,7 +148,7 @@ import_starfusion <- function (filename, genome_version, limit) {
     spanning_reads_count <- report[[i, "SpanningFragCount"]]
 
     # Fusion sequence. Ref https://github.com/stianlagstad/chimeraviz/pull/23
-    if(!is.null(report[[i, "FUSION_CDS"]])) {
+    if (!is.null(report[[i, "FUSION_CDS"]])) {
       junction_sequence_upstream <- Biostrings::DNAString(
         gsub("[A-Z]+$", "", report[[i, "FUSION_CDS"]])
       )
