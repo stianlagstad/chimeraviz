@@ -1639,7 +1639,7 @@ plot_fusion_together <- function(
 #' @param selection Which regions to get from the bamfile.
 #'
 #' @return A GRanges object with coverage data for the selection.
-import_function_non_ucsc <- function (file, selection) {
+import_function_non_ucsc <- function(file, selection) {
 
   ind_names <- c(sub("\\.bam$", ".bai", file), paste(file,
                                                     "bai", sep = "."))
@@ -1745,31 +1745,31 @@ import_function_non_ucsc <- function (file, selection) {
   reduce_transcripts = FALSE,
   bedgraphfile
 ) {
-  # Establish a new 'ArgCheck' object
-  argument_checker <- ArgumentCheck::newArgCheck()
+  # Establish a new 'checkmate' object
+  argument_checker <- checkmate::makeAssertCollection()
 
   # Check parameters
-  argument_checker <- .is_fusion_valid(argument_checker, fusion)
-  argument_checker <- .is_edb_valid(argument_checker, edb, fusion)
-  argument_checker <- .is_bamfile_bedgraphfile_valid(
+  .is_fusion_valid(argument_checker, fusion)
+  .is_edb_valid(argument_checker, edb, fusion)
+  .is_bamfile_bedgraphfile_valid(
     argument_checker,
     bamfile,
     bedgraphfile
   )
-  argument_checker <- .is_which_transcripts_valid(
+  .is_which_transcripts_valid(
     argument_checker,
     which_transcripts,
     fusion)
-  argument_checker <- .is_ylim_valid(argument_checker, ylim)
-  argument_checker <- .is_parameter_boolean(
+  .is_ylim_valid(argument_checker, ylim)
+  .is_parameter_boolean(
     argument_checker,
     non_ucsc,
     "non_ucsc")
-  argument_checker <- .is_parameter_boolean(
+  .is_parameter_boolean(
     argument_checker,
     reduce_transcripts,
     "reduce_transcripts")
 
   # Return errors and warnings (if any)
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(argument_checker)
 }

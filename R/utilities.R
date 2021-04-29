@@ -1097,39 +1097,29 @@ down_shift <- function(transcript) {
 
 .is_fusion_valid <- function(argument_checker, fusion) {
   # Check if we got a fusion object
-  if (class(fusion) != "Fusion") {
-    ArgumentCheck::addError(
-      msg = "'fusion' argument must be an object of type Fusion",
-      argcheck = argument_checker
-    )
-  }
+  checkmate::assert_class(x = fusion,
+                          classes = "Fusion",
+                          add = argument_checker)
   argument_checker
 }
 
 .is_edb_valid <- function(argument_checker, edb, fusion) {
-  if (!is.null(edb)) {
-    # If we got an edb object, check its validity
-    if (class(edb) != "EnsDb") {
-      ArgumentCheck::addError(
-        msg = "'edb' argument must be an object of type EnsDb",
-        argcheck = argument_checker
-      )
-    }
+  if (!is.null(edb)){
+    checkmate::assert_class(x = edb,
+                            classes = "EnsDb",
+                            add = argument_checker)
   } else {
-    # If edb is not given then the fusion should have transcripts for both genes
     if (isEmpty(fusion@gene_upstream@transcripts)) {
-      ArgumentCheck::addError(
-        msg = paste0("There are no transcipts for gene A. Please provide an ",
+      argument_checker$push(
+        paste0("There are no transcipts for gene A. Please provide an ",
                      "EnsDb object to the edb parameter, or see",
-                     "get_transcripts_ensembl_db()."),
-        argcheck = argument_checker
+               "get_transcripts_ensembl_db().")
       )
     } else if (isEmpty(fusion@gene_downstream@transcripts)) {
-      ArgumentCheck::addError(
-        msg = paste0("There are no transcipts for gene B. Please provide an ",
-                     "EnsDb object to the edb parameter, or see",
-                     "get_transcripts_ensembl_db()."),
-        argcheck = argument_checker
+      argument_checker$push(
+        paste0("There are no transcipts for gene B. Please provide an ",
+               "EnsDb object to the edb parameter, or see",
+               "get_transcripts_ensembl_db().")
       )
     }
   }
@@ -1137,15 +1127,9 @@ down_shift <- function(transcript) {
 }
 
 .is_bamfile_valid_allow_null <- function(argument_checker, bamfile) {
-  # Check that the argument is given
-  if (!is.null(bamfile)) {
-    # Check that the file exists
-    if (!file.exists(bamfile)) {
-      ArgumentCheck::addError(
-        msg = "The given 'bamfile' does not exist.",
-        argcheck = argument_checker
-      )
-    }
+  if (!is.null(bamfile)){
+    checkmate::assert_file_exists(x = bamfile,
+                                  add = argument_checker)
   }
   argument_checker
 }
@@ -1153,17 +1137,14 @@ down_shift <- function(transcript) {
 .is_bamfile_valid <- function(argument_checker, bamfile) {
   # Check that the argument is given
   if (is.null(bamfile)) {
-    ArgumentCheck::addError(
-      msg = "'bamfile' must be the path to a .BAM file.",
-      argcheck = argument_checker
+    argument_checker$push(
+      "'bamfile' must be the path to a .BAM file."
     )
   }
   # Check that the file exists
-  if (!file.exists(bamfile)) {
-    ArgumentCheck::addError(
-      msg = "The given 'bamfile' does not exist.",
-      argcheck = argument_checker
-    )
+  if (!is.null(bamfile)) {
+    checkmate::assert_file_exists(x = bamfile,
+                                  add = argument_checker)
   }
   argument_checker
 }
@@ -1171,17 +1152,12 @@ down_shift <- function(transcript) {
 .is_bedfile_valid <- function(argument_checker, bedfile) {
   # Check that the argument is given
   if (is.null(bedfile)) {
-    ArgumentCheck::addError(
-      msg = "'bedfile' must be the path to a .BED file.",
-      argcheck = argument_checker
-    )
+    argument_checker$push("'bedfile' must be the path to a .BED file.")
   }
   # Check that the file exists
-  if (!file.exists(bedfile)) {
-    ArgumentCheck::addError(
-      msg = "The given 'bedfile' does not exist.",
-      argcheck = argument_checker
-    )
+  if (!is.null(bedfile)) {
+    checkmate::assert_file_exists(x = bedfile,
+                                  add = argument_checker)
   }
   argument_checker
 }
@@ -1189,17 +1165,12 @@ down_shift <- function(transcript) {
 .is_bedgraphfile_valid <- function(argument_checker, bedgraphfile) {
   # Check that the argument is given
   if (is.null(bedgraphfile)) {
-    ArgumentCheck::addError(
-      msg = "'bedgraphfile' must be the path to a .bedGraph file.",
-      argcheck = argument_checker
-    )
+    argument_checker$push("'bedgraphfile' must be the path to a .bedGraph file.")
   }
   # Check that the file exists
-  if (!file.exists(bedgraphfile)) {
-    ArgumentCheck::addError(
-      msg = "The given 'bedgraphfile' does not exist.",
-      argcheck = argument_checker
-    )
+  if (!is.null(bedgraphfile)) {
+    checkmate::assert_file_exists(x = bedgraphfile,
+                                  add = argument_checker)
   }
   argument_checker
 }
@@ -1212,16 +1183,15 @@ down_shift <- function(transcript) {
   bamfile_given <- !is.null(bamfile)
   bedgraphfile_given <- !is.null(bedgraphfile)
   if (bamfile_given && bedgraphfile_given) {
-    ArgumentCheck::addError(
-      msg = "Either 'bamfile' or 'bedgraphfile' must be given, not both.",
-      argcheck = argument_checker
+    argument_checker$push(
+      "Either 'bamfile' or 'bedgraphfile' must be given, not both."
     )
   } else if (!bamfile_given && !bedgraphfile_given) {
     # It is OK to not give any of them
   } else if (bamfile_given) {
-    argument_checker <- .is_bamfile_valid(argument_checker, bamfile)
+    .is_bamfile_valid(argument_checker, bamfile)
   } else {
-    argument_checker <- .is_bedgraphfile_valid(argument_checker, bedgraphfile)
+    .is_bedgraphfile_valid(argument_checker, bedgraphfile)
   }
   argument_checker
 }
@@ -1232,11 +1202,10 @@ down_shift <- function(transcript) {
   fusion
 ) {
   if (class(which_transcripts) != "character") {
-    ArgumentCheck::addError(
-      msg = paste0("'which_transcripts' must be a character (or a character ",
-                   "vector) holding the desired transcript category or the ",
-                   "names of specific transcripts."),
-      argcheck = argument_checker
+    argument_checker$push(
+      paste0("'which_transcripts' must be a character (or a character ",
+             "vector) holding the desired transcript category or the ",
+             "names of specific transcripts.")
     )
   }
   # Is which_transcripts valid?
@@ -1254,10 +1223,9 @@ down_shift <- function(transcript) {
       !which_transcripts[[i]] %in% names(fusion@gene_upstream@transcripts) &&
       !which_transcripts[[i]] %in% names(fusion@gene_downstream@transcripts)
     ) {
-      ArgumentCheck::addError(
-        msg = paste0("No transcript with name ", which_transcripts[[i]],
-                     " was found."),
-        argcheck = argument_checker
+      argument_checker$push(
+        paste0("No transcript with name ", which_transcripts[[i]],
+               " was found.")
       )
     }
   }
@@ -1266,9 +1234,8 @@ down_shift <- function(transcript) {
 
 .is_ylim_valid <- function(argument_checker, ylim) {
   if (class(ylim) != "numeric" || length(ylim) != 2) {
-    ArgumentCheck::addError(
-      msg = "'ylim' must be a numeric vector of length 2",
-      argcheck = argument_checker
+    argument_checker$push(
+      "'ylim' must be a numeric vector of length 2"
     )
   }
   argument_checker
@@ -1279,12 +1246,9 @@ down_shift <- function(transcript) {
   parameter,
   parameter_name
 ) {
-  if (class(parameter) != "logical") {
-    ArgumentCheck::addError(
-      msg = paste0("'", parameter_name, "'", " must be a boolean."),
-      argcheck = argument_checker
-    )
-  }
+  checkmate::assert_logical(x = parameter,
+                            .var.name = parameter_name,
+                            add = argument_checker)
   argument_checker
 }
 
@@ -1293,13 +1257,9 @@ down_shift <- function(transcript) {
   parameter,
   parameter_name
 ) {
-  if (class(parameter) != "character") {
-    ArgumentCheck::addError(
-      msg = paste0("'", parameter_name, "'", " must be a character vector of ",
-                   "length 1 (meaning that it's just a single string)."),
-      argcheck = argument_checker
-    )
-  }
+  checkmate::assert_character(x = parameter,
+                              .var.name = parameter_name,
+                              add = argument_checker)
   argument_checker
 }
 
@@ -1316,25 +1276,22 @@ down_shift <- function(transcript) {
   if (class(nucleotide_amount) != "numeric" ||
       nucleotide_amount <= 0 ||
       nucleotide_amount > fusion_junction_sequence_length) {
-    ArgumentCheck::addError(
-      msg = paste0(
+    argument_checker$push(
+      paste0(
         "'nucleotide_amount' must be a numeric bigger than or equal ",
         "to 0 and less than or equal to the fusion junction ",
         "sequence length."
-      ),
-      argcheck = argument_checker
+      )
     )
   }
 
   if (fusion_junction_sequence_length == 0) {
-    ArgumentCheck::addError(
+    argument_checker$push(
       msg = paste0(
         "length of junction sequence is 0, have they been determined?"
-      ),
-      argcheck = argument_checker
+      )
     )
   }
-
   argument_checker
 }
 
@@ -1342,13 +1299,13 @@ down_shift <- function(transcript) {
 # -----------------------------------------------------------------------------
 
 .get_transcripts_if_not_there <- function(fusion, edb) {
-  # Establish a new 'ArgCheck' object
-  argument_checker <- ArgumentCheck::newArgCheck()
+  # Establish a new 'checkmate' object
+  argument_checker <- checkmate::makeAssertCollection()
   # Check parameters
   argument_checker <- .is_fusion_valid(argument_checker, fusion)
   argument_checker <- .is_edb_valid(argument_checker, edb, fusion)
   # Return errors and warnings (if any)
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(argument_checker)
 
   if (
     isEmpty(fusion@gene_upstream@transcripts) ||

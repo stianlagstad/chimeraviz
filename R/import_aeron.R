@@ -2,7 +2,7 @@
 #'
 #' A function that imports the results from an Aeron run into a list of Fusion
 #' objects.
-#' 
+#'
 #' Note that the strands and breakpoint positions are not included in the
 #' result files from Aeron. These have to be retrieved manually, using the
 #' ensembl identifiers (which are included in the result files, and will be
@@ -102,7 +102,6 @@ import_aeron <- function(
   fusion_tool          <- "Aeron"
   spanning_reads_count <- NA
   split_reads_count    <- NA
-  junction_sequence    <- NA
 
   # List to hold all Fusion objects
   fusion_list <- vector("list", dim(report)[1])
@@ -112,7 +111,7 @@ import_aeron <- function(
 
     # Import defuse-specific fields
     fusion_tool_specific_data <- list()
-    
+
     parsed_data <- .aeron_parse_data(report[[i, 1]])
 
     # Fusion id
@@ -225,7 +224,7 @@ import_aeron <- function(
   filename_fusion_transcript
 ) {
   # Hashmap to hold all transcript data
-  fusion_transcript_data_map <- new.env(hash=T, parent=emptyenv())
+  fusion_transcript_data_map <- new.env(hash = T, parent = emptyenv())
 
   # Read the .fa file
   dna = Biostrings::readDNAStringSet(filename_fusion_transcript)

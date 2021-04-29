@@ -16,11 +16,11 @@
 #'   package = "chimeraviz")
 #' fusions <- import_ericscript(ericscriptData, "hg19", 3)
 #' # This should import a list of 3 fusions described in Fusion objects.
-#' 
+#'
 #' @importFrom data.table fread
 #'
 #' @export
-import_ericscript <- function (filename, genome_version, limit) {
+import_ericscript <- function(filename, genome_version, limit) {
 
   # Is the genome version valid?
   valid_genomes <- c("hg19", "hg38", "mm10")

@@ -55,7 +55,7 @@ test_that("plot_fusion_reads with show_all_nucleotides=FALSE produces a png file
   # Open device
   png(png_filename, width = image_width, height = image_height)
   # Now we can plot
-  plot_fusion_reads(fusion, show_all_nucleotides=FALSE)
+  plot_fusion_reads(fusion, show_all_nucleotides = FALSE)
   # Close device
   dev.off()
   # See if we actually produced a file with size > 0

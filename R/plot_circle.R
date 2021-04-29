@@ -51,9 +51,9 @@ if (length(the_list) <= 1) {
   chrom_start <- vector(mode = "numeric", length = length(fusion_list))
   chrom_end <- vector(mode = "numeric", length = length(fusion_list))
 
-  chromosome.1 <- vector(mode = "character", length = length(fusion_list))
-  chrom_start.1 <- vector(mode = "numeric", length = length(fusion_list))
-  chrom_end.1 <- vector(mode = "numeric", length = length(fusion_list))
+  chromosome_1 <- vector(mode = "character", length = length(fusion_list))
+  chrom_start_1 <- vector(mode = "numeric", length = length(fusion_list))
+  chrom_end_1 <- vector(mode = "numeric", length = length(fusion_list))
 
   link_width <- vector(mode = "numeric", length = length(fusion_list))
 
@@ -65,10 +65,10 @@ if (length(the_list) <= 1) {
     # This value shouldn't matter:
     chrom_end[[i]] <- fusion@gene_upstream@breakpoint + 1
 
-    chromosome.1[[i]] <- fusion@gene_downstream@chromosome
-    chrom_start.1[[i]] <- fusion@gene_downstream@breakpoint
+    chromosome_1[[i]] <- fusion@gene_downstream@chromosome
+    chrom_start_1[[i]] <- fusion@gene_downstream@breakpoint
     # This value shouldn't matter:
-    chrom_end.1[[i]] <- fusion@gene_downstream@breakpoint + 1
+    chrom_end_1[[i]] <- fusion@gene_downstream@breakpoint + 1
 
     # Set link width = number of spanning+split reads supporting fusion
     link_width[[i]] <- fusion@spanning_reads_count + fusion@split_reads_count
@@ -86,9 +86,9 @@ if (length(the_list) <= 1) {
   data.frame(chromosome,
              chrom_start,
              chrom_end,
-             chromosome.1,
-             chrom_start.1,
-             chrom_end.1,
+             chromosome_1,
+             chrom_start_1,
+             chrom_end_1,
              link_width)
 }
 
@@ -213,15 +213,15 @@ plot_circle <- function(fusion_list) {
   )
 
   # Initialize components
-  cyto.info <- cytoband
-  chr.exclude <- NULL
-  tracks.inside <- 3
-  tracks.outside <- 0
+  cyto_info <- cytoband
+  chr_exclude <- NULL
+  tracks_inside <- 3
+  tracks_outside <- 0
   RCircos::RCircos.Set.Core.Components(
-    cyto.info,
-    chr.exclude,
-    tracks.inside,
-    tracks.outside
+    cyto_info,
+    chr_exclude,
+    tracks_inside,
+    tracks_outside
   )
 
   # Open a new window for plotting
@@ -256,7 +256,7 @@ plot_circle <- function(fusion_list) {
   link_data <- .fusions_to_link_data(fusion_list)
   # Make sure the ordering is correct.
   # Ref https://github.com/stianlagstad/chimeraviz/issues/52
-  multi.mixedorder <- function(..., na.last = TRUE, decreasing = FALSE) {
+  multi_mixedorder <- function(..., na.last = TRUE, decreasing = FALSE) {
     do.call(
       order,
       c(
@@ -278,7 +278,7 @@ plot_circle <- function(fusion_list) {
     )
   }
   ordered_link_width <- link_data[
-    multi.mixedorder(
+    multi_mixedorder(
       as.character(link_data$chromosome),
       link_data$chrom_start
     ),
@@ -304,53 +304,37 @@ plot_circle <- function(fusion_list) {
 .validate_plot_circle_params <- function(
   fusion_list
 ) {
-  # Establish a new 'ArgCheck' object
-  argument_checker <- ArgumentCheck::newArgCheck()
+  # Establish a new 'checkmate' object
+  coll <- checkmate::makeAssertCollection()
 
   # Check input type and length
-  if (
-    !is.list(fusion_list) ||
-      length(fusion_list) == 0
-  ) {
-    ArgumentCheck::addError(
-      msg = "'fusion_list' must be a list of fusion objects",
-      argcheck = argument_checker
-    )
-  }
-  # Check that all the items in the input list are fusion objects
-  for (i in seq_along(fusion_list)) {
-    if (class(fusion_list[[i]]) != "Fusion") {
-      ArgumentCheck::addError(
-        msg = "'fusionList' must be a list of fusion objects",
-        argcheck = argument_checker
-      )
-      break
-    }
-  }
+  # Cehck that all the items in the input list are fusion objects
+  checkmate::assert_list(x = fusion_list,
+                         min.len = 1,
+                         types = "Fusion")
 
   # Validate that the first fusion object has a valid genome
   genome_of_first_fusion <- fusion_list[[1]]@genome_version
   if (!genome_of_first_fusion %in% list("hg19", "hg38", "mm10")) {
-    ArgumentCheck::addError(
-      msg = paste0(
+    coll$push(
+      paste0(
         "Invalid input. genomeVersion must be either \"hg19\", \"hg38\" or ",
         "\"mm10\"."
-      ),
-      argcheck = argument_checker
+      )
     )
   }
+
   # Validate that all the fusions have the same genome
-  for (i in seq_along(fusion_list)) {
-    if (!fusion_list[[i]]@genome_version == genome_of_first_fusion) {
-      ArgumentCheck::addError(
-        msg = paste0(
-          "All Fusion objects in the fusion_list must have the same genome."
-        ),
-        argcheck = argument_checker
+  genome_version <- sapply(seq_along(fusion_list),
+                           function(fl) fusion_list[[fl]]@genome_version)
+  if (any(genome_version != genome_of_first_fusion)) {
+    coll$push(
+      paste0(
+        "All Fusion objects in the fusion_list must have the same genome."
       )
-    }
+    )
   }
 
   # Return errors and warnings (if any)
-  ArgumentCheck::finishArgCheck(argument_checker)
+  checkmate::reportAssertions(coll)
 }

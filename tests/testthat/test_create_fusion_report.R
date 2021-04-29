@@ -9,7 +9,7 @@ test_that("create_fusion_report() produces a html file", {
   fusions <- import_defuse(defuse833ke, "hg19", 5)
   # Temporary file to store the report
   random_filename <- paste0(
-    paste0(sample(LETTERS, 5, replace = TRUE), collapse=''),
+    paste0(sample(LETTERS, 5, replace = TRUE), collapse = ""),
     ".png"
   )
   create_fusion_report(fusions, random_filename)
