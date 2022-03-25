@@ -24,6 +24,7 @@ Previous citations:
 13. [FGviewer: an online visualization tool for functional features of human fusion genes](https://academic.oup.com/nar/advance-article/doi/10.1093/nar/gkaa364/5838863)
 14. [Molecular characterization of organoids derived from pancreatic intraductal papillary mucinous neoplasms](https://onlinelibrary.wiley.com/doi/abs/10.1002/path.5515)
 15. [RNA-sequencing of IDH-wild-type glioblastoma with chromothripsis identifies novel gene fusions with potential oncogenic properties](https://www.sciencedirect.com/science/article/pii/S1936523320303764)
+16. [Immuno-genomic classification of colorectal cancer organoids reveals cancer cells with intrinsic immunogenic properties associated with patient survival](https://link.springer.com/article/10.1186/s13046-021-02034-1)
 
 # Demo
 
