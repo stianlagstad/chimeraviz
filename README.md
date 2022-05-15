@@ -26,6 +26,7 @@ Previous citations:
 15. [RNA-sequencing of IDH-wild-type glioblastoma with chromothripsis identifies novel gene fusions with potential oncogenic properties](https://www.sciencedirect.com/science/article/pii/S1936523320303764)
 16. [Immuno-genomic classification of colorectal cancer organoids reveals cancer cells with intrinsic immunogenic properties associated with patient survival](https://link.springer.com/article/10.1186/s13046-021-02034-1)
 17. [Fusion Genes in Prostate Cancer: A Comparison in Men of African and European Descent ](https://doi.org/10.3390/biology11050625)
+18. [Integrative multi-omics analysis reveals molecular subtypes and tumor evolution of synovial sarcoma](https://www.biorxiv.org/content/10.1101/2022.05.09.490894v1.full)
 
 # Demo
 
