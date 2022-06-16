@@ -27,6 +27,12 @@ Previous citations:
 16. [Immuno-genomic classification of colorectal cancer organoids reveals cancer cells with intrinsic immunogenic properties associated with patient survival](https://link.springer.com/article/10.1186/s13046-021-02034-1)
 17. [Fusion Genes in Prostate Cancer: A Comparison in Men of African and European Descent ](https://doi.org/10.3390/biology11050625)
 18. [Integrative multi-omics analysis reveals molecular subtypes and tumor evolution of synovial sarcoma](https://www.biorxiv.org/content/10.1101/2022.05.09.490894v1.full)
+19. [MALAT1 Fusions and Basal Cells Contribute to Primary Resistance against Androgen Receptor Inhibition in TRAMP Mice](https://www.mdpi.com/2072-6694/14/3/749/htm)
+20. [Characterization of a castrate-resistant prostate cancer xenograft derived from a patient of West African ancestry](https://www.nature.com/articles/s41391-021-00460-y)
+21. [Novel transcription-induced fusion RNAs in prostate cancer](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5564755/)
+22. [An organoid biobank for childhood kidney cancers that captures disease and tissue heterogeneity](https://www.nature.com/articles/s41467-020-15155-6)
+23. [Analyses transcriptomiques et fonctionnelles des anomalies moléculaires récurrentes des sarcomes du stroma endométrial](https://tel.archives-ouvertes.fr/tel-03483417/)
+24. [Genomic landscape of uveal melanoma](https://spiral.imperial.ac.uk/handle/10044/1/58247)
 
 # Demo
 
