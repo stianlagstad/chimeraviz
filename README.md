@@ -33,6 +33,7 @@ Previous citations:
 22. [An organoid biobank for childhood kidney cancers that captures disease and tissue heterogeneity](https://www.nature.com/articles/s41467-020-15155-6)
 23. [Analyses transcriptomiques et fonctionnelles des anomalies moléculaires récurrentes des sarcomes du stroma endométrial](https://tel.archives-ouvertes.fr/tel-03483417/)
 24. [Genomic landscape of uveal melanoma](https://spiral.imperial.ac.uk/handle/10044/1/58247)
+25. [Targeted in silico characterization of fusion transcripts in tumor and normal tissues via FusionInspector](https://www.biorxiv.org/content/10.1101/2021.08.02.454639v2.abstract)
 
 # Demo
 
