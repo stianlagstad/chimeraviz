@@ -1,4 +1,4 @@
-FROM bioconductor/bioconductor_docker:RELEASE_3_12
+FROM bioconductor/bioconductor_docker:RELEASE_3_16
 # Documentation: https://github.com/Bioconductor/bioconductor_docker
 
 # Install dependencies
