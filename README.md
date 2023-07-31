@@ -36,6 +36,7 @@ Previous citations:
 25. [Targeted in silico characterization of fusion transcripts in tumor and normal tissues via FusionInspector](https://www.biorxiv.org/content/10.1101/2021.08.02.454639v2.abstract)
 26. [Detección de fusiones génicas en datos de secuenciación de RNA en muestras de pacientes con melanoma lentiginoso acral del INCan-México](https://cybertesis.unmsm.edu.pe/handle/20.500.12672/19622)
 27. [Targeted in silico characterization of fusion transcripts in tumor and normal tissues via FusionInspector](https://www.sciencedirect.com/science/article/pii/S2667237523000863)
+28. [Comparative transcriptome characterization of esophageal squamous cell carcinoma and adenocarcinoma](https://www.sciencedirect.com/science/article/pii/S2001037023002659)
 
 # Demo
 
