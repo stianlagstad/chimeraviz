@@ -1,4 +1,4 @@
-This file contains simple instructions for how you can develop chimeraviz, either the current release verion of the development version, using the RStudio Docker images.
+This file contains simple instructions for how you can develop chimeraviz, either the current release version or the development version, using the RStudio Docker images.
 
 If these instructions don't work for you, please don't hesitate to [open an issue](https://github.com/stianlagstad/chimeraviz/issues/new) and I'll assist you.
 
