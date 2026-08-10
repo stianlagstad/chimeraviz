@@ -244,6 +244,45 @@ You can also work on `chimeraviz` within a Conda environment. Here are the steps
 1. Run the command `conda env create -n chimeraviz_release -f environment.yml` from the root of this repository.
 1. Run the command `conda activate chimeraviz_release` to activate the conda environment.
 
+## Git remotes and release flow
+
+This repository is hosted on GitHub, and the Bioconductor repository is configured as the `upstream` git remote.
+
+The intended workflow is:
+
+1. Keep GitHub `master` and Bioconductor `devel` in sync.
+1. When there has been no local feature work, pull version bumps and other upstream changes from Bioconductor into `master`.
+1. Do new feature work in topic branches created from `master`.
+1. Merge completed feature work back into `master`, then push `master` to both GitHub and Bioconductor.
+
+Bioconductor does not use a `master` branch for this package. The corresponding branch is `devel`, so pushes to Bioconductor should use `master:devel`.
+
+For convenience, this repository includes a `Makefile` with two targets:
+
+```bash
+make sync-from-bioc
+make publish-to-bioc
+```
+
+`make sync-from-bioc` runs these commands:
+
+```bash
+\git fetch upstream
+\git checkout master
+\git merge --ff-only upstream/devel
+\git push origin master
+```
+
+`make publish-to-bioc` runs these commands:
+
+```bash
+\git checkout master
+\git push origin master
+\git push upstream master:devel
+```
+
+The `--ff-only` flag is intentional. It prevents accidental merge commits when `master` and `upstream/devel` have diverged, which makes drift visible immediately.
+
 # Tests
 
 Tests are written with [testthat](https://cran.r-project.org/web/packages/testthat/index.html) and are located in `tests/testthat`. They can be run with `devtools::test()` if you have cloned this repository, _i.e._ not installed the package with `devtools::install_github()` but have used `git clone git@github.com:stianlagstad/chimeraviz.git chimeraviz`.
