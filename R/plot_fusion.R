@@ -1685,7 +1685,11 @@ import_function_non_ucsc <- function(file, selection) {
     rep(as.character(NA), length(reads$pos))
   else reads$tag$MD
   if (length(reads$pos)) {
-    layed_seq <- GenomicAlignments::sequenceLayer(reads$seq, reads$cigar)
+    layed_seq <- cigarillo::project_sequences(
+      reads$seq,
+      reads$cigar,
+      from = "query",
+      to = "reference")
     region <- unlist(Rsamtools::bamWhich(param), use.names = FALSE)
     ans <- stackStrings(
       layed_seq,

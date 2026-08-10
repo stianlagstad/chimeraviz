@@ -58,7 +58,8 @@ Imports:
     BiocStyle,
     checkmate,
     gtools,
-    magick
+    magick,
+    cigarillo
 Depends:
     Biostrings,
     GenomicRanges,
