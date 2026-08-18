@@ -59,7 +59,8 @@ Imports:
     checkmate,
     gtools,
     magick,
-    cigarillo
+    cigarillo,
+    data.table
 Depends:
     Biostrings,
     GenomicRanges,
@@ -67,8 +68,7 @@ Depends:
     Gviz,
     S4Vectors,
     ensembldb,
-    AnnotationFilter,
-    data.table
+    AnnotationFilter
 Suggests:
     testthat,
     roxygen2,

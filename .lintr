@@ -1,4 +1,4 @@
-linters: with_defaults(object_length_linter(80))
+linters: linters_with_defaults(object_length_linter(80))
 exclude: "# Exclude Linting"
 exclude_start: "# Begin Exclude Linting"
 exclude_end: "# End Exclude Linting"
